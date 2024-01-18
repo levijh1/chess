@@ -1,7 +1,6 @@
 package chess;
 
-import java.util.Collection;
-import java.util.Objects;
+import java.util.*;
 
 /**
  * Represents a single chess piece
@@ -45,19 +44,6 @@ public class ChessPiece {
         return this.type;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        ChessPiece that = (ChessPiece) o;
-        return pieceColor == that.pieceColor && type == that.type;
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(pieceColor, type);
-    }
-
     /**
      * Calculates all the positions a chess piece can move to
      * Does not take into account moves that are illegal due to leaving the king in
@@ -66,11 +52,56 @@ public class ChessPiece {
      * @return Collection of valid moves
      */
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
-        ChessPiece evaluatedPieceType = board.getPiece(myPosition);
+        List<ChessMove> possibleMoves;
+        possibleMoves = new LinkedList<>();
 
-        if (evaluatedPieceType == PieceType.KING) {
+        PieceType evaluatedPieceType = board.getPiece(myPosition).getPieceType();
 
-        };
-//        return new ArrayList<>();
+        int currentRow = myPosition.getRow();
+        int currentCol = myPosition.getCol();
+
+        switch (evaluatedPieceType) {
+            case KING:
+                break;
+            case QUEEN:
+                break;
+            case BISHOP:
+//                for (int i = 1; i <= 8-currentRow or i <= 8-currentCol; i++) {
+//                    ChessPosition endPosition = new ChessPosition(currentRow+i, currentCol+i);
+//                    if (board.getPiece(endPosition).getTeamColor() == this.pieceColor)
+//                        possibleMoves.add(new ChessMove(myPosition, endPosition, null));
+//                    }
+//                }
+//                possibleMoves.add();
+                break;
+            case KNIGHT:
+                break;
+            case ROOK:
+                break;
+            case PAWN:
+                ChessPosition endPosition;
+                if (this.pieceColor== ChessGame.TeamColor.WHITE){ //Piece is white
+                    endPosition = new ChessPosition(currentRow+1, currentCol);
+                    possibleMoves.add(new ChessMove(myPosition, endPosition, null));
+
+                    if (currentRow==2){
+                        endPosition = new ChessPosition(currentRow+2, currentCol);
+                        possibleMoves.add(new ChessMove(myPosition, endPosition, null));
+                    }
+                } else{ //Piece is black
+                    endPosition = new ChessPosition(currentRow-1, currentCol);
+                    possibleMoves.add(new ChessMove(myPosition, endPosition, null));
+
+                    if (currentRow==7){
+                        endPosition = new ChessPosition(currentRow+2, currentCol);
+                        possibleMoves.add(new ChessMove(myPosition, endPosition, null));
+                    }
+                }
+                break;
+        }
+        possibleMoves.removeIf(chessMove -> !chessMove.isMoveOnBoard());
+        possibleMoves.removeIf(chessMove -> chessMove.isMoveOnSameColor(board, this));
+
+        return possibleMoves;
     }
 }

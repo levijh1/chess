@@ -21,7 +21,7 @@ public class ChessBoard {
      */
     public void addPiece(ChessPosition position, ChessPiece piece) {
         int row = position.getRow();
-        int col = position.getColumn();
+        int col = position.getCol();
 
         boardPieces[row][col] = piece;
     }
@@ -35,7 +35,7 @@ public class ChessBoard {
      */
     public ChessPiece getPiece(ChessPosition position) {
         int row = position.getRow();
-        int col = position.getColumn();
+        int col = position.getCol();
 
         return boardPieces[row][col];
     }
