@@ -1,5 +1,7 @@
 package chess;
 
+import java.util.Arrays;
+
 /**
  * A chessboard that can hold and rearrange chess pieces.
  * <p>
@@ -40,12 +42,90 @@ public class ChessBoard {
         return boardPieces[row-1][col-1];
     }
 
+    @Override
+    public String toString() {
+        return "ChessBoard{" +
+                "boardPieces=" + Arrays.toString(boardPieces[0])
+                    + Arrays.toString(boardPieces[1])
+                    + Arrays.toString(boardPieces[2])
+                    + Arrays.toString(boardPieces[3])
+                    + Arrays.toString(boardPieces[4])
+                    + Arrays.toString(boardPieces[5])
+                    + Arrays.toString(boardPieces[6])
+                    + Arrays.toString(boardPieces[7])
+                +'}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ChessBoard that = (ChessBoard) o;
+        ChessPiece thisPiece;
+        ChessPiece thatPiece;
+        for (int i=0; i<=7; ++i){
+            for (int j=0; j<=7; ++j){
+                thisPiece = this.boardPieces[i][j];
+                thatPiece = that.boardPieces[i][j];
+                System.out.print(thisPiece);
+                System.out.print(thatPiece);
+                if (thisPiece==null && thatPiece!=null){
+                    return false;
+                }
+                if (thisPiece!=null && thatPiece==null){
+                    return false;
+                }
+                if (thisPiece==null && thatPiece==null){
+                    continue;
+                }
+                if (thisPiece.getPieceType()!=thatPiece.getPieceType() || thisPiece.getTeamColor()!=thatPiece.getTeamColor()) {
+//                    System.out.print("Inconsistency at: ");
+//                    System.out.print("(" + i + "," + j + ")");
+//                    System.out.print(this.boardPieces[i][j]);
+//                    System.out.print(that.boardPieces[i][j]);
+                    return false;
+                }
+
+            }
+        }
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        return Arrays.hashCode(boardPieces);
+    }
+
     /**
      * Sets the board to the default starting board
      * (How the game of chess normally starts)
      */
     public void resetBoard() {
-        //TODO: Figure this out
-        throw new RuntimeException("Not implemented");
+        boardPieces = new ChessPiece[8][8];
+
+        //Add Pawns
+        for (int i=1; i<=8;++i) {
+            this.addPiece(new ChessPosition(2, i), new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.PAWN));
+            this.addPiece(new ChessPosition(7, i), new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.PAWN));
+        }
+        //Add rest of white pieces
+        this.addPiece(new ChessPosition(1, 1), new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.ROOK));
+        this.addPiece(new ChessPosition(1, 2), new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.KNIGHT));
+        this.addPiece(new ChessPosition(1, 3), new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.BISHOP));
+        this.addPiece(new ChessPosition(1, 4), new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.QUEEN));
+        this.addPiece(new ChessPosition(1, 5), new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.KING));
+        this.addPiece(new ChessPosition(1, 6), new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.BISHOP));
+        this.addPiece(new ChessPosition(1, 7), new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.KNIGHT));
+        this.addPiece(new ChessPosition(1, 8), new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.ROOK));
+
+        //Add rest of black pieces
+        this.addPiece(new ChessPosition(8, 1), new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.ROOK));
+        this.addPiece(new ChessPosition(8, 2), new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.KNIGHT));
+        this.addPiece(new ChessPosition(8, 3), new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.BISHOP));
+        this.addPiece(new ChessPosition(8, 4), new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.QUEEN));
+        this.addPiece(new ChessPosition(8, 5), new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.KING));
+        this.addPiece(new ChessPosition(8, 6), new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.BISHOP));
+        this.addPiece(new ChessPosition(8, 7), new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.KNIGHT));
+        this.addPiece(new ChessPosition(8, 8), new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.ROOK));
     }
 }

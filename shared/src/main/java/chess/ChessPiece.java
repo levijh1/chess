@@ -44,6 +44,27 @@ public class ChessPiece {
         return this.type;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ChessPiece that = (ChessPiece) o;
+        return pieceColor == that.pieceColor && type == that.type;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(pieceColor, type);
+    }
+
+    @Override
+    public String toString() {
+        return "ChessPiece{" +
+                "pieceColor=" + pieceColor +
+                ", type=" + type +
+                '}';
+    }
+
     /**
      * Calculates all the positions a chess piece can move to
      * Does not take into account moves that are illegal due to leaving the king in
@@ -81,15 +102,129 @@ public class ChessPiece {
                 possibleMoves.add(new ChessMove(myPosition, endPosition, null));
                 break;
             case QUEEN:
+                for (int i = 1; i <= 7 ; i++) {
+                    endPosition = new ChessPosition(currentRow+i, currentCol);
+                    if (!endPosition.isOnBoard()){
+                        break;
+                    }
+                    possibleMoves.add(new ChessMove(myPosition, endPosition, null));
+                    if (board.getPiece(endPosition) != null){
+                        break;
+                    }
+                }
+                for (int i = 1; i <= 7 ; i++) {
+                    endPosition = new ChessPosition(currentRow-i, currentCol);
+                    if (!endPosition.isOnBoard()){
+                        break;
+                    }
+                    possibleMoves.add(new ChessMove(myPosition, endPosition, null));
+                    if (board.getPiece(endPosition) != null){
+                        break;
+                    }
+                }
+                for (int i = 1; i <= 7 ; i++) {
+                    endPosition = new ChessPosition(currentRow, currentCol+i);
+                    if (!endPosition.isOnBoard()){
+                        break;
+                    }
+                    possibleMoves.add(new ChessMove(myPosition, endPosition, null));
+                    if (board.getPiece(endPosition) != null){
+                        break;
+                    }
+                }
+                for (int i = 1; i <= 7 ; i++) {
+                    endPosition = new ChessPosition(currentRow, currentCol-i);
+                    if (!endPosition.isOnBoard()){
+                        break;
+                    }
+                    possibleMoves.add(new ChessMove(myPosition, endPosition, null));
+                    if (board.getPiece(endPosition) != null){
+                        break;
+                    }
+                }
+
+                for (int i = 1; i <= 7 ; i++) {
+                    endPosition = new ChessPosition(currentRow+i, currentCol+i);
+                    if (!endPosition.isOnBoard()){
+                        break;
+                    }
+                    possibleMoves.add(new ChessMove(myPosition, endPosition, null));
+                    if (board.getPiece(endPosition) != null){
+                        break;
+                    }
+                }
+                for (int i = 1; i <= 7 ; i++) {
+                    endPosition = new ChessPosition(currentRow-i, currentCol+i);
+                    if (!endPosition.isOnBoard()){
+                        break;
+                    }
+                    possibleMoves.add(new ChessMove(myPosition, endPosition, null));
+                    if (board.getPiece(endPosition) != null){
+                        break;
+                    }
+                }
+                for (int i = 1; i <= 7 ; i++) {
+                    endPosition = new ChessPosition(currentRow+i, currentCol-i);
+                    if (!endPosition.isOnBoard()){
+                        break;
+                    }
+                    possibleMoves.add(new ChessMove(myPosition, endPosition, null));
+                    if (board.getPiece(endPosition) != null){
+                        break;
+                    }
+                }
+                for (int i = 1; i <= 7 ; i++) {
+                    endPosition = new ChessPosition(currentRow-i, currentCol-i);
+                    if (!endPosition.isOnBoard()){
+                        break;
+                    }
+                    possibleMoves.add(new ChessMove(myPosition, endPosition, null));
+                    if (board.getPiece(endPosition) != null){
+                        break;
+                    }
+                }
                 break;
             case BISHOP:
-//                for (int i = 1; i <= 8-currentRow or i <= 8-currentCol; i++) {
-//                    ChessPosition endPosition = new ChessPosition(currentRow+i, currentCol+i);
-//                    if (board.getPiece(endPosition).getTeamColor() == this.pieceColor)
-//                        possibleMoves.add(new ChessMove(myPosition, endPosition, null));
-//                    }
-//                }
-//                possibleMoves.add();
+                for (int i = 1; i <= 7 ; i++) {
+                    endPosition = new ChessPosition(currentRow+i, currentCol+i);
+                    if (!endPosition.isOnBoard()){
+                        break;
+                    }
+                    possibleMoves.add(new ChessMove(myPosition, endPosition, null));
+                    if (board.getPiece(endPosition) != null){
+                        break;
+                    }
+                }
+                for (int i = 1; i <= 7 ; i++) {
+                    endPosition = new ChessPosition(currentRow-i, currentCol+i);
+                    if (!endPosition.isOnBoard()){
+                        break;
+                    }
+                    possibleMoves.add(new ChessMove(myPosition, endPosition, null));
+                    if (board.getPiece(endPosition) != null){
+                        break;
+                    }
+                }
+                for (int i = 1; i <= 7 ; i++) {
+                    endPosition = new ChessPosition(currentRow+i, currentCol-i);
+                    if (!endPosition.isOnBoard()){
+                        break;
+                    }
+                    possibleMoves.add(new ChessMove(myPosition, endPosition, null));
+                    if (board.getPiece(endPosition) != null){
+                        break;
+                    }
+                }
+                for (int i = 1; i <= 7 ; i++) {
+                    endPosition = new ChessPosition(currentRow-i, currentCol-i);
+                    if (!endPosition.isOnBoard()){
+                        break;
+                    }
+                    possibleMoves.add(new ChessMove(myPosition, endPosition, null));
+                    if (board.getPiece(endPosition) != null){
+                        break;
+                    }
+                }
                 break;
             case KNIGHT:
                 endPosition = new ChessPosition(currentRow + 2, currentCol+1);
@@ -110,6 +245,46 @@ public class ChessPiece {
                 possibleMoves.add(new ChessMove(myPosition, endPosition, null));
                 break;
             case ROOK:
+                for (int i = 1; i <= 7 ; i++) {
+                    endPosition = new ChessPosition(currentRow+i, currentCol);
+                    if (!endPosition.isOnBoard()){
+                        break;
+                    }
+                    possibleMoves.add(new ChessMove(myPosition, endPosition, null));
+                    if (board.getPiece(endPosition) != null){
+                        break;
+                    }
+                }
+                for (int i = 1; i <= 7 ; i++) {
+                    endPosition = new ChessPosition(currentRow-i, currentCol);
+                    if (!endPosition.isOnBoard()){
+                        break;
+                    }
+                    possibleMoves.add(new ChessMove(myPosition, endPosition, null));
+                    if (board.getPiece(endPosition) != null){
+                        break;
+                    }
+                }
+                for (int i = 1; i <= 7 ; i++) {
+                    endPosition = new ChessPosition(currentRow, currentCol+i);
+                    if (!endPosition.isOnBoard()){
+                        break;
+                    }
+                    possibleMoves.add(new ChessMove(myPosition, endPosition, null));
+                    if (board.getPiece(endPosition) != null){
+                        break;
+                    }
+                }
+                for (int i = 1; i <= 7 ; i++) {
+                    endPosition = new ChessPosition(currentRow, currentCol-i);
+                    if (!endPosition.isOnBoard()){
+                        break;
+                    }
+                    possibleMoves.add(new ChessMove(myPosition, endPosition, null));
+                    if (board.getPiece(endPosition) != null){
+                        break;
+                    }
+                }
                 break;
             case PAWN:
                 if (this.pieceColor== ChessGame.TeamColor.WHITE){ //Piece is white
