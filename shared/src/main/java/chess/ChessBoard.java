@@ -23,7 +23,7 @@ public class ChessBoard {
         int row = position.getRow();
         int col = position.getCol();
 
-        boardPieces[row][col] = piece;
+        boardPieces[row-1][col-1] = piece;
     }
 
     /**
@@ -37,7 +37,7 @@ public class ChessBoard {
         int row = position.getRow();
         int col = position.getCol();
 
-        return boardPieces[row][col];
+        return boardPieces[row-1][col-1];
     }
 
     /**

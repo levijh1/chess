@@ -67,4 +67,20 @@ public class ChessMove {
         }
         return piece.getTeamColor() == board.getPiece(endPosition).getTeamColor();
     }
+
+    public boolean isMoveOnDifferentColor(ChessBoard board, ChessPiece piece) {
+        if (board.getPiece(endPosition)==null) {
+            return false;
+        }
+        return piece.getTeamColor() != board.getPiece(endPosition).getTeamColor();
+    }
+
+    @Override
+    public String toString() {
+        return "ChessMove{" +
+                "startPosition=" + startPosition +
+                ", endPosition=" + endPosition +
+                ", promotionPiece=" + promotionPiece +
+                '}';
+    }
 }

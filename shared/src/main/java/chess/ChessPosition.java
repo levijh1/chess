@@ -34,7 +34,7 @@ public class ChessPosition {
     }
 
     public boolean isOnBoard() {
-        return this.row >= 0 && this.row <= 8 && this.col >= 0 && this.col <= 8;
+        return this.row > 0 && this.row <= 8 && this.col > 0 && this.col <= 8;
     }
 
     @Override

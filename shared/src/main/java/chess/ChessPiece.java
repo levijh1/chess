@@ -81,27 +81,127 @@ public class ChessPiece {
             case PAWN:
                 ChessPosition endPosition;
                 if (this.pieceColor== ChessGame.TeamColor.WHITE){ //Piece is white
-                    endPosition = new ChessPosition(currentRow+1, currentCol);
-                    possibleMoves.add(new ChessMove(myPosition, endPosition, null));
-
-                    if (currentRow==2){
-                        endPosition = new ChessPosition(currentRow+2, currentCol);
-                        possibleMoves.add(new ChessMove(myPosition, endPosition, null));
-                    }
-                } else{ //Piece is black
-                    endPosition = new ChessPosition(currentRow-1, currentCol);
-                    possibleMoves.add(new ChessMove(myPosition, endPosition, null));
-
+                    //Promotion
                     if (currentRow==7){
-                        endPosition = new ChessPosition(currentRow+2, currentCol);
+                        ChessMove promotionMove = new ChessMove(myPosition, new ChessPosition(currentRow+1, currentCol), PieceType.QUEEN);
+                        possibleMoves.add(promotionMove);
+                        promotionMove = new ChessMove(myPosition, new ChessPosition(currentRow+1, currentCol), PieceType.BISHOP);
+                        possibleMoves.add(promotionMove);
+                        promotionMove = new ChessMove(myPosition, new ChessPosition(currentRow+1, currentCol), PieceType.KNIGHT);
+                        possibleMoves.add(promotionMove);
+                        promotionMove = new ChessMove(myPosition, new ChessPosition(currentRow+1, currentCol), PieceType.ROOK);
+                        possibleMoves.add(promotionMove);
+
+                        //Capturing a piece and promoting
+                        ChessMove captureMove = new ChessMove(myPosition, new ChessPosition(currentRow + 1, currentCol + 1), null);
+                        if (captureMove.isMoveOnDifferentColor(board, this)) {
+                            captureMove = new ChessMove(myPosition, new ChessPosition(currentRow+1, currentCol+1), PieceType.QUEEN);
+                            possibleMoves.add(promotionMove);
+                            promotionMove = new ChessMove(myPosition, new ChessPosition(currentRow+1, currentCol+1), PieceType.BISHOP);
+                            possibleMoves.add(promotionMove);
+                            promotionMove = new ChessMove(myPosition, new ChessPosition(currentRow+1, currentCol+1), PieceType.KNIGHT);
+                            possibleMoves.add(promotionMove);
+                            promotionMove = new ChessMove(myPosition, new ChessPosition(currentRow+1, currentCol+1), PieceType.ROOK);
+                            possibleMoves.add(promotionMove);
+                        }
+
+                        captureMove = new ChessMove(myPosition, new ChessPosition(currentRow + 1, currentCol - 1), null);
+                        if (captureMove.isMoveOnDifferentColor(board, this)) {
+                            captureMove = new ChessMove(myPosition, new ChessPosition(currentRow+1, currentCol-1), PieceType.QUEEN);
+                            possibleMoves.add(promotionMove);
+                            promotionMove = new ChessMove(myPosition, new ChessPosition(currentRow+1, currentCol-1), PieceType.BISHOP);
+                            possibleMoves.add(promotionMove);
+                            promotionMove = new ChessMove(myPosition, new ChessPosition(currentRow+1, currentCol-1), PieceType.KNIGHT);
+                            possibleMoves.add(promotionMove);
+                            promotionMove = new ChessMove(myPosition, new ChessPosition(currentRow+1, currentCol-1), PieceType.ROOK);
+                            possibleMoves.add(promotionMove);
+                        }
+                    } else {
+                        endPosition = new ChessPosition(currentRow + 1, currentCol);
                         possibleMoves.add(new ChessMove(myPosition, endPosition, null));
+
+                        //Initial movement
+                        if (currentRow == 2) {
+                            endPosition = new ChessPosition(currentRow + 2, currentCol);
+                            possibleMoves.add(new ChessMove(myPosition, endPosition, null));
+                        }
+
+                        //Capturing a piece
+                        ChessMove captureMove = new ChessMove(myPosition, new ChessPosition(currentRow + 1, currentCol + 1), null);
+                        if (captureMove.isMoveOnDifferentColor(board, this)) {
+                            possibleMoves.add(captureMove);
+                        }
+
+                        captureMove = new ChessMove(myPosition, new ChessPosition(currentRow + 1, currentCol - 1), null);
+                        if (captureMove.isMoveOnDifferentColor(board, this)) {
+                            possibleMoves.add(captureMove);
+                        }
+                    }
+
+                } else{ //Piece is black
+                    //Promotion
+                    if (currentRow==2){
+                        ChessMove promotionMove = new ChessMove(myPosition, new ChessPosition(currentRow-1, currentCol), PieceType.QUEEN);
+                        possibleMoves.add(promotionMove);
+                        promotionMove = new ChessMove(myPosition, new ChessPosition(currentRow-1, currentCol), PieceType.BISHOP);
+                        possibleMoves.add(promotionMove);
+                        promotionMove = new ChessMove(myPosition, new ChessPosition(currentRow-1, currentCol), PieceType.KNIGHT);
+                        possibleMoves.add(promotionMove);
+                        promotionMove = new ChessMove(myPosition, new ChessPosition(currentRow-1, currentCol), PieceType.ROOK);
+                        possibleMoves.add(promotionMove);
+
+                        //Capturing a piece and promoting
+                        ChessMove captureMove = new ChessMove(myPosition, new ChessPosition(currentRow - 1, currentCol + 1), null);
+                        if (captureMove.isMoveOnDifferentColor(board, this)) {
+                            captureMove = new ChessMove(myPosition, new ChessPosition(currentRow-1, currentCol+1), PieceType.QUEEN);
+                            possibleMoves.add(promotionMove);
+                            promotionMove = new ChessMove(myPosition, new ChessPosition(currentRow-1, currentCol+1), PieceType.BISHOP);
+                            possibleMoves.add(promotionMove);
+                            promotionMove = new ChessMove(myPosition, new ChessPosition(currentRow-1, currentCol+1), PieceType.KNIGHT);
+                            possibleMoves.add(promotionMove);
+                            promotionMove = new ChessMove(myPosition, new ChessPosition(currentRow-1, currentCol+1), PieceType.ROOK);
+                            possibleMoves.add(promotionMove);
+                        }
+
+                        captureMove = new ChessMove(myPosition, new ChessPosition(currentRow - 1, currentCol - 1), null);
+                        if (captureMove.isMoveOnDifferentColor(board, this)) {
+                            captureMove = new ChessMove(myPosition, new ChessPosition(currentRow-1, currentCol-1), PieceType.QUEEN);
+                            possibleMoves.add(promotionMove);
+                            promotionMove = new ChessMove(myPosition, new ChessPosition(currentRow-1, currentCol-1), PieceType.BISHOP);
+                            possibleMoves.add(promotionMove);
+                            promotionMove = new ChessMove(myPosition, new ChessPosition(currentRow-1, currentCol-1), PieceType.KNIGHT);
+                            possibleMoves.add(promotionMove);
+                            promotionMove = new ChessMove(myPosition, new ChessPosition(currentRow-1, currentCol-1), PieceType.ROOK);
+                            possibleMoves.add(promotionMove);
+                        }
+                    } else {
+                        endPosition = new ChessPosition(currentRow - 1, currentCol);
+                        possibleMoves.add(new ChessMove(myPosition, endPosition, null));
+
+                        //Initial movement
+                        if (currentRow == 7) {
+                            endPosition = new ChessPosition(currentRow - 2, currentCol);
+                            possibleMoves.add(new ChessMove(myPosition, endPosition, null));
+                        }
+
+                        //Capturing a piece
+                        ChessMove captureMove = new ChessMove(myPosition, new ChessPosition(currentRow - 1, currentCol + 1), null);
+                        if (captureMove.isMoveOnDifferentColor(board, this)) {
+                            possibleMoves.add(captureMove);
+                        }
+
+                        captureMove = new ChessMove(myPosition, new ChessPosition(currentRow - 1, currentCol - 1), null);
+                        if (captureMove.isMoveOnDifferentColor(board, this)) {
+                            possibleMoves.add(captureMove);
+                        }
                     }
                 }
                 break;
         }
         possibleMoves.removeIf(chessMove -> !chessMove.isMoveOnBoard());
-        possibleMoves.removeIf(chessMove -> chessMove.isMoveOnSameColor(board, this));
+//        possibleMoves.removeIf(chessMove -> chessMove.isMoveOnSameColor(board, this));
 
+        System.out.print(possibleMoves);
         return possibleMoves;
     }
 }
