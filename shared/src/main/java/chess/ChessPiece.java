@@ -242,6 +242,7 @@ public class ChessPiece {
         possibleMoves.removeIf(chessMove -> !chessMove.isMoveOnBoard());
         possibleMoves.removeIf(chessMove -> chessMove.isMoveOnSameColor(board, this));
 
+
         return possibleMoves;
     }
 }
