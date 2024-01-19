@@ -13,19 +13,6 @@ public class ChessMove {
     private final ChessPosition endPosition;
     private final ChessPiece.PieceType promotionPiece;
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        ChessMove chessMove = (ChessMove) o;
-        return Objects.equals(startPosition, chessMove.startPosition) && Objects.equals(endPosition, chessMove.endPosition) && promotionPiece == chessMove.promotionPiece;
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(startPosition, endPosition, promotionPiece);
-    }
-
     public ChessMove(ChessPosition startPosition, ChessPosition endPosition,
                      ChessPiece.PieceType promotionPiece) {
         this.startPosition = startPosition;
@@ -57,10 +44,22 @@ public class ChessMove {
         return promotionPiece;
     }
 
+    /**
+     * Checks if the move will result in the piece staying on a playable space
+     *
+     * @return true if the move is valid and stays on the board and false if the move is out of bounds
+     */
     public boolean isMoveOnBoard(){
         return endPosition.isOnBoard();
     }
 
+    /**
+     * Gets a chess piece on the chessboard
+     *
+     * @param board the current playing board being used
+     * @param piece the current piece that is doing the moving
+     * @return true if the movement will result in the piece landing on a space that contains a piece of the same color
+     */
     public boolean isMoveOnSameColor(ChessBoard board, ChessPiece piece) {
         if (board.getPiece(endPosition)==null) {
             return false;
@@ -68,6 +67,13 @@ public class ChessMove {
         return piece.getTeamColor() == board.getPiece(endPosition).getTeamColor();
     }
 
+    /**
+     * Gets a chess piece on the chessboard
+     *
+     * @param board the current playing board being used
+     * @param piece the current piece that is doing the moving
+     * @return true if the movement will result in the piece landing on a space that contains a piece of the opposite color
+     */
     public boolean isMoveOnDifferentColor(ChessBoard board, ChessPiece piece) {
         if (board.getPiece(endPosition)==null) {
             return false;
@@ -82,5 +88,18 @@ public class ChessMove {
                 ", endPosition=" + endPosition +
                 ", promotionPiece=" + promotionPiece +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ChessMove chessMove = (ChessMove) o;
+        return Objects.equals(startPosition, chessMove.startPosition) && Objects.equals(endPosition, chessMove.endPosition) && promotionPiece == chessMove.promotionPiece;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(startPosition, endPosition, promotionPiece);
     }
 }
