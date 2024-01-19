@@ -60,8 +60,25 @@ public class ChessPiece {
         int currentRow = myPosition.getRow();
         int currentCol = myPosition.getCol();
 
+        ChessPosition endPosition;
         switch (evaluatedPieceType) {
             case KING:
+                endPosition = new ChessPosition(currentRow + 1, currentCol);
+                possibleMoves.add(new ChessMove(myPosition, endPosition, null));
+                endPosition = new ChessPosition(currentRow - 1, currentCol);
+                possibleMoves.add(new ChessMove(myPosition, endPosition, null));
+                endPosition = new ChessPosition(currentRow, currentCol+1);
+                possibleMoves.add(new ChessMove(myPosition, endPosition, null));
+                endPosition = new ChessPosition(currentRow, currentCol-1);
+                possibleMoves.add(new ChessMove(myPosition, endPosition, null));
+                endPosition = new ChessPosition(currentRow + 1, currentCol+1);
+                possibleMoves.add(new ChessMove(myPosition, endPosition, null));
+                endPosition = new ChessPosition(currentRow + 1, currentCol-1);
+                possibleMoves.add(new ChessMove(myPosition, endPosition, null));
+                endPosition = new ChessPosition(currentRow - 1, currentCol+1);
+                possibleMoves.add(new ChessMove(myPosition, endPosition, null));
+                endPosition = new ChessPosition(currentRow - 1, currentCol-1);
+                possibleMoves.add(new ChessMove(myPosition, endPosition, null));
                 break;
             case QUEEN:
                 break;
@@ -75,11 +92,26 @@ public class ChessPiece {
 //                possibleMoves.add();
                 break;
             case KNIGHT:
+                endPosition = new ChessPosition(currentRow + 2, currentCol+1);
+                possibleMoves.add(new ChessMove(myPosition, endPosition, null));
+                endPosition = new ChessPosition(currentRow + 1, currentCol+2);
+                possibleMoves.add(new ChessMove(myPosition, endPosition, null));
+                endPosition = new ChessPosition(currentRow - 2, currentCol+1);
+                possibleMoves.add(new ChessMove(myPosition, endPosition, null));
+                endPosition = new ChessPosition(currentRow - 1, currentCol+2);
+                possibleMoves.add(new ChessMove(myPosition, endPosition, null));
+                endPosition = new ChessPosition(currentRow + 2, currentCol-1);
+                possibleMoves.add(new ChessMove(myPosition, endPosition, null));
+                endPosition = new ChessPosition(currentRow + 1, currentCol-2);
+                possibleMoves.add(new ChessMove(myPosition, endPosition, null));
+                endPosition = new ChessPosition(currentRow - 2, currentCol-1);
+                possibleMoves.add(new ChessMove(myPosition, endPosition, null));
+                endPosition = new ChessPosition(currentRow - 1, currentCol-2);
+                possibleMoves.add(new ChessMove(myPosition, endPosition, null));
                 break;
             case ROOK:
                 break;
             case PAWN:
-                ChessPosition endPosition;
                 if (this.pieceColor== ChessGame.TeamColor.WHITE){ //Piece is white
                     //Promotion
                     if (currentRow==7){
@@ -95,7 +127,7 @@ public class ChessPiece {
                         //Capturing a piece and promoting
                         ChessMove captureMove = new ChessMove(myPosition, new ChessPosition(currentRow + 1, currentCol + 1), null);
                         if (captureMove.isMoveOnDifferentColor(board, this)) {
-                            captureMove = new ChessMove(myPosition, new ChessPosition(currentRow+1, currentCol+1), PieceType.QUEEN);
+                            promotionMove = new ChessMove(myPosition, new ChessPosition(currentRow+1, currentCol+1), PieceType.QUEEN);
                             possibleMoves.add(promotionMove);
                             promotionMove = new ChessMove(myPosition, new ChessPosition(currentRow+1, currentCol+1), PieceType.BISHOP);
                             possibleMoves.add(promotionMove);
@@ -107,7 +139,7 @@ public class ChessPiece {
 
                         captureMove = new ChessMove(myPosition, new ChessPosition(currentRow + 1, currentCol - 1), null);
                         if (captureMove.isMoveOnDifferentColor(board, this)) {
-                            captureMove = new ChessMove(myPosition, new ChessPosition(currentRow+1, currentCol-1), PieceType.QUEEN);
+                            promotionMove = new ChessMove(myPosition, new ChessPosition(currentRow+1, currentCol-1), PieceType.QUEEN);
                             possibleMoves.add(promotionMove);
                             promotionMove = new ChessMove(myPosition, new ChessPosition(currentRow+1, currentCol-1), PieceType.BISHOP);
                             possibleMoves.add(promotionMove);
@@ -120,11 +152,16 @@ public class ChessPiece {
                         endPosition = new ChessPosition(currentRow + 1, currentCol);
                         possibleMoves.add(new ChessMove(myPosition, endPosition, null));
 
+
                         //Initial movement
                         if (currentRow == 2) {
                             endPosition = new ChessPosition(currentRow + 2, currentCol);
-                            possibleMoves.add(new ChessMove(myPosition, endPosition, null));
+                            if (board.getPiece(new ChessPosition(currentRow+1, currentCol)) == null){
+                                possibleMoves.add(new ChessMove(myPosition, endPosition, null));
+                            }
                         }
+
+                        possibleMoves.removeIf(chessMove -> chessMove.isMoveOnDifferentColor(board, this));
 
                         //Capturing a piece
                         ChessMove captureMove = new ChessMove(myPosition, new ChessPosition(currentRow + 1, currentCol + 1), null);
@@ -153,7 +190,7 @@ public class ChessPiece {
                         //Capturing a piece and promoting
                         ChessMove captureMove = new ChessMove(myPosition, new ChessPosition(currentRow - 1, currentCol + 1), null);
                         if (captureMove.isMoveOnDifferentColor(board, this)) {
-                            captureMove = new ChessMove(myPosition, new ChessPosition(currentRow-1, currentCol+1), PieceType.QUEEN);
+                            promotionMove = new ChessMove(myPosition, new ChessPosition(currentRow-1, currentCol+1), PieceType.QUEEN);
                             possibleMoves.add(promotionMove);
                             promotionMove = new ChessMove(myPosition, new ChessPosition(currentRow-1, currentCol+1), PieceType.BISHOP);
                             possibleMoves.add(promotionMove);
@@ -165,7 +202,7 @@ public class ChessPiece {
 
                         captureMove = new ChessMove(myPosition, new ChessPosition(currentRow - 1, currentCol - 1), null);
                         if (captureMove.isMoveOnDifferentColor(board, this)) {
-                            captureMove = new ChessMove(myPosition, new ChessPosition(currentRow-1, currentCol-1), PieceType.QUEEN);
+                            promotionMove = new ChessMove(myPosition, new ChessPosition(currentRow-1, currentCol-1), PieceType.QUEEN);
                             possibleMoves.add(promotionMove);
                             promotionMove = new ChessMove(myPosition, new ChessPosition(currentRow-1, currentCol-1), PieceType.BISHOP);
                             possibleMoves.add(promotionMove);
@@ -181,8 +218,12 @@ public class ChessPiece {
                         //Initial movement
                         if (currentRow == 7) {
                             endPosition = new ChessPosition(currentRow - 2, currentCol);
-                            possibleMoves.add(new ChessMove(myPosition, endPosition, null));
+                            if (board.getPiece(new ChessPosition(currentRow-1, currentCol)) == null){
+                                possibleMoves.add(new ChessMove(myPosition, endPosition, null));
+                            }
                         }
+
+                        possibleMoves.removeIf(chessMove -> chessMove.isMoveOnDifferentColor(board, this));
 
                         //Capturing a piece
                         ChessMove captureMove = new ChessMove(myPosition, new ChessPosition(currentRow - 1, currentCol + 1), null);
@@ -199,9 +240,8 @@ public class ChessPiece {
                 break;
         }
         possibleMoves.removeIf(chessMove -> !chessMove.isMoveOnBoard());
-//        possibleMoves.removeIf(chessMove -> chessMove.isMoveOnSameColor(board, this));
+        possibleMoves.removeIf(chessMove -> chessMove.isMoveOnSameColor(board, this));
 
-        System.out.print(possibleMoves);
         return possibleMoves;
     }
 }
