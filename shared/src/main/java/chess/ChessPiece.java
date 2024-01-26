@@ -65,6 +65,28 @@ public class ChessPiece {
                 '}';
     }
 
+    private Collection<ChessMove> movesInOneDirection(ChessBoard board, ChessPosition myPosition, int moveX, int moveY) {
+        List<ChessMove> possibleMoves = new LinkedList<>();
+
+        int currentRow = myPosition.getRow();
+        int currentCol = myPosition.getCol();
+
+        ChessPosition endPosition;
+        for (int i = 1; i <= 7 ; i++) {
+            endPosition = new ChessPosition(currentRow+moveX*i, currentCol+moveY*i);
+            if (!endPosition.isOnBoard()){ //Stop if moving off the board
+                break;
+            }
+            possibleMoves.add(new ChessMove(myPosition, endPosition, null));
+            if (board.getPiece(endPosition) != null){ //Stop if path is obstructed by another piece
+                break;
+            }
+        }
+
+        return possibleMoves;
+    }
+
+
     /**
      * Calculates all the positions a chess piece can move to
      * Does not take into account moves that are illegal due to leaving the king in
@@ -84,207 +106,46 @@ public class ChessPiece {
         ChessPosition endPosition;
         switch (evaluatedPieceType) {
             case KING:
-                endPosition = new ChessPosition(currentRow + 1, currentCol);
-                possibleMoves.add(new ChessMove(myPosition, endPosition, null));
-                endPosition = new ChessPosition(currentRow - 1, currentCol);
-                possibleMoves.add(new ChessMove(myPosition, endPosition, null));
-                endPosition = new ChessPosition(currentRow, currentCol+1);
-                possibleMoves.add(new ChessMove(myPosition, endPosition, null));
-                endPosition = new ChessPosition(currentRow, currentCol-1);
-                possibleMoves.add(new ChessMove(myPosition, endPosition, null));
-                endPosition = new ChessPosition(currentRow + 1, currentCol+1);
-                possibleMoves.add(new ChessMove(myPosition, endPosition, null));
-                endPosition = new ChessPosition(currentRow + 1, currentCol-1);
-                possibleMoves.add(new ChessMove(myPosition, endPosition, null));
-                endPosition = new ChessPosition(currentRow - 1, currentCol+1);
-                possibleMoves.add(new ChessMove(myPosition, endPosition, null));
-                endPosition = new ChessPosition(currentRow - 1, currentCol-1);
-                possibleMoves.add(new ChessMove(myPosition, endPosition, null));
+                possibleMoves.add(new ChessMove(myPosition, new ChessPosition(currentRow +1, currentCol), null));
+                possibleMoves.add(new ChessMove(myPosition, new ChessPosition(currentRow +1, currentCol-1), null));
+                possibleMoves.add(new ChessMove(myPosition, new ChessPosition(currentRow +1, currentCol+1), null));
+                possibleMoves.add(new ChessMove(myPosition, new ChessPosition(currentRow , currentCol-1), null));
+                possibleMoves.add(new ChessMove(myPosition, new ChessPosition(currentRow , currentCol+1), null));
+                possibleMoves.add(new ChessMove(myPosition, new ChessPosition(currentRow -1, currentCol+1), null));
+                possibleMoves.add(new ChessMove(myPosition, new ChessPosition(currentRow -1, currentCol-1), null));
+                possibleMoves.add(new ChessMove(myPosition, new ChessPosition(currentRow -1, currentCol), null));
                 break;
             case QUEEN:
-                for (int i = 1; i <= 7 ; i++) {
-                    endPosition = new ChessPosition(currentRow+i, currentCol);
-                    if (!endPosition.isOnBoard()){
-                        break;
-                    }
-                    possibleMoves.add(new ChessMove(myPosition, endPosition, null));
-                    if (board.getPiece(endPosition) != null){
-                        break;
-                    }
-                }
-                for (int i = 1; i <= 7 ; i++) {
-                    endPosition = new ChessPosition(currentRow-i, currentCol);
-                    if (!endPosition.isOnBoard()){
-                        break;
-                    }
-                    possibleMoves.add(new ChessMove(myPosition, endPosition, null));
-                    if (board.getPiece(endPosition) != null){
-                        break;
-                    }
-                }
-                for (int i = 1; i <= 7 ; i++) {
-                    endPosition = new ChessPosition(currentRow, currentCol+i);
-                    if (!endPosition.isOnBoard()){
-                        break;
-                    }
-                    possibleMoves.add(new ChessMove(myPosition, endPosition, null));
-                    if (board.getPiece(endPosition) != null){
-                        break;
-                    }
-                }
-                for (int i = 1; i <= 7 ; i++) {
-                    endPosition = new ChessPosition(currentRow, currentCol-i);
-                    if (!endPosition.isOnBoard()){
-                        break;
-                    }
-                    possibleMoves.add(new ChessMove(myPosition, endPosition, null));
-                    if (board.getPiece(endPosition) != null){
-                        break;
-                    }
-                }
-
-                for (int i = 1; i <= 7 ; i++) {
-                    endPosition = new ChessPosition(currentRow+i, currentCol+i);
-                    if (!endPosition.isOnBoard()){
-                        break;
-                    }
-                    possibleMoves.add(new ChessMove(myPosition, endPosition, null));
-                    if (board.getPiece(endPosition) != null){
-                        break;
-                    }
-                }
-                for (int i = 1; i <= 7 ; i++) {
-                    endPosition = new ChessPosition(currentRow-i, currentCol+i);
-                    if (!endPosition.isOnBoard()){
-                        break;
-                    }
-                    possibleMoves.add(new ChessMove(myPosition, endPosition, null));
-                    if (board.getPiece(endPosition) != null){
-                        break;
-                    }
-                }
-                for (int i = 1; i <= 7 ; i++) {
-                    endPosition = new ChessPosition(currentRow+i, currentCol-i);
-                    if (!endPosition.isOnBoard()){
-                        break;
-                    }
-                    possibleMoves.add(new ChessMove(myPosition, endPosition, null));
-                    if (board.getPiece(endPosition) != null){
-                        break;
-                    }
-                }
-                for (int i = 1; i <= 7 ; i++) {
-                    endPosition = new ChessPosition(currentRow-i, currentCol-i);
-                    if (!endPosition.isOnBoard()){
-                        break;
-                    }
-                    possibleMoves.add(new ChessMove(myPosition, endPosition, null));
-                    if (board.getPiece(endPosition) != null){
-                        break;
-                    }
-                }
+                possibleMoves.addAll(movesInOneDirection(board, myPosition, 1,0));
+                possibleMoves.addAll(movesInOneDirection(board, myPosition, -1,0));
+                possibleMoves.addAll(movesInOneDirection(board, myPosition, 0,1));
+                possibleMoves.addAll(movesInOneDirection(board, myPosition, 0,-1));
+                possibleMoves.addAll(movesInOneDirection(board, myPosition, 1,1));
+                possibleMoves.addAll(movesInOneDirection(board, myPosition, 1,-1));
+                possibleMoves.addAll(movesInOneDirection(board, myPosition, -1,1));
+                possibleMoves.addAll(movesInOneDirection(board, myPosition, -1,-1));
                 break;
             case BISHOP:
-                for (int i = 1; i <= 7 ; i++) {
-                    endPosition = new ChessPosition(currentRow+i, currentCol+i);
-                    if (!endPosition.isOnBoard()){
-                        break;
-                    }
-                    possibleMoves.add(new ChessMove(myPosition, endPosition, null));
-                    if (board.getPiece(endPosition) != null){
-                        break;
-                    }
-                }
-                for (int i = 1; i <= 7 ; i++) {
-                    endPosition = new ChessPosition(currentRow-i, currentCol+i);
-                    if (!endPosition.isOnBoard()){
-                        break;
-                    }
-                    possibleMoves.add(new ChessMove(myPosition, endPosition, null));
-                    if (board.getPiece(endPosition) != null){
-                        break;
-                    }
-                }
-                for (int i = 1; i <= 7 ; i++) {
-                    endPosition = new ChessPosition(currentRow+i, currentCol-i);
-                    if (!endPosition.isOnBoard()){
-                        break;
-                    }
-                    possibleMoves.add(new ChessMove(myPosition, endPosition, null));
-                    if (board.getPiece(endPosition) != null){
-                        break;
-                    }
-                }
-                for (int i = 1; i <= 7 ; i++) {
-                    endPosition = new ChessPosition(currentRow-i, currentCol-i);
-                    if (!endPosition.isOnBoard()){
-                        break;
-                    }
-                    possibleMoves.add(new ChessMove(myPosition, endPosition, null));
-                    if (board.getPiece(endPosition) != null){
-                        break;
-                    }
-                }
+                possibleMoves.addAll(movesInOneDirection(board, myPosition, 1,1));
+                possibleMoves.addAll(movesInOneDirection(board, myPosition, 1,-1));
+                possibleMoves.addAll(movesInOneDirection(board, myPosition, -1,1));
+                possibleMoves.addAll(movesInOneDirection(board, myPosition, -1,-1));
                 break;
             case KNIGHT:
-                endPosition = new ChessPosition(currentRow + 2, currentCol+1);
-                possibleMoves.add(new ChessMove(myPosition, endPosition, null));
-                endPosition = new ChessPosition(currentRow + 1, currentCol+2);
-                possibleMoves.add(new ChessMove(myPosition, endPosition, null));
-                endPosition = new ChessPosition(currentRow - 2, currentCol+1);
-                possibleMoves.add(new ChessMove(myPosition, endPosition, null));
-                endPosition = new ChessPosition(currentRow - 1, currentCol+2);
-                possibleMoves.add(new ChessMove(myPosition, endPosition, null));
-                endPosition = new ChessPosition(currentRow + 2, currentCol-1);
-                possibleMoves.add(new ChessMove(myPosition, endPosition, null));
-                endPosition = new ChessPosition(currentRow + 1, currentCol-2);
-                possibleMoves.add(new ChessMove(myPosition, endPosition, null));
-                endPosition = new ChessPosition(currentRow - 2, currentCol-1);
-                possibleMoves.add(new ChessMove(myPosition, endPosition, null));
-                endPosition = new ChessPosition(currentRow - 1, currentCol-2);
-                possibleMoves.add(new ChessMove(myPosition, endPosition, null));
+                possibleMoves.add(new ChessMove(myPosition, new ChessPosition(currentRow +2, currentCol+1), null));
+                possibleMoves.add(new ChessMove(myPosition, new ChessPosition(currentRow +2, currentCol-1), null));
+                possibleMoves.add(new ChessMove(myPosition, new ChessPosition(currentRow -2, currentCol+1), null));
+                possibleMoves.add(new ChessMove(myPosition, new ChessPosition(currentRow -2, currentCol-1), null));
+                possibleMoves.add(new ChessMove(myPosition, new ChessPosition(currentRow +1, currentCol+2), null));
+                possibleMoves.add(new ChessMove(myPosition, new ChessPosition(currentRow +1, currentCol-2), null));
+                possibleMoves.add(new ChessMove(myPosition, new ChessPosition(currentRow -1, currentCol+2), null));
+                possibleMoves.add(new ChessMove(myPosition, new ChessPosition(currentRow -1, currentCol-2), null));
                 break;
             case ROOK:
-                for (int i = 1; i <= 7 ; i++) {
-                    endPosition = new ChessPosition(currentRow+i, currentCol);
-                    if (!endPosition.isOnBoard()){
-                        break;
-                    }
-                    possibleMoves.add(new ChessMove(myPosition, endPosition, null));
-                    if (board.getPiece(endPosition) != null){
-                        break;
-                    }
-                }
-                for (int i = 1; i <= 7 ; i++) {
-                    endPosition = new ChessPosition(currentRow-i, currentCol);
-                    if (!endPosition.isOnBoard()){
-                        break;
-                    }
-                    possibleMoves.add(new ChessMove(myPosition, endPosition, null));
-                    if (board.getPiece(endPosition) != null){
-                        break;
-                    }
-                }
-                for (int i = 1; i <= 7 ; i++) {
-                    endPosition = new ChessPosition(currentRow, currentCol+i);
-                    if (!endPosition.isOnBoard()){
-                        break;
-                    }
-                    possibleMoves.add(new ChessMove(myPosition, endPosition, null));
-                    if (board.getPiece(endPosition) != null){
-                        break;
-                    }
-                }
-                for (int i = 1; i <= 7 ; i++) {
-                    endPosition = new ChessPosition(currentRow, currentCol-i);
-                    if (!endPosition.isOnBoard()){
-                        break;
-                    }
-                    possibleMoves.add(new ChessMove(myPosition, endPosition, null));
-                    if (board.getPiece(endPosition) != null){
-                        break;
-                    }
-                }
+                possibleMoves.addAll(movesInOneDirection(board, myPosition, 1,0));
+                possibleMoves.addAll(movesInOneDirection(board, myPosition, -1,0));
+                possibleMoves.addAll(movesInOneDirection(board, myPosition, 0,1));
+                possibleMoves.addAll(movesInOneDirection(board, myPosition, 0,-1));
                 break;
             case PAWN:
                 if (this.pieceColor== ChessGame.TeamColor.WHITE){ //Piece is white

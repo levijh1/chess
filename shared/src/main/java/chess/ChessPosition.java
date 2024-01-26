@@ -33,6 +33,9 @@ public class ChessPosition {
         return col;
     }
 
+    /**
+     * @return true if the position is a valid location on the board
+     */
     public boolean isOnBoard() {
         return this.row > 0 && this.row <= 8 && this.col > 0 && this.col <= 8;
     }
