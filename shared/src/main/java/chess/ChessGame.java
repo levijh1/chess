@@ -1,6 +1,7 @@
 package chess;
 
 import java.util.Collection;
+// import java.util.List;
 
 /**
  * For a class that can manage a chess game, making moves on a board
@@ -63,9 +64,10 @@ public class ChessGame {
      * @throws InvalidMoveException if move is invalid
      */
     public void makeMove(ChessMove move) throws InvalidMoveException {
-//        ChessPosition startPosition = move.getStartPosition();
-//        ChessPosition
-//        ChessPiece movingPiece = move.
+        ChessPosition startPosition = move.getStartPosition();
+        ChessPosition endPosition = move.getEndPosition();
+        ChessPiece.PieceType promotionPiece = move.getPromotionPiece();
+        
     }
 
     /**
@@ -75,7 +77,40 @@ public class ChessGame {
      * @return True if the specified team is in check
      */
     public boolean isInCheck(TeamColor teamColor) {
-        throw new RuntimeException("Not implemented");
+        ChessPosition KingPosition = null;
+        kingsearch:{
+            for (int i = 1; i<=8; ++i) {
+                for (int j = 1; j<=8; ++j) {
+                    ChessPiece evaluatedPiece = board.getPiece(new ChessPosition(i,j));
+                    if (evaluatedPiece != null) {
+                        if (evaluatedPiece.getPieceType() == ChessPiece.PieceType.KING && evaluatedPiece.getTeamColor() == teamColor) {
+                            KingPosition = new ChessPosition(i,j);
+                            break kingsearch;
+                        }
+                    }
+                }
+            }
+        }
+
+        Collection<ChessMove> possibleMoves;
+        for (int i = 1; i<=8; ++i) {
+            for (int j = 1; j<=8; ++j) {
+                ChessPiece evaluatedPiece = board.getPiece(new ChessPosition(i,j));
+                if (evaluatedPiece != null) {
+                    if (evaluatedPiece.getTeamColor() != teamColor) {
+                        possibleMoves = evaluatedPiece.pieceMoves(board, new ChessPosition(i,j));
+
+                        for (ChessMove move : possibleMoves) {
+                            ChessPosition endPosition = move.getEndPosition();
+                            if (endPosition.equals(KingPosition)) {
+                                return true;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return false;
     }
 
     /**
