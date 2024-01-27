@@ -51,10 +51,22 @@ public class ChessGame {
      * startPosition
      */
     public Collection<ChessMove> validMoves(ChessPosition startPosition) {
-        ChessPiece movingPiece = board.getPiece(startPosition);
+        if (board.getPiece(startPosition) == null) {
+            return null;
+        }
 
-        //TODO: Add more here to do with check
-        return movingPiece.pieceMoves(board, startPosition);
+        ChessPiece evaluatedPiece = board.getPiece(startPosition);
+        Collection<ChessMove> possibleMoves = evaluatedPiece.pieceMoves(board, startPosition);
+
+        for (ChessMove move : possibleMoves){
+            try {
+                //TODO: try to make a move
+            } catch (InvalidMoveException ex) {
+                //TODO: If move puts king in check, remove move from list of possible moves
+            }
+        }
+
+        return possibleMoves;
     }
 
     /**
@@ -63,10 +75,30 @@ public class ChessGame {
      * @param move chess move to preform
      * @throws InvalidMoveException if move is invalid
      */
-    public void makeMove(ChessMove move) throws InvalidMoveException {
+    public void makeMove(ChessMove move) throws InvalidMoveException, CloneNotSupportedException {
         ChessPosition startPosition = move.getStartPosition();
         ChessPosition endPosition = move.getEndPosition();
         ChessPiece.PieceType promotionPiece = move.getPromotionPiece();
+        ChessPiece movingPiece = board.getPiece(startPosition);
+        ChessBoard initialBoard = board.clone();
+
+        if (!endPosition.isOnBoard()) {
+            throw new InvalidMoveException("Move is not on board");
+        }
+        if (move.isMoveOnSameColor(board,movingPiece)){
+            throw new InvalidMoveException("Move is onto a piece on the same team");
+        }
+        if (getTeamTurn()!=movingPiece.getTeamColor()){
+            throw new InvalidMoveException("Moving team does not correspond to current team's turn");
+        }
+
+        board.addPiece(endPosition, movingPiece);
+        board.removePiece(startPosition);
+
+        if (isInCheck(teamTurn)){
+            board = initialBoard;
+            throw new InvalidMoveException("Move cannot put own King into check");
+        }
         
     }
 

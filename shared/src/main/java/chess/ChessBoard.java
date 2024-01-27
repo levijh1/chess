@@ -96,6 +96,31 @@ public class ChessBoard {
         return Arrays.hashCode(boardPieces);
     }
 
+    @Override
+    public ChessBoard clone()  throws CloneNotSupportedException {
+        ChessBoard clonedBoard = (ChessBoard) super.clone();
+
+        // Deep copy of the ChessPiece array
+        for (int i = 0; i < 8; ++i) {
+            for (int j = 0; j < 8; ++j) {
+                ChessPiece originalPiece = this.boardPieces[i][j];
+                if (originalPiece != null) {
+//                    ChessPiece clonedPiece = originalPiece.clone(); // Assuming ChessPiece implements Cloneable
+                    clonedBoard.boardPieces[i][j] = originalPiece;
+                }
+            }
+        }
+
+        return clonedBoard;
+    }
+
+    public void removePiece(ChessPosition position) {
+        int row = position.getRow();
+        int col = position.getCol();
+
+        boardPieces[row-1][col-1] = null;
+    }
+
     /**
      * Sets the board to the default starting board
      * (How the game of chess normally starts)
