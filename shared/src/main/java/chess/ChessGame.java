@@ -1,6 +1,7 @@
 package chess;
 
 import java.util.Collection;
+import java.util.Iterator;
 // import java.util.List;
 
 /**
@@ -58,11 +59,13 @@ public class ChessGame {
         ChessPiece evaluatedPiece = board.getPiece(startPosition);
         Collection<ChessMove> possibleMoves = evaluatedPiece.pieceMoves(board, startPosition);
 
-        for (ChessMove move : possibleMoves){
+        Iterator<ChessMove> iterator = possibleMoves.iterator();
+        while (iterator.hasNext()) {
+            ChessMove move = iterator.next();
             try {
-                //TODO: try to make a move
+                makeMove(move);
             } catch (InvalidMoveException ex) {
-                //TODO: If move puts king in check, remove move from list of possible moves
+                iterator.remove();
             }
         }
 
@@ -75,13 +78,21 @@ public class ChessGame {
      * @param move chess move to preform
      * @throws InvalidMoveException if move is invalid
      */
-    public void makeMove(ChessMove move) throws InvalidMoveException, CloneNotSupportedException {
+    public void makeMove(ChessMove move) throws InvalidMoveException {
         ChessPosition startPosition = move.getStartPosition();
         ChessPosition endPosition = move.getEndPosition();
         ChessPiece.PieceType promotionPiece = move.getPromotionPiece();
         ChessPiece movingPiece = board.getPiece(startPosition);
-        ChessBoard initialBoard = board.clone();
 
+//        //Clone the board to revert back to if move is bad
+//        ChessBoard initialBoard = board;
+//        try {
+//            initialBoard = board.clone();
+//        } catch (CloneNotSupportedException e) {
+//            throw new RuntimeException(e);
+//        }
+
+        //Check if move is valid
         if (!endPosition.isOnBoard()) {
             throw new InvalidMoveException("Move is not on board");
         }
@@ -93,10 +104,18 @@ public class ChessGame {
         }
 
         board.addPiece(endPosition, movingPiece);
+        ChessPiece removedPiece = board.getPiece(endPosition);
         board.removePiece(startPosition);
+        if (teamTurn == TeamColor.WHITE){
+            setTeamTurn(TeamColor.BLACK);
+        } else{setTeamTurn(TeamColor.WHITE);}
 
         if (isInCheck(teamTurn)){
-            board = initialBoard;
+            board.addPiece(startPosition, movingPiece);
+            board.addPiece(endPosition, removedPiece);
+            if (teamTurn == TeamColor.WHITE){
+                setTeamTurn(TeamColor.BLACK);
+            } else{setTeamTurn(TeamColor.WHITE);}
             throw new InvalidMoveException("Move cannot put own King into check");
         }
         
