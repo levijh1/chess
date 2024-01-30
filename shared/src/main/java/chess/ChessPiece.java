@@ -99,8 +99,9 @@ public class ChessPiece {
      * @return Collection of valid moves
      */
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
-        List<ChessMove> possibleMoves;
-        possibleMoves = new LinkedList<>();
+//        List<ChessMove> possibleMoves;
+//        possibleMoves = new LinkedList<>();
+        Set<ChessMove> possibleMoves = new HashSet<>();
 
         PieceType evaluatedPieceType = board.getPiece(myPosition).getPieceType();
 

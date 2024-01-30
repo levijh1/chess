@@ -11,7 +11,7 @@ import java.util.Iterator;
  * signature of the existing methods.
  */
 public class ChessGame {
-    private TeamColor teamTurn;
+    private TeamColor teamTurn = TeamColor.WHITE;
     private ChessBoard board;
 
 
@@ -36,7 +36,7 @@ public class ChessGame {
         teamTurn = team;
     }
 
-    public void changeTurn() {
+    private void changeTurn() {
         if (teamTurn == TeamColor.WHITE){
             setTeamTurn(TeamColor.BLACK);
         } else{ setTeamTurn(TeamColor.WHITE);}
@@ -67,6 +67,9 @@ public class ChessGame {
 
         //Remove all invalid moves
         possibleMoves.removeIf(move -> !this.isMoveValid(move));
+        if (possibleMoves.isEmpty()) {return null;}
+
+        //TODO: make equals method. Just checks for contains
 
         return possibleMoves;
     }
@@ -99,7 +102,7 @@ public class ChessGame {
 
     }
 
-    public boolean isMoveValid(ChessMove move){
+    private boolean isMoveValid(ChessMove move){
         ChessPosition startPosition = move.getStartPosition();
         ChessPosition endPosition = move.getEndPosition();
         ChessPiece movingPiece = board.getPiece(startPosition);
@@ -130,7 +133,7 @@ public class ChessGame {
         return true;
     }
 
-    public boolean movePutsInCheck(TeamColor teamColor, ChessMove move){
+    private boolean movePutsInCheck(TeamColor teamColor, ChessMove move){
         ChessPosition startPosition = move.getStartPosition();
         ChessPosition endPosition = move.getEndPosition();
         ChessPiece movingPiece = board.getPiece(startPosition);
@@ -223,14 +226,14 @@ public class ChessGame {
                 evaluatedPiece = board.getPiece(evaluatedPosition);
                 if (evaluatedPiece!= null) {
                     if (evaluatedPiece.getTeamColor() == teamColor) {
-                        for (ChessMove move : this.validMoves(evaluatedPosition)) {
-                            System.out.println("In loop");
-                            if (!movePutsInCheck(teamColor, move)) {
-                                setTeamTurn(initialTeamTurn);
-                                return false;
+                        if (this.validMoves(evaluatedPosition) != null){
+                            for (ChessMove move : this.validMoves(evaluatedPosition)) {
+                                if (!movePutsInCheck(teamColor, move)) {
+                                    setTeamTurn(initialTeamTurn);
+                                    return false;
+                                }
                             }
                         }
-
                     }
                 }
             }
@@ -257,7 +260,7 @@ public class ChessGame {
                 evaluatedPiece = board.getPiece(evaluatedPosition);
                 if (evaluatedPiece!= null) {
                     if (evaluatedPiece.getTeamColor() == teamColor) {
-                        if (!validMoves(evaluatedPosition).isEmpty()) {
+                        if (validMoves(evaluatedPosition)!= null) {
                             setTeamTurn(initialTeamTurn);
                             return false;
                         }
