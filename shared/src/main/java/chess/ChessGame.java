@@ -147,7 +147,7 @@ public class ChessGame {
         board.addPiece(endPosition, movingPiece);
         board.removePiece(startPosition);
 
-        if (this.isInCheck(teamTurn)){
+        if (this.isInCheck(teamColor)){
             board = initialBoard;
             this.setTeamTurn(initialTeamTurn);
             return true;
@@ -165,6 +165,8 @@ public class ChessGame {
      * @return True if the specified team is in check
      */
     public boolean isInCheck(TeamColor teamColor) {
+        ChessGame.TeamColor initialTeamTurn = getTeamTurn();
+        setTeamTurn(teamColor);
         ChessPosition kingPosition = null;
         kingsearch:{
             for (int i = 1; i<=8; ++i) {
@@ -191,6 +193,7 @@ public class ChessGame {
                         for (ChessMove move : possibleMoves) {
                             ChessPosition endPosition = move.getEndPosition();
                             if (endPosition.equals(kingPosition)) {
+                                setTeamTurn(initialTeamTurn);
                                 return true;
                             }
                         }
@@ -198,6 +201,7 @@ public class ChessGame {
                 }
             }
         }
+        setTeamTurn(initialTeamTurn);
         return false;
     }
 
@@ -210,15 +214,19 @@ public class ChessGame {
     public boolean isInCheckmate(TeamColor teamColor) {
         ChessPiece evaluatedPiece;
         ChessPosition evaluatedPosition;
+        ChessGame.TeamColor initialTeamTurn = getTeamTurn();
         setTeamTurn(teamColor);
+
         for (int i = 1; i<=8; ++i) {
             for (int j = 1; j<=8; ++j) {
                 evaluatedPosition = new ChessPosition(i,j);
                 evaluatedPiece = board.getPiece(evaluatedPosition);
                 if (evaluatedPiece!= null) {
                     if (evaluatedPiece.getTeamColor() == teamColor) {
-                        for (ChessMove move : validMoves(evaluatedPosition)) {
+                        for (ChessMove move : this.validMoves(evaluatedPosition)) {
+                            System.out.println("In loop");
                             if (!movePutsInCheck(teamColor, move)) {
+                                setTeamTurn(initialTeamTurn);
                                 return false;
                             }
                         }
@@ -227,6 +235,7 @@ public class ChessGame {
                 }
             }
         }
+        setTeamTurn(initialTeamTurn);
         return true;
     }
 
@@ -240,6 +249,7 @@ public class ChessGame {
     public boolean isInStalemate(TeamColor teamColor) {
         ChessPiece evaluatedPiece;
         ChessPosition evaluatedPosition;
+        ChessGame.TeamColor initialTeamTurn = getTeamTurn();
         setTeamTurn(teamColor);
         for (int i = 1; i<=8; ++i) {
             for (int j = 1; j<=8; ++j) {
@@ -248,12 +258,14 @@ public class ChessGame {
                 if (evaluatedPiece!= null) {
                     if (evaluatedPiece.getTeamColor() == teamColor) {
                         if (!validMoves(evaluatedPosition).isEmpty()) {
+                            setTeamTurn(initialTeamTurn);
                             return false;
                         }
                     }
                 }
             }
         }
+        setTeamTurn(initialTeamTurn);
         return true;
     }
 
