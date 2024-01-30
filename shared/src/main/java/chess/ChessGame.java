@@ -36,6 +36,12 @@ public class ChessGame {
         teamTurn = team;
     }
 
+    public void changeTurn() {
+        if (teamTurn == TeamColor.WHITE){
+            setTeamTurn(TeamColor.BLACK);
+        } else{ setTeamTurn(TeamColor.WHITE);}
+    }
+
     /**
      * Enum identifying the 2 possible teams in a chess game
      */
@@ -59,15 +65,8 @@ public class ChessGame {
         ChessPiece evaluatedPiece = board.getPiece(startPosition);
         Collection<ChessMove> possibleMoves = evaluatedPiece.pieceMoves(board, startPosition);
 
-        Iterator<ChessMove> iterator = possibleMoves.iterator();
-        while (iterator.hasNext()) {
-            ChessMove move = iterator.next();
-            try {
-                makeMove(move);
-            } catch (InvalidMoveException ex) {
-                iterator.remove();
-            }
-        }
+        //Remove all invalid moves
+        possibleMoves.removeIf(move -> !this.isMoveValid(move));
 
         return possibleMoves;
     }
@@ -84,41 +83,79 @@ public class ChessGame {
         ChessPiece.PieceType promotionPiece = move.getPromotionPiece();
         ChessPiece movingPiece = board.getPiece(startPosition);
 
-//        //Clone the board to revert back to if move is bad
-//        ChessBoard initialBoard = board;
-//        try {
-//            initialBoard = board.clone();
-//        } catch (CloneNotSupportedException e) {
-//            throw new RuntimeException(e);
-//        }
+        if (isMoveValid(move)){
+            if (promotionPiece != null){
+                movingPiece = new ChessPiece(movingPiece.getTeamColor(), promotionPiece);
+            }
+            board.addPiece(endPosition, movingPiece);
+            board.removePiece(startPosition);
+            changeTurn();
+        } else{
+            throw new InvalidMoveException();
+        }
+
+
+
+
+    }
+
+    public boolean isMoveValid(ChessMove move){
+        ChessPosition startPosition = move.getStartPosition();
+        ChessPosition endPosition = move.getEndPosition();
+        ChessPiece movingPiece = board.getPiece(startPosition);
 
         //Check if move is valid
         if (!endPosition.isOnBoard()) {
-            throw new InvalidMoveException("Move is not on board");
+            return false;
+//            throw new InvalidMoveException("Move is not on board");
         }
         if (move.isMoveOnSameColor(board,movingPiece)){
-            throw new InvalidMoveException("Move is onto a piece on the same team");
+            return false;
+
+//            throw new InvalidMoveException("Move is onto a piece on the same team");
         }
         if (getTeamTurn()!=movingPiece.getTeamColor()){
-            throw new InvalidMoveException("Moving team does not correspond to current team's turn");
+            return false;
+
+//            throw new InvalidMoveException("Moving team does not correspond to current team's turn");
+        }
+        if (this.movePutsInCheck(this.getTeamTurn(), move)) {
+            return false;
+
+//            throw new InvalidMoveException("Move puts own king in check");
+        }
+        if (!movingPiece.pieceMoves(board,startPosition).contains(move)) {
+            return false;
+        }
+        return true;
+    }
+
+    public boolean movePutsInCheck(TeamColor teamColor, ChessMove move){
+        ChessPosition startPosition = move.getStartPosition();
+        ChessPosition endPosition = move.getEndPosition();
+        ChessPiece movingPiece = board.getPiece(startPosition);
+
+        //Clone the board to revert back after checking all moves
+        ChessBoard initialBoard = board;
+        ChessGame.TeamColor initialTeamTurn = this.getTeamTurn();
+        try {
+            initialBoard = board.clone();
+        } catch (CloneNotSupportedException e) {
+            throw new RuntimeException(e);
         }
 
         board.addPiece(endPosition, movingPiece);
-        ChessPiece removedPiece = board.getPiece(endPosition);
         board.removePiece(startPosition);
-        if (teamTurn == TeamColor.WHITE){
-            setTeamTurn(TeamColor.BLACK);
-        } else{setTeamTurn(TeamColor.WHITE);}
 
-        if (isInCheck(teamTurn)){
-            board.addPiece(startPosition, movingPiece);
-            board.addPiece(endPosition, removedPiece);
-            if (teamTurn == TeamColor.WHITE){
-                setTeamTurn(TeamColor.BLACK);
-            } else{setTeamTurn(TeamColor.WHITE);}
-            throw new InvalidMoveException("Move cannot put own King into check");
+        if (this.isInCheck(teamColor)){
+            board = initialBoard;
+            this.setTeamTurn(initialTeamTurn);
+            return true;
+        } else{
+            board = initialBoard;
+            this.setTeamTurn(initialTeamTurn);
+            return false;
         }
-        
     }
 
     /**
