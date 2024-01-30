@@ -11,7 +11,7 @@ import java.util.Iterator;
  * signature of the existing methods.
  */
 public class ChessGame {
-    private TeamColor teamTurn = TeamColor.WHITE;
+    private TeamColor teamTurn;
     private ChessBoard board;
 
 
@@ -62,14 +62,20 @@ public class ChessGame {
             return null;
         }
 
+        ChessGame.TeamColor initialTeamTurn = getTeamTurn();
+        setTeamTurn(board.getPiece(startPosition).getTeamColor());
+
         ChessPiece evaluatedPiece = board.getPiece(startPosition);
         Collection<ChessMove> possibleMoves = evaluatedPiece.pieceMoves(board, startPosition);
 
         //Remove all invalid moves
         possibleMoves.removeIf(move -> !this.isMoveValid(move));
-        if (possibleMoves.isEmpty()) {return null;}
-
-        //TODO: make equals method. Just checks for contains
+        setTeamTurn(initialTeamTurn);
+//        if (possibleMoves!= null) {
+//            if (possibleMoves.isEmpty()) {
+//                return null;
+//            }
+//        }
 
         return possibleMoves;
     }
@@ -260,7 +266,7 @@ public class ChessGame {
                 evaluatedPiece = board.getPiece(evaluatedPosition);
                 if (evaluatedPiece!= null) {
                     if (evaluatedPiece.getTeamColor() == teamColor) {
-                        if (validMoves(evaluatedPosition)!= null) {
+                        if (!validMoves(evaluatedPosition).isEmpty()) {
                             setTeamTurn(initialTeamTurn);
                             return false;
                         }
