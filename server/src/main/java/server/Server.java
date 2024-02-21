@@ -1,4 +1,64 @@
 package server;
 
+import Model.AuthData;
+import com.google.gson.Gson;
+import server.request.*;
+import server.response.*;
+import service.*;
+import spark.*;
+
 public class Server {
+    //Variables
+
+    public static void main(String[] args) {
+        new Server.run();
+    }
+
+    private void run() {
+        //Specify the port you want hte server to listen on
+        Spark.port(8080);
+
+        //Register handlers for each endpoint using the method reference syntax
+        Spark.delete("/db", this::clear);
+        Spark.post("/user", this::register);
+        Spark.post("/session", this::login);
+        Spark.delete("/session", this::logout);
+        Spark.get("/game", this::listGames);
+        Spark.post("/game", this::createGame);
+        Spark.put("game", this::joinGame);
+
+    }
+
+    private Object joinGame(Request request, Response response) {
+    }
+
+    private Object createGame(Request request, Response response) {
+    }
+
+    private Object listGames(Request request, Response response) {
+    }
+
+    private Object logout(Request request, Response response) {
+    }
+
+    private Object login(Request request, Response response) {
+    }
+
+    private Object register(Request request, Response response) {
+        RegisterRequest registerRequest = getRequestBody(request, RegisterRequest.class);
+
+        RegisterService registerService = new RegisterService();
+        RegisterResponse res = registerService.register(registerRequest);
+
+        return new Gson().toJson(res);
+    }
+
+    private Object clear(Request request, Response response) {
+    }
+
+
+    private static <T> T getRequestBody(Request request, Class<T> requestClass) {
+        return new Gson().fromJson(request.body(), requestClass);
+    }
+
 }
