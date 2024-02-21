@@ -1,16 +1,25 @@
 package dataAccess;
 
-import model.AuthData;
+import model.UserData;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class UserDao {
+    static ArrayList<UserData> Users = new ArrayList<>();
 
-    public void getUser(String username) {
+    public UserData getUser(String username) {
+        for (UserData userData : Users) {
+            if (userData.getUsername().equals(username)) {
+                return userData;
+            }
+        }
+
+        return null;
     }
 
     public void createUser(String username, String password, String email) {
-    }
-
-    public String createAuth(String username) {
-        return null;
+        Users.add(new UserData(username, password, email));
     }
 }

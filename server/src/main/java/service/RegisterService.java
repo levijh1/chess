@@ -1,7 +1,7 @@
 package service;
 
-import dataAccess.UserDao;
-import model.AuthData;
+import dataAccess.*;
+import model.UserData;
 import server.request.RegisterRequest;
 import server.response.RegisterResponse;
 
@@ -10,12 +10,19 @@ public class RegisterService {
         String password = r.getPassword();
         String username = r.getUsername();
         String email = r.getEmail();
+        int statusCode = 200;
 
         UserDao userAccess = new UserDao();
+        AuthTokenDao authAccess = new AuthTokenDao();
 
-        userAccess.getUser(username); //verify that user doesn't already exist
+
+        UserData userData = userAccess.getUser(username); //verify that user doesn't already exist
+        if (userData != null) {
+            return new RegisterResponse("Error: already taken", 403);
+        }
+
         userAccess.createUser(username, password, email);
-        String generatedToken = userAccess.createAuth(username);
+        String generatedToken = authAccess.createAuth(username);
 
         return new RegisterResponse(username, generatedToken);
     }

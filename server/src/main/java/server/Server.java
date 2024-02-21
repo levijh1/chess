@@ -1,6 +1,5 @@
 package server;
 
-import Model.AuthData;
 import com.google.gson.Gson;
 import server.request.*;
 import server.response.*;
@@ -11,38 +10,40 @@ public class Server {
     //Variables
 
     public static void main(String[] args) {
-        new Server.run();
+        new Server().run(0);
     }
 
-    private void run() {
+    public int run(int num) {
+        int port = 8080;
         //Specify the port you want hte server to listen on
-        Spark.port(8080);
+        Spark.port(port);
 
         //Register handlers for each endpoint using the method reference syntax
-        Spark.delete("/db", this::clear);
+//        Spark.delete("/db", this::clear);
         Spark.post("/user", this::register);
-        Spark.post("/session", this::login);
-        Spark.delete("/session", this::logout);
-        Spark.get("/game", this::listGames);
-        Spark.post("/game", this::createGame);
-        Spark.put("game", this::joinGame);
+//        Spark.post("/session", this::login);
+//        Spark.delete("/session", this::logout);
+//        Spark.get("/game", this::listGames);
+//        Spark.post("/game", this::createGame);
+//        Spark.put("/game", this::joinGame);
 
+        return port;
     }
 
-    private Object joinGame(Request request, Response response) {
-    }
-
-    private Object createGame(Request request, Response response) {
-    }
-
-    private Object listGames(Request request, Response response) {
-    }
-
-    private Object logout(Request request, Response response) {
-    }
-
-    private Object login(Request request, Response response) {
-    }
+//    private Object joinGame(Request request, Response response) {
+//    }
+//
+//    private Object createGame(Request request, Response response) {
+//    }
+//
+//    private Object listGames(Request request, Response response) {
+//    }
+//
+//    private Object logout(Request request, Response response) {
+//    }
+//
+//    private Object login(Request request, Response response) {
+//    }
 
     private Object register(Request request, Response response) {
         RegisterRequest registerRequest = getRequestBody(request, RegisterRequest.class);
@@ -50,15 +51,22 @@ public class Server {
         RegisterService registerService = new RegisterService();
         RegisterResponse res = registerService.register(registerRequest);
 
+        response.status(res.getStatusCode()); //TODO: This might still allow the status code to be output as part of the json response
+
         return new Gson().toJson(res);
     }
 
-    private Object clear(Request request, Response response) {
-    }
+//    private Object clear(Request request, Response response) {
+//
+//    }
 
 
     private static <T> T getRequestBody(Request request, Class<T> requestClass) {
         return new Gson().fromJson(request.body(), requestClass);
+    }
+
+    public void stop() {
+        Spark.stop();
     }
 
 }
