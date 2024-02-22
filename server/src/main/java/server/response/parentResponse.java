@@ -1,8 +1,8 @@
 package server.response;
 
 public class parentResponse {
-    private String errorMessage = null;
-    private int statusCode = 200;
+    private String errorMessage;
+    private int statusCode;
 
     public parentResponse(String errorMessage, int statusCode) {
         this.errorMessage = errorMessage;

@@ -23,4 +23,8 @@ public class AuthTokenDao {
     public static ArrayList<AuthData> getAuthTokens() {
         return authTokens;
     }
+
+    public void clearAuthTokens() {
+        authTokens.clear();
+    }
 }

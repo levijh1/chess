@@ -2,7 +2,6 @@ package dataAccessTests;
 
 import dataAccess.UserDao;
 import model.UserData;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -16,11 +15,6 @@ public class UserDaoTests {
     public void setUp() {
         dao = new UserDao();
         dao.clearUsers();
-    }
-
-    @AfterEach
-    public void cleanUp() {
-        dao = new UserDao();
     }
 
     @Test

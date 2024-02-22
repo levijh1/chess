@@ -10,7 +10,6 @@ public class RegisterService {
         String password = r.getPassword();
         String username = r.getUsername();
         String email = r.getEmail();
-        int statusCode = 200;
 
         UserDao userAccess = new UserDao();
         AuthTokenDao authAccess = new AuthTokenDao();

@@ -1,9 +1,11 @@
 package server.response;
 
+import java.util.Objects;
+
 public class RegisterResponse {
     //TODO: If this all works, try making a parent class to do the error stuff
-    private String username;
-    private String authToken;
+    private String username = null;
+    private String authToken = null;
     private String errorMessage;
     private int statusCode;
 
@@ -21,19 +23,26 @@ public class RegisterResponse {
         this.authToken = null;
     }
 
-    public String getUsername() {
-        return username;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        RegisterResponse that = (RegisterResponse) o;
+        return statusCode == that.statusCode && Objects.equals(username, that.username) && Objects.equals(errorMessage, that.errorMessage);
     }
 
-    public String getAuthToken() {
-        return authToken;
+    @Override
+    public int hashCode() {
+        return Objects.hash(username, authToken, errorMessage, statusCode);
     }
 
-    public String getErrorMessage() {
-        return errorMessage;
-    }
-
-    public int getStatusCode() {
-        return statusCode;
+    @Override
+    public String toString() {
+        return "RegisterResponse{" +
+                "username='" + username + '\'' +
+                ", authToken='" + authToken + '\'' +
+                ", errorMessage='" + errorMessage + '\'' +
+                ", statusCode=" + statusCode +
+                '}';
     }
 }
