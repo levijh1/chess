@@ -8,8 +8,6 @@ import spark.*;
 
 import java.lang.reflect.InvocationTargetException;
 
-import static sun.java2d.StateTrackableDelegate.createInstance;
-
 public class Server {
     //Variables
 
@@ -47,11 +45,12 @@ public class Server {
 //    private Object logout(Request request, Response response) {
 //    }
 //
-//    private Object login(Request request, Response response) {
-//    }
+    private Object login(Request request, Response response) throws InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
+        return handler(request, response, "login", LoginRequest.class, RegisterAndLoginResponse.class, LoginService.class);
+    }
 
     private Object register(Request request, Response response) throws InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
-        return handler(request, response, "register", RegisterRequest.class, RegisterResponse.class, RegisterService.class);
+        return handler(request, response, "register", RegisterRequest.class, RegisterAndLoginResponse.class, RegisterService.class);
     }
 //        RegisterRequest registerRequest = getRequestBody(request, RegisterRequest.class);
 //

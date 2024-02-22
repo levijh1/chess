@@ -1,9 +1,9 @@
 package server.request;
 
 public class RegisterRequest {
-    private String username;
-    private String password;
-    private String email;
+    private final String username;
+    private final String password;
+    private final String email;
 
     public String getUsername() {
         return username;
@@ -17,8 +17,9 @@ public class RegisterRequest {
         return email;
     }
 
-    public RegisterRequest(String username, String password) {
+    public RegisterRequest(String username, String password, String email) {
         this.username = username;
         this.password = password;
+        this.email = email;
     }
 }

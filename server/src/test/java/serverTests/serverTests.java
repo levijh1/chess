@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import server.Server;
 import server.request.RegisterRequest;
-import server.response.RegisterResponse;
+import server.response.RegisterAndLoginResponse;
 import service.RegisterService;
 
 public class serverTests {
@@ -16,11 +16,11 @@ public class serverTests {
 
     @Test
     public void serverRegistrationTest() {
-        RegisterResponse expectedRes = new RegisterResponse("testUsername", "testToken");
+        RegisterAndLoginResponse expectedRes = new RegisterAndLoginResponse("testUsername", "testToken");
         String expected = new Gson().toJson(expectedRes);
 
         RegisterService registerService = new RegisterService();
-        RegisterResponse actualRes = registerService.register(new RegisterRequest("testUsername", "testPassword"));
+        RegisterAndLoginResponse actualRes = registerService.register(new RegisterRequest("testUsername", "testPassword", "testEmail"));
         String actual = new Gson().toJson(actualRes);
 
         // Check all fields except for authToken
