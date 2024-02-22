@@ -19,4 +19,8 @@ public class AuthTokenDao {
         authTokens.add(new AuthData(username, authToken));
         return authToken;
     }
+
+    public static ArrayList<AuthData> getAuthTokens() {
+        return authTokens;
+    }
 }

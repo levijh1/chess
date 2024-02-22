@@ -14,6 +14,7 @@ public class Server {
     }
 
     public int run(int num) {
+        //TODO: Figure out why JAVA needed a number input
         int port = 8080;
         //Specify the port you want hte server to listen on
         Spark.port(port);
@@ -30,7 +31,7 @@ public class Server {
         return port;
     }
 
-//    private Object joinGame(Request request, Response response) {
+    //    private Object joinGame(Request request, Response response) {
 //    }
 //
 //    private Object createGame(Request request, Response response) {
@@ -46,6 +47,7 @@ public class Server {
 //    }
 
     private Object register(Request request, Response response) {
+        //TODO: try to make a method for all of this to avoid duplicate code
         RegisterRequest registerRequest = getRequestBody(request, RegisterRequest.class);
 
         RegisterService registerService = new RegisterService();

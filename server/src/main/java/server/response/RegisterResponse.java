@@ -1,6 +1,7 @@
 package server.response;
 
 public class RegisterResponse {
+    //TODO: If this all works, try making a parent class to do the error stuff
     private String username;
     private String authToken;
     private String errorMessage;

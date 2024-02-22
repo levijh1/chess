@@ -7,7 +7,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class UserDao {
-    static ArrayList<UserData> Users = new ArrayList<>();
+    static private ArrayList<UserData> Users = new ArrayList<>();
+
+    public void createUser(String username, String password, String email) {
+        Users.add(new UserData(username, password, email));
+    }
 
     public UserData getUser(String username) {
         for (UserData userData : Users) {
@@ -19,7 +23,11 @@ public class UserDao {
         return null;
     }
 
-    public void createUser(String username, String password, String email) {
-        Users.add(new UserData(username, password, email));
+    public static ArrayList<UserData> getUsers() {
+        return Users;
+    }
+
+    public void clearUsers() {
+        Users.clear();
     }
 }
