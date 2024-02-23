@@ -24,7 +24,7 @@ public class LoginServiceTests {
     }
 
     @Test
-    public void basicLoginTest() {
+    public void successfulLoginTest() {
         RegisterAndLoginResponse expected = new RegisterAndLoginResponse("testUsername", "someAuthToken");
 
         registerService.register(new RegisterRequest("testUsername", "testPassword", "testEmail"));

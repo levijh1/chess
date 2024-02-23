@@ -23,14 +23,9 @@ public class LogoutService {
         //verify that they are valid user
         try {
             username = authTokenDao.getAuth(authToken);
-        } catch (DataAccessException ex) {
-            return new ErrorResponse("Error: unathorized", 401);
-        }
-
-        try {
             authTokenDao.deleteAuth(authToken);
         } catch (DataAccessException ex) {
-            return new ErrorResponse("Error: you are not already signed in", 500);
+            return new ErrorResponse("Error: unauthorized", 401);
         }
 
         return new ParentResponse();

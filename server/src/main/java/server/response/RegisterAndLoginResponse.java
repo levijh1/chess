@@ -6,6 +6,14 @@ public class RegisterAndLoginResponse extends ParentResponse {
     private String username = null;
     private String authToken = null;
 
+    public String getUsername() {
+        return username;
+    }
+
+    public String getAuthToken() {
+        return authToken;
+    }
+
     public RegisterAndLoginResponse(String username, String authToken) {
         this.username = username;
         this.authToken = authToken;

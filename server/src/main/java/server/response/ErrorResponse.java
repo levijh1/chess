@@ -25,7 +25,7 @@ public class ErrorResponse extends ParentResponse {
 
     @Override
     public String toString() {
-        return "genericResponse{" +
+        return "ErrorResponse{" +
                 "errorMessage='" + errorMessage + '\'' +
                 ", statusCode=" + statusCode +
                 '}';
