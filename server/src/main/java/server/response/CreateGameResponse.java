@@ -2,7 +2,7 @@ package server.response;
 
 import java.util.Objects;
 
-public class CreateGameResponse implements ParentResponse {
+public class CreateGameResponse extends ParentResponse {
     private int gameID;
 
     public CreateGameResponse(int gameID) {

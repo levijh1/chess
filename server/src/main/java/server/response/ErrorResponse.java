@@ -2,9 +2,8 @@ package server.response;
 
 import java.util.Objects;
 
-public class ErrorResponse implements ParentResponse {
-    private String errorMessage;
-    private int statusCode;
+public class ErrorResponse extends ParentResponse {
+    private final String errorMessage;
 
     public ErrorResponse(String errorMessage, int statusCode) {
         this.errorMessage = errorMessage;

@@ -21,36 +21,40 @@ public class Server {
         Spark.staticFiles.location("web");
 
         //Register handlers for each endpoint using the method reference syntax
-//        Spark.delete("/db", this::clear);
+        Spark.delete("/db", this::clear);
         Spark.post("/user", this::register);
-//        Spark.post("/session", this::login);
-//        Spark.delete("/session", this::logout);
-//        Spark.get("/game", this::listGames);
-//        Spark.post("/game", this::createGame);
-//        Spark.put("/game", this::joinGame);
+        Spark.post("/session", this::login);
+        Spark.delete("/session", this::logout);
+        Spark.get("/game", this::listGames);
+        Spark.post("/game", this::createGame);
+        Spark.put("/game", this::joinGame);
 
         Spark.awaitInitialization();
         return Spark.port();
     }
 
-    //    private Object joinGame(Request request, Response response) {
-//    }
-//
-//    private Object createGame(Request request, Response response) {
-//    }
-//
-//    private Object listGames(Request request, Response response) {
-//    }
-//
-//    private Object logout(Request request, Response response) {
-//    }
-//
+    private Object joinGame(Request request, Response response) throws InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
+        return handler(request, response, "joinGame", GenericRequest.class, JoinGameService.class);
+    }
+
+    private Object createGame(Request request, Response response) throws InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
+        return handler(request, response, "createGame", GenericRequest.class, CreateGameService.class);
+    }
+
+    private Object listGames(Request request, Response response) throws InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
+        return handler(request, response, "listGames", GenericRequest.class, ListGamesService.class);
+    }
+
+    private Object logout(Request request, Response response) throws InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
+        return handler(request, response, "logout", GenericRequest.class, LogoutService.class);
+    }
+
     public Object login(Request request, Response response) throws InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
-        return handler(request, response, "login", LoginRequest.class, RegisterAndLoginResponse.class, LoginService.class);
+        return handler(request, response, "login", LoginRequest.class, LoginService.class);
     }
 
     public Object register(Request request, Response response) throws InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
-        return handler(request, response, "register", RegisterRequest.class, RegisterAndLoginResponse.class, RegisterService.class);
+        return handler(request, response, "register", RegisterRequest.class, RegisterService.class);
     }
 //        RegisterRequest registerRequest = getRequestBody(request, RegisterRequest.class);
 //
@@ -64,24 +68,24 @@ public class Server {
 
     private Object clear(Request request, Response response) {
         ClearService clearService = new ClearService();
-        clearService.clear();
-        response.status(200);
-        return null;
+        ParentResponse res = clearService.clear();
+
+        response.status(res.getStatusCode());
+        return new Gson().toJson(res);
     }
 
     private <TRequest, TResponse, TService> Object handler(Request request, Response response,
                                                            String endPointName,
                                                            Class<TRequest> requestClass,
-                                                           Class<TResponse> responseClass,
                                                            Class<TService> serviceClass) throws NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
 
-//        TRequest requestBody = getRequestBody(request, requestClass);
-//
-//        TService service = serviceClass.getDeclaredConstructor().newInstance();
+        TRequest requestBody = getRequestBody(request, requestClass);
+
+        TService service = serviceClass.getDeclaredConstructor().newInstance();
 
         TResponse res = (TResponse) serviceClass.getMethod(endPointName, requestClass).invoke(serviceClass, requestClass);
 
-        response.status((Integer) responseClass.getMethod("getStatusCode").invoke(res));
+        response.status((Integer) ParentResponse.class.getMethod("getStatusCode").invoke(res));
 
         return new Gson().toJson(res);
     }

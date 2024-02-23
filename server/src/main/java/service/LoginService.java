@@ -13,6 +13,7 @@ import java.util.Objects;
 
 public class LoginService {
     public ParentResponse login(LoginRequest r) {
+        UserData userData;
         String username = r.username();
         String password = r.password();
 
@@ -21,14 +22,14 @@ public class LoginService {
         AuthTokenDao authTokenDao = new AuthTokenDao();
 
         try {
-            UserData userData = userDao.getUser(username); //verify that user doesn't already exist
-
-            // Check that password matches
-            if (!Objects.equals(userData.getPassword(), password)) {
-                return new ErrorResponse("Error: unauthorized", 401);
-            }
+            userData = userDao.getUser(username); //verify that user doesn't already exist
         } catch (DataAccessException ex) {
             return new ErrorResponse("Error: user doesn't exist", 500);
+        }
+
+        // Check that password matches
+        if (!Objects.equals(userData.getPassword(), password)) {
+            return new ErrorResponse("Error: unauthorized", 401);
         }
 
         String generatedToken = authTokenDao.createAuth(username);

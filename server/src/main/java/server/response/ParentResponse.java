@@ -1,4 +1,9 @@
 package server.response;
 
-public interface ParentResponse {
+public class ParentResponse {
+    transient int statusCode = 200;
+
+    public int getStatusCode() {
+        return statusCode;
+    }
 }

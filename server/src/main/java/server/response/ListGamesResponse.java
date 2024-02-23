@@ -5,7 +5,7 @@ import model.GameData;
 import java.util.ArrayList;
 import java.util.Objects;
 
-public class ListGamesResponse implements ParentResponse {
+public class ListGamesResponse extends ParentResponse {
     private ArrayList<GameData> gameList;
 
     public ListGamesResponse(ArrayList<GameData> gameList) {

@@ -2,8 +2,7 @@ package server.response;
 
 import java.util.Objects;
 
-public class RegisterAndLoginResponse implements ParentResponse {
-    //TODO: If this all works, try making a parent class to do the error stuff
+public class RegisterAndLoginResponse extends ParentResponse {
     private String username = null;
     private String authToken = null;
 
