@@ -7,9 +7,13 @@ import java.util.ArrayList;
 
 public class GameDao {
     private static ArrayList<GameData> games = new ArrayList<>();
+    private static int gameIdCounter = 1;
 
-    public void createGame(int gameID, String whiteUsername, String blackUsername, String gameName, ChessGame game) {
+    public int createGame(String whiteUsername, String blackUsername, String gameName, ChessGame game) {
+        int gameID = gameIdCounter;
+        gameIdCounter += 1;
         games.add(new GameData(gameID, whiteUsername, blackUsername, gameName, game));
+        return gameID;
     }
 
     public GameData getGameData(int gameID) throws DataAccessException {
@@ -28,6 +32,7 @@ public class GameDao {
 
     public void clearGames() {
         games.clear();
+        gameIdCounter = 1;
     }
 
     public void updateGame() {

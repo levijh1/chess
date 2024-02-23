@@ -23,7 +23,7 @@ public class GameDaoTests {
 
     @Test
     public void createGameTest() {
-        dao.createGame(1, "whiteTest", "blackTest", "Game1", new ChessGame());
+        dao.createGame("whiteTest", "blackTest", "Game1", new ChessGame());
 
         ArrayList<GameData> expected = new ArrayList<>();
         expected.add(new GameData(1, "whiteTest", "blackTest", "Game1", new ChessGame()));
@@ -34,7 +34,7 @@ public class GameDaoTests {
 
     @Test
     public void getGameTest() throws DataAccessException {
-        dao.createGame(1, "whiteTest", "blackTest", "Game1", new ChessGame());
+        dao.createGame("whiteTest", "blackTest", "Game1", new ChessGame());
 
         GameData expected = new GameData(1, "whiteTest", "blackTest", "Game1", new ChessGame());
         GameData actual = dao.getGameData(1);

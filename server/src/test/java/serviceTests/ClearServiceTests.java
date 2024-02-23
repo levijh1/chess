@@ -32,8 +32,8 @@ public class ClearServiceTests {
         userDao.createUser("testUsername1", "testPassword1", "testEmail1");
         userDao.createUser("testUsername2", "testPassword2", "testEmail2");
 
-        gameDao.createGame(1, "whiteTest", "blackTest", "Game1", new ChessGame());
-        gameDao.createGame(2, "whiteTest2", "blackTest2", "Game2", new ChessGame());
+        gameDao.createGame("whiteTest", "blackTest", "Game1", new ChessGame());
+        gameDao.createGame("whiteTest2", "blackTest2", "Game2", new ChessGame());
 
         authTokenDao.createAuth("testUsername1");
         authTokenDao.createAuth("testUsername2");
