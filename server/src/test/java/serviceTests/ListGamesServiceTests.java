@@ -14,7 +14,7 @@ import service.*;
 
 import java.util.ArrayList;
 
-public class ListGamesTests {
+public class ListGamesServiceTests {
     private ListGamesService listGamesService = new ListGamesService();
     private CreateGameService createGameService = new CreateGameService();
     private LoginService loginService = new LoginService();

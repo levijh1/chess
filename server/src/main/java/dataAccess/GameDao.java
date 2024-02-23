@@ -4,6 +4,7 @@ import chess.ChessGame;
 import model.GameData;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 public class GameDao {
     private static ArrayList<GameData> games = new ArrayList<>();
@@ -35,7 +36,29 @@ public class GameDao {
         gameIdCounter = 1;
     }
 
-    public void updateGame() {
+    public void updateGame(int gameID, String username, String playerColor) throws DataAccessException {
+        for (int i = 0; i < games.size(); i++) {
+            GameData oldgameData = games.get(i);
+            if (oldgameData.getGameID() == gameID) {
+                if (Objects.equals(playerColor, "WHITE")) {
+                    if (oldgameData.getWhiteUsername() != null) {
+                        throw new DataAccessException("playerColor is already taken");
+                    }
+                    games.set(i, new GameData(oldgameData.gameID(), username, oldgameData.blackUsername(), oldgameData.gameName(), oldgameData.game()));
+                }
+                if (Objects.equals(playerColor, "BLACK")) {
+                    if (oldgameData.getBlackUsername() != null) {
+                        throw new DataAccessException("playerColor is already taken");
+                    }
+                    games.set(i, new GameData(oldgameData.gameID(), oldgameData.whiteUsername(), username, oldgameData.gameName(), oldgameData.game()));
+                }
+                return;
+            }
+        }
+
+//        if (!Objects.equals(playerColor, "WHITE") && !Objects.equals(playerColor, "BLACK")) {
+//            throw new DataAccessException("playerColor must be WHITE or BLACK");
+//        }
 
     }
 }

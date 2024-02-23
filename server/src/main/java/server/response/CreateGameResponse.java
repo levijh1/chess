@@ -5,6 +5,10 @@ import java.util.Objects;
 public class CreateGameResponse extends ParentResponse {
     private int gameID;
 
+    public int getGameID() {
+        return gameID;
+    }
+
     public CreateGameResponse(int gameID) {
         this.gameID = gameID;
     }

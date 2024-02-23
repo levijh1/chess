@@ -4,7 +4,6 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import server.request.CreateGameRequest;
-import server.request.GenericRequest;
 import server.request.LoginRequest;
 import server.request.RegisterRequest;
 import server.response.CreateGameResponse;
@@ -16,7 +15,7 @@ import service.CreateGameService;
 import service.LoginService;
 import service.RegisterService;
 
-public class createGameServiceTests {
+public class CreateGameServiceTests {
     private CreateGameService createGameService = new CreateGameService();
     private LoginService loginService = new LoginService();
     private RegisterService registerService = new RegisterService();

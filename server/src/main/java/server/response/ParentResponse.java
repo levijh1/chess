@@ -21,4 +21,11 @@ public class ParentResponse {
     public int hashCode() {
         return Objects.hash(statusCode);
     }
+
+    @Override
+    public String toString() {
+        return "ParentResponse{" +
+                "statusCode=" + statusCode +
+                '}';
+    }
 }
