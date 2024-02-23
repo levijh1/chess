@@ -1,12 +1,13 @@
 package serviceTests;
 
-import dataAccess.UserDao;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import server.request.LoginRequest;
 import server.request.RegisterRequest;
+import server.response.ErrorResponse;
 import server.response.RegisterAndLoginResponse;
+import server.response.ParentResponse;
 import service.ClearService;
 import service.RegisterService;
 import service.LoginService;
@@ -27,27 +28,27 @@ public class LoginServiceTests {
         RegisterAndLoginResponse expected = new RegisterAndLoginResponse("testUsername", "someAuthToken");
 
         registerService.register(new RegisterRequest("testUsername", "testPassword", "testEmail"));
-        RegisterAndLoginResponse actual = loginService.login(new LoginRequest("testUsername", "testPassword"));
+        ParentResponse actual = loginService.login(new LoginRequest("testUsername", "testPassword"));
 
         Assertions.assertEquals(expected, actual);
     }
 
     @Test
     public void usernameDoesNotExist() {
-        RegisterAndLoginResponse expected = new RegisterAndLoginResponse("Error: user doesn't exist", 500);
+        ParentResponse expected = new ErrorResponse("Error: user doesn't exist", 500);
 
         registerService.register(new RegisterRequest("testUsername1", "testPassword1", "testEmail"));
-        RegisterAndLoginResponse actual = loginService.login(new LoginRequest("testUsername2", "testPassword2"));
+        ParentResponse actual = loginService.login(new LoginRequest("testUsername2", "testPassword2"));
 
         Assertions.assertEquals(expected, actual);
     }
 
     @Test
     public void incorrectPassword() {
-        RegisterAndLoginResponse expected = new RegisterAndLoginResponse("Error: unauthorized", 401);
+        ParentResponse expected = new ErrorResponse("Error: unauthorized", 401);
 
         registerService.register(new RegisterRequest("testUsername1", "testPassword1", "testEmail"));
-        RegisterAndLoginResponse actual = loginService.login(new LoginRequest("testUsername1", "testPassword2"));
+        ParentResponse actual = loginService.login(new LoginRequest("testUsername1", "testPassword2"));
 
         Assertions.assertEquals(expected, actual);
     }

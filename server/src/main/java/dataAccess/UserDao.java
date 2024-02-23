@@ -13,14 +13,14 @@ public class UserDao {
         Users.add(new UserData(username, password, email));
     }
 
-    public UserData getUser(String username) {
+    public UserData getUser(String username) throws DataAccessException {
         for (UserData userData : Users) {
             if (userData.getUsername().equals(username)) {
                 return userData;
             }
         }
 
-        return null;
+        throw new DataAccessException("User does not exist");
     }
 
     public static ArrayList<UserData> getUsers() {

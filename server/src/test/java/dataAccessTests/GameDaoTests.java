@@ -1,6 +1,7 @@
 package dataAccessTests;
 
 import chess.ChessGame;
+import dataAccess.DataAccessException;
 import dataAccess.GameDao;
 import dataAccess.UserDao;
 import model.GameData;
@@ -32,7 +33,7 @@ public class GameDaoTests {
     }
 
     @Test
-    public void getGameTest() {
+    public void getGameTest() throws DataAccessException {
         dao.createGame(1, "whiteTest", "blackTest", "Game1", new ChessGame());
 
         GameData expected = new GameData(1, "whiteTest", "blackTest", "Game1", new ChessGame());

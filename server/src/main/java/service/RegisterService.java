@@ -3,30 +3,34 @@ package service;
 import dataAccess.*;
 import model.UserData;
 import server.request.RegisterRequest;
+import server.response.ErrorResponse;
 import server.response.RegisterAndLoginResponse;
+import server.response.ParentResponse;
 
 public class RegisterService {
-    public RegisterAndLoginResponse register(RegisterRequest r) {
-        String password = r.getPassword();
-        String username = r.getUsername();
-        String email = r.getEmail();
+    public ParentResponse register(RegisterRequest r) {
+        String password = r.password();
+        String username = r.username();
+        String email = r.email();
 
         if (password == null || username == null || email == null) {
-            return new RegisterAndLoginResponse("Error: bad request", 400);
+            return new ErrorResponse("Error: bad request", 400);
         }
 
         UserDao userDao = new UserDao();
         AuthTokenDao authTokenDao = new AuthTokenDao();
 
 
-        UserData userData = userDao.getUser(username); //verify that user doesn't already exist
-        if (userData != null) {
-            return new RegisterAndLoginResponse("Error: already taken", 403);
+        try {
+            UserData userData = userDao.getUser(username); //verify that user doesn't already exist
+        } catch (DataAccessException ex) {
+            userDao.createUser(username, password, email);
+            String generatedToken = authTokenDao.createAuth(username);
+            return new RegisterAndLoginResponse(username, generatedToken);
         }
 
-        userDao.createUser(username, password, email);
-        String generatedToken = authTokenDao.createAuth(username);
+        return new ErrorResponse("Error: already taken", 403);
 
-        return new RegisterAndLoginResponse(username, generatedToken);
+
     }
 }

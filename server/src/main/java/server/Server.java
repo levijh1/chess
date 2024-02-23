@@ -9,17 +9,16 @@ import spark.*;
 import java.lang.reflect.InvocationTargetException;
 
 public class Server {
-    //Variables
+    //TODO: Figure out how to make the handlers all private and test from JSON input
 
     public static void main(String[] args) {
-        new Server().run(0);
+        new Server().run(8080);
     }
 
-    public int run(int num) {
-        //TODO: Figure out why JAVA needed a number input
-        int port = 8080;
-        //Specify the port you want hte server to listen on
-        Spark.port(port);
+    public int run(int desiredPort) {
+        Spark.port(desiredPort);
+
+        Spark.staticFiles.location("web");
 
         //Register handlers for each endpoint using the method reference syntax
 //        Spark.delete("/db", this::clear);
@@ -30,7 +29,8 @@ public class Server {
 //        Spark.post("/game", this::createGame);
 //        Spark.put("/game", this::joinGame);
 
-        return port;
+        Spark.awaitInitialization();
+        return Spark.port();
     }
 
     //    private Object joinGame(Request request, Response response) {
@@ -45,11 +45,11 @@ public class Server {
 //    private Object logout(Request request, Response response) {
 //    }
 //
-    private Object login(Request request, Response response) throws InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
+    public Object login(Request request, Response response) throws InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
         return handler(request, response, "login", LoginRequest.class, RegisterAndLoginResponse.class, LoginService.class);
     }
 
-    private Object register(Request request, Response response) throws InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
+    public Object register(Request request, Response response) throws InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
         return handler(request, response, "register", RegisterRequest.class, RegisterAndLoginResponse.class, RegisterService.class);
     }
 //        RegisterRequest registerRequest = getRequestBody(request, RegisterRequest.class);

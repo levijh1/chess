@@ -2,15 +2,7 @@ package model;
 
 import java.util.Objects;
 
-public class AuthData {
-    private String authToken;
-    private String username;
-
-    public AuthData(String username, String authToken) {
-        this.authToken = authToken;
-        this.username = username;
-    }
-
+public record AuthData(String username, String authToken) {
     public String getAuthToken() {
         return authToken;
     }

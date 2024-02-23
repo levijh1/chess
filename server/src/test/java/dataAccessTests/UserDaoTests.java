@@ -1,5 +1,6 @@
 package dataAccessTests;
 
+import dataAccess.DataAccessException;
 import dataAccess.UserDao;
 import model.UserData;
 import org.junit.jupiter.api.Assertions;
@@ -30,17 +31,18 @@ public class UserDaoTests {
     }
 
     @Test
-    public void getUserTest() {
+    public void getUserTest() throws DataAccessException {
         dao.createUser("testUsername", "testPassword", "testEmail");
 
         UserData expected = new UserData("testUsername", "testPassword", "testEmail");
+
         UserData actual = dao.getUser("testUsername");
 
         Assertions.assertEquals(expected, actual);
     }
 
     @Test
-    public void getUserFromLargerListTest() {
+    public void getUserFromLargerListTest() throws DataAccessException {
         dao.createUser("testUsername", "testPassword", "testEmail");
         dao.createUser("testUsername2", "testPassword2", "testEmail2");
         dao.createUser("testUsername3", "testPassword3", "testEmail3");

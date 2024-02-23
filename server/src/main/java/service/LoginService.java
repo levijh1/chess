@@ -1,29 +1,34 @@
 package service;
 
 import dataAccess.AuthTokenDao;
+import dataAccess.DataAccessException;
 import dataAccess.UserDao;
 import model.UserData;
 import server.request.LoginRequest;
-import server.request.RegisterRequest;
+import server.response.ErrorResponse;
 import server.response.RegisterAndLoginResponse;
+import server.response.ParentResponse;
 
 import java.util.Objects;
 
 public class LoginService {
-    public RegisterAndLoginResponse login(LoginRequest r) {
-        String username = r.getUsername();
-        String password = r.getPassword();
+    public ParentResponse login(LoginRequest r) {
+        String username = r.username();
+        String password = r.password();
 
 
         UserDao userDao = new UserDao();
         AuthTokenDao authTokenDao = new AuthTokenDao();
 
-        UserData userData = userDao.getUser(username); //verify that user doesn't already exist
-        if (userData == null) {
-            return new RegisterAndLoginResponse("Error: user doesn't exist", 500);
-        }
-        if (!Objects.equals(userData.getPassword(), password)) {
-            return new RegisterAndLoginResponse("Error: unauthorized", 401);
+        try {
+            UserData userData = userDao.getUser(username); //verify that user doesn't already exist
+
+            // Check that password matches
+            if (!Objects.equals(userData.getPassword(), password)) {
+                return new ErrorResponse("Error: unauthorized", 401);
+            }
+        } catch (DataAccessException ex) {
+            return new ErrorResponse("Error: user doesn't exist", 500);
         }
 
         String generatedToken = authTokenDao.createAuth(username);
