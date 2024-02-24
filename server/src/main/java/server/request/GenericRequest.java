@@ -1,5 +1,5 @@
 package server.request;
 
-public record GenericRequest(String authToken) {
+public record GenericRequest() {
 
 }

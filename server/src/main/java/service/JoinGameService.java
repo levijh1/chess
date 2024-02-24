@@ -9,9 +9,9 @@ import server.response.ErrorResponse;
 import server.response.ParentResponse;
 
 public class JoinGameService {
-    public ParentResponse joinGame(JoinGameRequest r) {
-        String authToken = r.authToken();
-        String playerColor = r.playerColor();
+    public ParentResponse joinGame(JoinGameRequest r, String authToken) {
+//        String playerColor = r.playerColor();
+        server.request.PlayerColor playerColor = r.playerColor();
         int gameID = r.gameID();
         String username;
 

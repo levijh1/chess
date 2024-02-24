@@ -32,7 +32,7 @@ public class LogoutServiceTests {
         registerService.register(new RegisterRequest("testUsername", "testPassword", "testEmail"));
         RegisterAndLoginResponse loginResponse = (RegisterAndLoginResponse) loginService.login(new LoginRequest("testUsername", "testPassword"));
         String authToken = loginResponse.getAuthToken();
-        ParentResponse actual = logoutService.logout(new GenericRequest(authToken));
+        ParentResponse actual = logoutService.logout(new GenericRequest(), authToken);
 
         Assertions.assertEquals(expected, actual);
     }
@@ -45,7 +45,7 @@ public class LogoutServiceTests {
         RegisterAndLoginResponse loginResponse = (RegisterAndLoginResponse) loginService.login(new LoginRequest("testUsername", "testPassword"));
         String authToken = loginResponse.getAuthToken();
 
-        ParentResponse actual = logoutService.logout(new GenericRequest("invalid Auth Token"));
+        ParentResponse actual = logoutService.logout(new GenericRequest(), "invalid Auth Token");
 
         Assertions.assertEquals(expected, actual);
     }
@@ -54,7 +54,7 @@ public class LogoutServiceTests {
     public void notSignedInTest() {
         ParentResponse expected = new ErrorResponse("Error: unauthorized", 401);
 
-        ParentResponse actual = logoutService.logout(new GenericRequest("invalid Auth Token"));
+        ParentResponse actual = logoutService.logout(new GenericRequest(), "invalid Auth Token");
 
         Assertions.assertEquals(expected, actual);
     }

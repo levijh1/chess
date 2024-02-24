@@ -10,8 +10,7 @@ import server.response.ErrorResponse;
 import server.response.ParentResponse;
 
 public class CreateGameService {
-    public ParentResponse createGame(CreateGameRequest r) {
-        String authToken = r.authToken();
+    public ParentResponse createGame(CreateGameRequest r, String authToken) {
         String gameName = r.gameName();
         int gameID;
 

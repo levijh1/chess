@@ -3,10 +3,10 @@ package server.response;
 import java.util.Objects;
 
 public class ErrorResponse extends ParentResponse {
-    private final String errorMessage;
+    private final String message;
 
     public ErrorResponse(String errorMessage, int statusCode) {
-        this.errorMessage = errorMessage;
+        this.message = errorMessage;
         this.statusCode = statusCode;
     }
 
@@ -15,18 +15,18 @@ public class ErrorResponse extends ParentResponse {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         ErrorResponse that = (ErrorResponse) o;
-        return statusCode == that.statusCode && Objects.equals(errorMessage, that.errorMessage);
+        return statusCode == that.statusCode && Objects.equals(message, that.message);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(errorMessage, statusCode);
+        return Objects.hash(message, statusCode);
     }
 
     @Override
     public String toString() {
         return "ErrorResponse{" +
-                "errorMessage='" + errorMessage + '\'' +
+                "errorMessage='" + message + '\'' +
                 ", statusCode=" + statusCode +
                 '}';
     }

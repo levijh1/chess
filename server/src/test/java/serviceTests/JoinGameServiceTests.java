@@ -3,10 +3,7 @@ package serviceTests;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import server.request.CreateGameRequest;
-import server.request.JoinGameRequest;
-import server.request.LoginRequest;
-import server.request.RegisterRequest;
+import server.request.*;
 import server.response.CreateGameResponse;
 import server.response.ErrorResponse;
 import server.response.ParentResponse;
@@ -34,9 +31,9 @@ public class JoinGameServiceTests {
         registerService.register(new RegisterRequest("testUsername", "testPassword", "testEmail"));
         RegisterAndLoginResponse loginResponse = (RegisterAndLoginResponse) loginService.login(new LoginRequest("testUsername", "testPassword"));
         String authToken = loginResponse.getAuthToken();
-        CreateGameResponse createGameResponse = (CreateGameResponse) createGameService.createGame(new CreateGameRequest(authToken, "game1"));
+        CreateGameResponse createGameResponse = (CreateGameResponse) createGameService.createGame(new CreateGameRequest("game1"), authToken);
         gameID = createGameResponse.getGameID();
-        ParentResponse actual = joinGameService.joinGame(new JoinGameRequest(authToken, "WHITE", gameID));
+        ParentResponse actual = joinGameService.joinGame(new JoinGameRequest(PlayerColor.WHITE, gameID), authToken);
 
         Assertions.assertEquals(expected, actual);
     }
@@ -49,9 +46,9 @@ public class JoinGameServiceTests {
         registerService.register(new RegisterRequest("testUsername", "testPassword", "testEmail"));
         RegisterAndLoginResponse loginResponse = (RegisterAndLoginResponse) loginService.login(new LoginRequest("testUsername", "testPassword"));
         String authToken = loginResponse.getAuthToken();
-        CreateGameResponse createGameResponse = (CreateGameResponse) createGameService.createGame(new CreateGameRequest(authToken, "game1"));
+        CreateGameResponse createGameResponse = (CreateGameResponse) createGameService.createGame(new CreateGameRequest("game1"), authToken);
         gameID = createGameResponse.getGameID();
-        ParentResponse actual = joinGameService.joinGame(new JoinGameRequest("unauthorized auth token", "WHITE", gameID));
+        ParentResponse actual = joinGameService.joinGame(new JoinGameRequest(PlayerColor.WHITE, gameID), "unauthorized auth token");
 
         Assertions.assertEquals(expected, actual);
     }
@@ -64,7 +61,7 @@ public class JoinGameServiceTests {
         registerService.register(new RegisterRequest("testUsername", "testPassword", "testEmail"));
         RegisterAndLoginResponse loginResponse = (RegisterAndLoginResponse) loginService.login(new LoginRequest("testUsername", "testPassword"));
         String authToken = loginResponse.getAuthToken();
-        ParentResponse actual = joinGameService.joinGame(new JoinGameRequest(authToken, "WHITE", 2));
+        ParentResponse actual = joinGameService.joinGame(new JoinGameRequest(PlayerColor.WHITE, 2), authToken);
 
         Assertions.assertEquals(expected, actual);
     }
@@ -77,14 +74,14 @@ public class JoinGameServiceTests {
         registerService.register(new RegisterRequest("testUsername1", "testPassword1", "testEmail1"));
         RegisterAndLoginResponse loginResponse1 = (RegisterAndLoginResponse) loginService.login(new LoginRequest("testUsername1", "testPassword1"));
         String authToken1 = loginResponse1.getAuthToken();
-        CreateGameResponse createGameResponse = (CreateGameResponse) createGameService.createGame(new CreateGameRequest(authToken1, "game1"));
+        CreateGameResponse createGameResponse = (CreateGameResponse) createGameService.createGame(new CreateGameRequest("game1"), authToken1);
         gameID = createGameResponse.getGameID();
-        joinGameService.joinGame(new JoinGameRequest(authToken1, "WHITE", gameID));
+        joinGameService.joinGame(new JoinGameRequest(PlayerColor.WHITE, gameID), authToken1);
 
         registerService.register(new RegisterRequest("testUsername2", "testPassword2", "testEmail2"));
         RegisterAndLoginResponse loginResponse2 = (RegisterAndLoginResponse) loginService.login(new LoginRequest("testUsername2", "testPassword2"));
         String authToken2 = loginResponse2.getAuthToken();
-        ParentResponse actual = joinGameService.joinGame(new JoinGameRequest(authToken2, "WHITE", gameID));
+        ParentResponse actual = joinGameService.joinGame(new JoinGameRequest(PlayerColor.WHITE, gameID), authToken2);
 
         Assertions.assertEquals(expected, actual);
     }

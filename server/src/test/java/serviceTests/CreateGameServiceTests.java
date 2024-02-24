@@ -35,7 +35,7 @@ public class CreateGameServiceTests {
         registerService.register(new RegisterRequest("testUsername", "testPassword", "testEmail"));
         RegisterAndLoginResponse loginResponse = (RegisterAndLoginResponse) loginService.login(new LoginRequest("testUsername", "testPassword"));
         String authToken = loginResponse.getAuthToken();
-        CreateGameResponse actual = (CreateGameResponse) createGameService.createGame(new CreateGameRequest(authToken, "game1"));
+        CreateGameResponse actual = (CreateGameResponse) createGameService.createGame(new CreateGameRequest("game1"), authToken);
 
         Assertions.assertEquals(expected, actual);
     }
@@ -48,7 +48,7 @@ public class CreateGameServiceTests {
         registerService.register(new RegisterRequest("testUsername", "testPassword", "testEmail"));
         RegisterAndLoginResponse loginResponse = (RegisterAndLoginResponse) loginService.login(new LoginRequest("testUsername", "testPassword"));
         String authToken = loginResponse.getAuthToken();
-        ParentResponse actual = createGameService.createGame(new CreateGameRequest("invalid Auth Token", "game1"));
+        ParentResponse actual = createGameService.createGame(new CreateGameRequest("game1"), "invalid authToken");
 
         Assertions.assertEquals(expected, actual);
     }

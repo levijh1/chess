@@ -12,8 +12,7 @@ import server.response.ParentResponse;
 import java.util.ArrayList;
 
 public class ListGamesService {
-    public ParentResponse listGames(GenericRequest r) {
-        String authToken = r.authToken();
+    public ParentResponse listGames(GenericRequest r, String authToken) {
         ArrayList<GameData> gameList;
 
         AuthTokenDao authTokenDao = new AuthTokenDao();

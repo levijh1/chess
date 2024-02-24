@@ -24,7 +24,7 @@ public class LoginService {
         try {
             userData = userDao.getUser(username); //verify that user doesn't already exist
         } catch (DataAccessException ex) {
-            return new ErrorResponse("Error: user doesn't exist", 500);
+            return new ErrorResponse("Error: unauthorized", 401);
         }
 
         // Check that password matches

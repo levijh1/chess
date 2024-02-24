@@ -35,7 +35,7 @@ public class LoginServiceTests {
 
     @Test
     public void usernameDoesNotExist() {
-        ParentResponse expected = new ErrorResponse("Error: user doesn't exist", 500);
+        ParentResponse expected = new ErrorResponse("Error: unauthorized", 401);
 
         registerService.register(new RegisterRequest("testUsername1", "testPassword1", "testEmail"));
         ParentResponse actual = loginService.login(new LoginRequest("testUsername2", "testPassword2"));

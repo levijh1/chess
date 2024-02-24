@@ -6,10 +6,10 @@ import java.util.ArrayList;
 import java.util.Objects;
 
 public class ListGamesResponse extends ParentResponse {
-    private ArrayList<GameData> gameList;
+    private ArrayList<GameData> games;
 
-    public ListGamesResponse(ArrayList<GameData> gameList) {
-        this.gameList = gameList;
+    public ListGamesResponse(ArrayList<GameData> games) {
+        this.games = games;
     }
 
     @Override
@@ -17,18 +17,18 @@ public class ListGamesResponse extends ParentResponse {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         ListGamesResponse that = (ListGamesResponse) o;
-        return Objects.equals(gameList, that.gameList);
+        return Objects.equals(games, that.games);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(gameList);
+        return Objects.hash(games);
     }
 
     @Override
     public String toString() {
         return "ListGamesResponse{" +
-                "gameList=" + gameList +
+                "gameList=" + games +
                 '}';
     }
 }

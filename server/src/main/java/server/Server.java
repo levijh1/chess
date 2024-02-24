@@ -7,11 +7,11 @@ import service.*;
 import spark.*;
 
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 
 public class Server {
-    //TODO: Figure out how to make the handlers all private and test from JSON input
-
     public static void main(String[] args) {
+        new ClearService().clear();
         new Server().run(8080);
     }
 
@@ -34,19 +34,19 @@ public class Server {
     }
 
     private Object joinGame(Request request, Response response) throws InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
-        return handler(request, response, "joinGame", GenericRequest.class, JoinGameService.class);
+        return authTokenHandler(request, response, "joinGame", JoinGameRequest.class, JoinGameService.class);
     }
 
     private Object createGame(Request request, Response response) throws InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
-        return handler(request, response, "createGame", GenericRequest.class, CreateGameService.class);
+        return authTokenHandler(request, response, "createGame", CreateGameRequest.class, CreateGameService.class);
     }
 
     private Object listGames(Request request, Response response) throws InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
-        return handler(request, response, "listGames", GenericRequest.class, ListGamesService.class);
+        return authTokenHandler(request, response, "listGames", GenericRequest.class, ListGamesService.class);
     }
 
     private Object logout(Request request, Response response) throws InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
-        return handler(request, response, "logout", GenericRequest.class, LogoutService.class);
+        return authTokenHandler(request, response, "logout", GenericRequest.class, LogoutService.class);
     }
 
     public Object login(Request request, Response response) throws InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
@@ -56,15 +56,6 @@ public class Server {
     public Object register(Request request, Response response) throws InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
         return handler(request, response, "register", RegisterRequest.class, RegisterService.class);
     }
-//        RegisterRequest registerRequest = getRequestBody(request, RegisterRequest.class);
-//
-//        RegisterService registerService = new RegisterService();
-//        RegisterResponse res = registerService.register(registerRequest);
-//
-//        response.status(res.getStatusCode()); //TODO: This might still allow the status code to be output as part of the json response
-//
-//        return new Gson().toJson(res);
-//    }
 
     private Object clear(Request request, Response response) {
         ClearService clearService = new ClearService();
@@ -74,16 +65,39 @@ public class Server {
         return new Gson().toJson(res);
     }
 
+
+    private <TRequest, TResponse, TService> Object authTokenHandler(Request request, Response response,
+                                                                    String endPointName,
+                                                                    Class<TRequest> requestClass,
+                                                                    Class<TService> serviceClass) throws NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
+        ParentResponse res;
+        TRequest requestBody = getRequestBody(request, requestClass);
+        String authToken = request.headers("Authorization");
+
+
+        TService service = serviceClass.getDeclaredConstructor().newInstance();
+
+        Method method = serviceClass.getMethod(endPointName, requestClass, String.class);
+
+        res = (ParentResponse) method.invoke(service, requestBody, authToken);
+
+        response.status((Integer) ParentResponse.class.getMethod("getStatusCode").invoke(res));
+
+        return new Gson().toJson(res);
+    }
+
     private <TRequest, TResponse, TService> Object handler(Request request, Response response,
                                                            String endPointName,
                                                            Class<TRequest> requestClass,
                                                            Class<TService> serviceClass) throws NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
-
+        ParentResponse res;
         TRequest requestBody = getRequestBody(request, requestClass);
 
         TService service = serviceClass.getDeclaredConstructor().newInstance();
 
-        TResponse res = (TResponse) serviceClass.getMethod(endPointName, requestClass).invoke(serviceClass, requestClass);
+        Method method = serviceClass.getMethod(endPointName, requestClass);
+
+        res = (ParentResponse) method.invoke(service, requestBody);
 
         response.status((Integer) ParentResponse.class.getMethod("getStatusCode").invoke(res));
 

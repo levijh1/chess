@@ -13,8 +13,7 @@ import server.response.ParentResponse;
 import java.util.Objects;
 
 public class LogoutService {
-    public ParentResponse logout(GenericRequest r) {
-        String authToken = r.authToken();
+    public ParentResponse logout(GenericRequest r, String authToken) {
         String username;
 
         UserDao userDao = new UserDao();
