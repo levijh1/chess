@@ -1,16 +1,12 @@
 package dataAccess;
 
 import model.AuthData;
-import model.GameData;
-import model.UserData;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.UUID;
 
 public class AuthTokenDao {
-    private static ArrayList<AuthData> authTokens = new ArrayList<>();
+    private static final ArrayList<AuthData> authTokens = new ArrayList<>();
 
 
     public String createAuth(String username) {

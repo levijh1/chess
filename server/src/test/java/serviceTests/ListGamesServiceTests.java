@@ -15,11 +15,11 @@ import service.*;
 import java.util.ArrayList;
 
 public class ListGamesServiceTests {
-    private ListGamesService listGamesService = new ListGamesService();
-    private CreateGameService createGameService = new CreateGameService();
-    private LoginService loginService = new LoginService();
-    private RegisterService registerService = new RegisterService();
-    private ClearService clearService = new ClearService();
+    private final ListGamesService listGamesService = new ListGamesService();
+    private final CreateGameService createGameService = new CreateGameService();
+    private final LoginService loginService = new LoginService();
+    private final RegisterService registerService = new RegisterService();
+    private final ClearService clearService = new ClearService();
     private ParentResponse expected;
 
     @BeforeEach

@@ -3,7 +3,7 @@ package server.response;
 import java.util.Objects;
 
 public class CreateGameResponse extends ParentResponse {
-    private int gameID;
+    private final int gameID;
 
     public int getGameID() {
         return gameID;

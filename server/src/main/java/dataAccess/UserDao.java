@@ -3,11 +3,9 @@ package dataAccess;
 import model.UserData;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 
 public class UserDao {
-    static private ArrayList<UserData> Users = new ArrayList<>();
+    static private final ArrayList<UserData> Users = new ArrayList<>();
 
     public void createUser(String username, String password, String email) {
         Users.add(new UserData(username, password, email));

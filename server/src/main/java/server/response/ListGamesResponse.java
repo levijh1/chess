@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.Objects;
 
 public class ListGamesResponse extends ParentResponse {
-    private ArrayList<GameData> games;
+    private final ArrayList<GameData> games;
 
     public ListGamesResponse(ArrayList<GameData> games) {
         this.games = games;

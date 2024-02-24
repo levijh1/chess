@@ -43,7 +43,7 @@ public class AuthTokenDaoTests {
 
         String token = dao.createAuth("testUsername");
         dao.deleteAuth(token);
-        ArrayList<AuthData> actual = dao.getAuthTokens();
+        ArrayList<AuthData> actual = AuthTokenDao.getAuthTokens();
 
         Assertions.assertEquals(expected, actual);
     }

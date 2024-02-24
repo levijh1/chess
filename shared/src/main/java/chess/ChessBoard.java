@@ -12,7 +12,7 @@ public class ChessBoard {
     private ChessPiece[][] boardPieces = new ChessPiece[8][8];
 
     public ChessBoard() {
-        
+
     }
 
     /**
@@ -25,7 +25,7 @@ public class ChessBoard {
         int row = position.getRow();
         int col = position.getCol();
 
-        boardPieces[row-1][col-1] = piece;
+        boardPieces[row - 1][col - 1] = piece;
     }
 
     /**
@@ -39,21 +39,21 @@ public class ChessBoard {
         int row = position.getRow();
         int col = position.getCol();
 
-        return boardPieces[row-1][col-1];
+        return boardPieces[row - 1][col - 1];
     }
 
     @Override
     public String toString() {
         return "ChessBoard{" +
                 "boardPieces=" + Arrays.toString(boardPieces[0])
-                    + Arrays.toString(boardPieces[1])
-                    + Arrays.toString(boardPieces[2])
-                    + Arrays.toString(boardPieces[3])
-                    + Arrays.toString(boardPieces[4])
-                    + Arrays.toString(boardPieces[5])
-                    + Arrays.toString(boardPieces[6])
-                    + Arrays.toString(boardPieces[7])
-                +'}';
+                + Arrays.toString(boardPieces[1])
+                + Arrays.toString(boardPieces[2])
+                + Arrays.toString(boardPieces[3])
+                + Arrays.toString(boardPieces[4])
+                + Arrays.toString(boardPieces[5])
+                + Arrays.toString(boardPieces[6])
+                + Arrays.toString(boardPieces[7])
+                + '}';
     }
 
     @Override
@@ -63,26 +63,22 @@ public class ChessBoard {
         ChessBoard that = (ChessBoard) o;
         ChessPiece thisPiece;
         ChessPiece thatPiece;
-        for (int i=0; i<=7; ++i){
-            for (int j=0; j<=7; ++j){
+        for (int i = 0; i <= 7; ++i) {
+            for (int j = 0; j <= 7; ++j) {
                 thisPiece = this.boardPieces[i][j];
                 thatPiece = that.boardPieces[i][j];
                 System.out.print(thisPiece);
                 System.out.print(thatPiece);
-                if (thisPiece==null && thatPiece!=null){
+                if (thisPiece == null && thatPiece != null) {
                     return false;
                 }
-                if (thisPiece!=null && thatPiece==null){
+                if (thisPiece != null && thatPiece == null) {
                     return false;
                 }
-                if (thisPiece==null && thatPiece==null){
+                if (thisPiece == null && thatPiece == null) {
                     continue;
                 }
-                if (thisPiece.getPieceType()!=thatPiece.getPieceType() || thisPiece.getTeamColor()!=thatPiece.getTeamColor()) {
-//                    System.out.print("Inconsistency at: ");
-//                    System.out.print("(" + i + "," + j + ")");
-//                    System.out.print(this.boardPieces[i][j]);
-//                    System.out.print(that.boardPieces[i][j]);
+                if (thisPiece.getPieceType() != thatPiece.getPieceType() || thisPiece.getTeamColor() != thatPiece.getTeamColor()) {
                     return false;
                 }
 
@@ -93,11 +89,11 @@ public class ChessBoard {
 
     @Override
     public int hashCode() {
-        return Arrays.hashCode(boardPieces);
+        return Arrays.deepHashCode(boardPieces);
     }
 
     @Override
-    public ChessBoard clone() throws CloneNotSupportedException {
+    public ChessBoard clone() {
         ChessBoard clonedBoard = new ChessBoard();
 
         // Deep copy of the ChessPiece array
@@ -119,7 +115,7 @@ public class ChessBoard {
         int row = position.getRow();
         int col = position.getCol();
 
-        boardPieces[row-1][col-1] = null;
+        boardPieces[row - 1][col - 1] = null;
     }
 
     /**
@@ -130,7 +126,7 @@ public class ChessBoard {
         boardPieces = new ChessPiece[8][8];
 
         //Add Pawns
-        for (int i=1; i<=8;++i) {
+        for (int i = 1; i <= 8; ++i) {
             this.addPiece(new ChessPosition(2, i), new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.PAWN));
             this.addPiece(new ChessPosition(7, i), new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.PAWN));
         }

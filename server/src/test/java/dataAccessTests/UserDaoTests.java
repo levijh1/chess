@@ -26,7 +26,7 @@ public class UserDaoTests {
         ArrayList<UserData> expected = new ArrayList<>();
         expected.add(new UserData("testUsername", "testPassword", "testEmail"));
 
-        ArrayList<UserData> actual = dao.getUsers();
+        ArrayList<UserData> actual = UserDao.getUsers();
         Assertions.assertEquals(expected, actual);
     }
 

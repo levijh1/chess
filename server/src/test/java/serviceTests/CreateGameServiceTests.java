@@ -16,10 +16,10 @@ import service.LoginService;
 import service.RegisterService;
 
 public class CreateGameServiceTests {
-    private CreateGameService createGameService = new CreateGameService();
-    private LoginService loginService = new LoginService();
-    private RegisterService registerService = new RegisterService();
-    private ClearService clearService = new ClearService();
+    private final CreateGameService createGameService = new CreateGameService();
+    private final LoginService loginService = new LoginService();
+    private final RegisterService registerService = new RegisterService();
+    private final ClearService clearService = new ClearService();
     private ParentResponse expected;
 
     @BeforeEach

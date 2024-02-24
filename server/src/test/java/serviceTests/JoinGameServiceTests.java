@@ -11,11 +11,11 @@ import server.response.RegisterAndLoginResponse;
 import service.*;
 
 public class JoinGameServiceTests {
-    private JoinGameService joinGameService = new JoinGameService();
-    private CreateGameService createGameService = new CreateGameService();
-    private LoginService loginService = new LoginService();
-    private RegisterService registerService = new RegisterService();
-    private ClearService clearService = new ClearService();
+    private final JoinGameService joinGameService = new JoinGameService();
+    private final CreateGameService createGameService = new CreateGameService();
+    private final LoginService loginService = new LoginService();
+    private final RegisterService registerService = new RegisterService();
+    private final ClearService clearService = new ClearService();
     private ParentResponse expected;
 
     @BeforeEach
@@ -56,7 +56,6 @@ public class JoinGameServiceTests {
     @Test
     public void gameIdDoesNotExist() {
         expected = new ErrorResponse("Error: bad request", 400);
-        int gameID;
 
         registerService.register(new RegisterRequest("testUsername", "testPassword", "testEmail"));
         RegisterAndLoginResponse loginResponse = (RegisterAndLoginResponse) loginService.login(new LoginRequest("testUsername", "testPassword"));

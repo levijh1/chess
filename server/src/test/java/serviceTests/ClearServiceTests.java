@@ -7,12 +7,9 @@ import dataAccess.UserDao;
 import model.AuthData;
 import model.GameData;
 import model.UserData;
-import org.eclipse.jetty.server.Authentication;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import service.ClearService;
-import service.RegisterService;
 
 import java.util.ArrayList;
 

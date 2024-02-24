@@ -22,7 +22,7 @@ public class RegisterService {
 
 
         try {
-            UserData userData = userDao.getUser(username); //verify that user doesn't already exist
+            userDao.getUser(username); //verify that user doesn't already exist
         } catch (DataAccessException ex) {
             userDao.createUser(username, password, email);
             String generatedToken = authTokenDao.createAuth(username);

@@ -3,9 +3,7 @@ package dataAccessTests;
 import chess.ChessGame;
 import dataAccess.DataAccessException;
 import dataAccess.GameDao;
-import dataAccess.UserDao;
 import model.GameData;
-import model.UserData;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -28,7 +26,7 @@ public class GameDaoTests {
         ArrayList<GameData> expected = new ArrayList<>();
         expected.add(new GameData(1, "whiteTest", "blackTest", "Game1", new ChessGame()));
 
-        ArrayList<GameData> actual = dao.getGames();
+        ArrayList<GameData> actual = GameDao.getGames();
         Assertions.assertEquals(expected, actual);
     }
 

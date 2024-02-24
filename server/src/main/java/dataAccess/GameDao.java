@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.Objects;
 
 public class GameDao {
-    private static ArrayList<GameData> games = new ArrayList<>();
+    private static final ArrayList<GameData> games = new ArrayList<>();
     private static int gameIdCounter = 1;
 
     public int createGame(String whiteUsername, String blackUsername, String gameName, ChessGame game) {
@@ -56,10 +56,6 @@ public class GameDao {
                 return;
             }
         }
-
-//        if (!Objects.equals(playerColor, "WHITE") && !Objects.equals(playerColor, "BLACK")) {
-//            throw new DataAccessException("playerColor must be WHITE or BLACK");
-//        }
 
     }
 }

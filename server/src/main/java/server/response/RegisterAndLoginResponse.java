@@ -3,12 +3,8 @@ package server.response;
 import java.util.Objects;
 
 public class RegisterAndLoginResponse extends ParentResponse {
-    private String username = null;
-    private String authToken = null;
-
-    public String getUsername() {
-        return username;
-    }
+    private final String username;
+    private final String authToken;
 
     public String getAuthToken() {
         return authToken;

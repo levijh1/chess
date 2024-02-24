@@ -13,10 +13,9 @@ import service.RegisterService;
 import service.LoginService;
 
 public class LoginServiceTests {
-    private LoginService loginService = new LoginService();
-    private RegisterService registerService = new RegisterService();
-    private ClearService clearService = new ClearService();
-    private RegisterAndLoginResponse expected;
+    private final LoginService loginService = new LoginService();
+    private final RegisterService registerService = new RegisterService();
+    private final ClearService clearService = new ClearService();
 
     @BeforeEach
     public void setUp() {

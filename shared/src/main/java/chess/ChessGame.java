@@ -72,11 +72,6 @@ public class ChessGame {
         //Remove all invalid moves
         possibleMoves.removeIf(move -> !this.isMoveValid(move));
         setTeamTurn(initialTeamTurn);
-//        if (possibleMoves!= null) {
-//            if (possibleMoves.isEmpty()) {
-//                return null;
-//            }
-//        }
 
         return possibleMoves;
     }
@@ -132,10 +127,7 @@ public class ChessGame {
 
 //            throw new InvalidMoveException("Move puts own king in check");
         }
-        if (!movingPiece.pieceMoves(board, startPosition).contains(move)) {
-            return false;
-        }
-        return true;
+        return movingPiece.pieceMoves(board, startPosition).contains(move);
     }
 
     private boolean movePutsInCheck(TeamColor teamColor, ChessMove move) {
@@ -144,13 +136,8 @@ public class ChessGame {
         ChessPiece movingPiece = board.getPiece(startPosition);
 
         //Clone the board to revert back after checking all moves
-        ChessBoard initialBoard = board;
         ChessGame.TeamColor initialTeamTurn = this.getTeamTurn();
-        try {
-            initialBoard = board.clone();
-        } catch (CloneNotSupportedException e) {
-            throw new RuntimeException(e);
-        }
+        ChessBoard initialBoard = board.clone();
 
         board.addPiece(endPosition, movingPiece);
         board.removePiece(startPosition);
@@ -176,7 +163,7 @@ public class ChessGame {
         ChessGame.TeamColor initialTeamTurn = getTeamTurn();
         setTeamTurn(teamColor);
         ChessPosition kingPosition = null;
-        kingsearch:
+        kingSearch:
         {
             for (int i = 1; i <= 8; ++i) {
                 for (int j = 1; j <= 8; ++j) {
@@ -184,7 +171,7 @@ public class ChessGame {
                     if (evaluatedPiece != null) {
                         if (evaluatedPiece.getPieceType() == ChessPiece.PieceType.KING && evaluatedPiece.getTeamColor() == teamColor) {
                             kingPosition = new ChessPosition(i, j);
-                            break kingsearch;
+                            break kingSearch;
                         }
                     }
                 }

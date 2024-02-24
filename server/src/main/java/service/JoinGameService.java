@@ -3,7 +3,6 @@ package service;
 import dataAccess.AuthTokenDao;
 import dataAccess.DataAccessException;
 import dataAccess.GameDao;
-import model.GameData;
 import server.request.JoinGameRequest;
 import server.response.ErrorResponse;
 import server.response.ParentResponse;

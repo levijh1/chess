@@ -15,10 +15,10 @@ import service.RegisterService;
 import service.LoginService;
 
 public class LogoutServiceTests {
-    private LogoutService logoutService = new LogoutService();
-    private LoginService loginService = new LoginService();
-    private RegisterService registerService = new RegisterService();
-    private ClearService clearService = new ClearService();
+    private final LogoutService logoutService = new LogoutService();
+    private final LoginService loginService = new LoginService();
+    private final RegisterService registerService = new RegisterService();
+    private final ClearService clearService = new ClearService();
 
     @BeforeEach
     public void setUp() {
@@ -43,7 +43,6 @@ public class LogoutServiceTests {
 
         registerService.register(new RegisterRequest("testUsername", "testPassword", "testEmail"));
         RegisterAndLoginResponse loginResponse = (RegisterAndLoginResponse) loginService.login(new LoginRequest("testUsername", "testPassword"));
-        String authToken = loginResponse.getAuthToken();
 
         ParentResponse actual = logoutService.logout(new GenericRequest(), "invalid Auth Token");
 
