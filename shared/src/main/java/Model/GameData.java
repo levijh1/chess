@@ -17,14 +17,6 @@ public record GameData(int gameID, String whiteUsername, String blackUsername, S
         return blackUsername;
     }
 
-    public String getGameName() {
-        return gameName;
-    }
-
-    public ChessGame getGame() {
-        return game;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

@@ -38,8 +38,6 @@ public class AuthTokenDao {
         throw new DataAccessException("Auth token does not exist");
     }
 
-    //TODO: If you make some sort of way to access tokens, make sure to use DataAccessException
-
     public static ArrayList<AuthData> getAuthTokens() {
         return authTokens;
     }

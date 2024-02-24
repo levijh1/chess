@@ -11,10 +11,6 @@ public record UserData(String username, String password, String email) {
         return password;
     }
 
-    public String getEmail() {
-        return email;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

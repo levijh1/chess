@@ -66,16 +66,16 @@ public class Server {
     }
 
 
-    private <TRequest, TResponse, TService> Object authTokenHandler(Request request, Response response,
-                                                                    String endPointName,
-                                                                    Class<TRequest> requestClass,
-                                                                    Class<TService> serviceClass) throws NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
+    private <RequestClass, ServiceClass> Object authTokenHandler(Request request, Response response,
+                                                                 String endPointName,
+                                                                 Class<RequestClass> requestClass,
+                                                                 Class<ServiceClass> serviceClass) throws NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
         ParentResponse res;
-        TRequest requestBody = getRequestBody(request, requestClass);
+        RequestClass requestBody = getRequestBody(request, requestClass);
         String authToken = request.headers("Authorization");
 
 
-        TService service = serviceClass.getDeclaredConstructor().newInstance();
+        ServiceClass service = serviceClass.getDeclaredConstructor().newInstance();
 
         Method method = serviceClass.getMethod(endPointName, requestClass, String.class);
 
@@ -86,14 +86,14 @@ public class Server {
         return new Gson().toJson(res);
     }
 
-    private <TRequest, TResponse, TService> Object handler(Request request, Response response,
-                                                           String endPointName,
-                                                           Class<TRequest> requestClass,
-                                                           Class<TService> serviceClass) throws NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
+    private <RequestClass, ServiceClass> Object handler(Request request, Response response,
+                                                        String endPointName,
+                                                        Class<RequestClass> requestClass,
+                                                        Class<ServiceClass> serviceClass) throws NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
         ParentResponse res;
-        TRequest requestBody = getRequestBody(request, requestClass);
+        RequestClass requestBody = getRequestBody(request, requestClass);
 
-        TService service = serviceClass.getDeclaredConstructor().newInstance();
+        ServiceClass service = serviceClass.getDeclaredConstructor().newInstance();
 
         Method method = serviceClass.getMethod(endPointName, requestClass);
 
