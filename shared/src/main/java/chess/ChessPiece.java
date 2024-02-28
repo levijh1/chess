@@ -110,40 +110,16 @@ public class ChessPiece {
         ChessPosition endPosition;
         switch (evaluatedPieceType) {
             case KING:
-                possibleMoves.add(new ChessMove(myPosition, new ChessPosition(currentRow + 1, currentCol), null));
-                possibleMoves.add(new ChessMove(myPosition, new ChessPosition(currentRow + 1, currentCol - 1), null));
-                possibleMoves.add(new ChessMove(myPosition, new ChessPosition(currentRow + 1, currentCol + 1), null));
-                possibleMoves.add(new ChessMove(myPosition, new ChessPosition(currentRow, currentCol - 1), null));
-                possibleMoves.add(new ChessMove(myPosition, new ChessPosition(currentRow, currentCol + 1), null));
-                possibleMoves.add(new ChessMove(myPosition, new ChessPosition(currentRow - 1, currentCol + 1), null));
-                possibleMoves.add(new ChessMove(myPosition, new ChessPosition(currentRow - 1, currentCol - 1), null));
-                possibleMoves.add(new ChessMove(myPosition, new ChessPosition(currentRow - 1, currentCol), null));
+                possibleMoves.addAll(kingMoves(board, myPosition, currentRow, currentCol));
                 break;
             case QUEEN:
-                possibleMoves.addAll(movesInOneDirection(board, myPosition, 1, 0));
-                possibleMoves.addAll(movesInOneDirection(board, myPosition, -1, 0));
-                possibleMoves.addAll(movesInOneDirection(board, myPosition, 0, 1));
-                possibleMoves.addAll(movesInOneDirection(board, myPosition, 0, -1));
-                possibleMoves.addAll(movesInOneDirection(board, myPosition, 1, 1));
-                possibleMoves.addAll(movesInOneDirection(board, myPosition, 1, -1));
-                possibleMoves.addAll(movesInOneDirection(board, myPosition, -1, 1));
-                possibleMoves.addAll(movesInOneDirection(board, myPosition, -1, -1));
+                possibleMoves.addAll(queenMoves(board, myPosition, currentRow, currentCol));
                 break;
             case BISHOP:
-                possibleMoves.addAll(movesInOneDirection(board, myPosition, 1, 1));
-                possibleMoves.addAll(movesInOneDirection(board, myPosition, 1, -1));
-                possibleMoves.addAll(movesInOneDirection(board, myPosition, -1, 1));
-                possibleMoves.addAll(movesInOneDirection(board, myPosition, -1, -1));
+                possibleMoves.addAll(bishopMoves(board, myPosition, currentRow, currentCol));
                 break;
             case KNIGHT:
-                possibleMoves.add(new ChessMove(myPosition, new ChessPosition(currentRow + 2, currentCol + 1), null));
-                possibleMoves.add(new ChessMove(myPosition, new ChessPosition(currentRow + 2, currentCol - 1), null));
-                possibleMoves.add(new ChessMove(myPosition, new ChessPosition(currentRow - 2, currentCol + 1), null));
-                possibleMoves.add(new ChessMove(myPosition, new ChessPosition(currentRow - 2, currentCol - 1), null));
-                possibleMoves.add(new ChessMove(myPosition, new ChessPosition(currentRow + 1, currentCol + 2), null));
-                possibleMoves.add(new ChessMove(myPosition, new ChessPosition(currentRow + 1, currentCol - 2), null));
-                possibleMoves.add(new ChessMove(myPosition, new ChessPosition(currentRow - 1, currentCol + 2), null));
-                possibleMoves.add(new ChessMove(myPosition, new ChessPosition(currentRow - 1, currentCol - 2), null));
+                possibleMoves.addAll(knightMoves(board, myPosition, currentRow, currentCol));
                 break;
             case ROOK:
                 possibleMoves.addAll(movesInOneDirection(board, myPosition, 1, 0));
@@ -298,6 +274,62 @@ public class ChessPiece {
         possibleMoves.removeIf(chessMove -> !chessMove.isMoveOnBoard());
         possibleMoves.removeIf(chessMove -> chessMove.isMoveOnSameColor(board, this));
 
+
+        return possibleMoves;
+    }
+
+    public Collection<ChessMove> kingMoves(ChessBoard board, ChessPosition myPosition, int currentRow, int currentCol) {
+        Set<ChessMove> possibleMoves = new HashSet<>();
+
+        possibleMoves.add(new ChessMove(myPosition, new ChessPosition(currentRow + 1, currentCol), null));
+        possibleMoves.add(new ChessMove(myPosition, new ChessPosition(currentRow + 1, currentCol - 1), null));
+        possibleMoves.add(new ChessMove(myPosition, new ChessPosition(currentRow + 1, currentCol + 1), null));
+        possibleMoves.add(new ChessMove(myPosition, new ChessPosition(currentRow, currentCol - 1), null));
+        possibleMoves.add(new ChessMove(myPosition, new ChessPosition(currentRow, currentCol + 1), null));
+        possibleMoves.add(new ChessMove(myPosition, new ChessPosition(currentRow - 1, currentCol + 1), null));
+        possibleMoves.add(new ChessMove(myPosition, new ChessPosition(currentRow - 1, currentCol - 1), null));
+        possibleMoves.add(new ChessMove(myPosition, new ChessPosition(currentRow - 1, currentCol), null));
+
+        return possibleMoves;
+    }
+
+    public Collection<ChessMove> queenMoves(ChessBoard board, ChessPosition myPosition, int currentRow, int currentCol) {
+        Set<ChessMove> possibleMoves = new HashSet<>();
+
+        possibleMoves.addAll(movesInOneDirection(board, myPosition, 1, 0));
+        possibleMoves.addAll(movesInOneDirection(board, myPosition, -1, 0));
+        possibleMoves.addAll(movesInOneDirection(board, myPosition, 0, 1));
+        possibleMoves.addAll(movesInOneDirection(board, myPosition, 0, -1));
+        possibleMoves.addAll(movesInOneDirection(board, myPosition, 1, 1));
+        possibleMoves.addAll(movesInOneDirection(board, myPosition, 1, -1));
+        possibleMoves.addAll(movesInOneDirection(board, myPosition, -1, 1));
+        possibleMoves.addAll(movesInOneDirection(board, myPosition, -1, -1));
+
+        return possibleMoves;
+    }
+
+    public Collection<ChessMove> bishopMoves(ChessBoard board, ChessPosition myPosition, int currentRow, int currentCol) {
+        Set<ChessMove> possibleMoves = new HashSet<>();
+
+        possibleMoves.addAll(movesInOneDirection(board, myPosition, 1, 1));
+        possibleMoves.addAll(movesInOneDirection(board, myPosition, 1, -1));
+        possibleMoves.addAll(movesInOneDirection(board, myPosition, -1, 1));
+        possibleMoves.addAll(movesInOneDirection(board, myPosition, -1, -1));
+
+        return possibleMoves;
+    }
+
+    public Collection<ChessMove> knightMoves(ChessBoard board, ChessPosition myPosition, int currentRow, int currentCol) {
+        Set<ChessMove> possibleMoves = new HashSet<>();
+
+        possibleMoves.add(new ChessMove(myPosition, new ChessPosition(currentRow + 2, currentCol + 1), null));
+        possibleMoves.add(new ChessMove(myPosition, new ChessPosition(currentRow + 2, currentCol - 1), null));
+        possibleMoves.add(new ChessMove(myPosition, new ChessPosition(currentRow - 2, currentCol + 1), null));
+        possibleMoves.add(new ChessMove(myPosition, new ChessPosition(currentRow - 2, currentCol - 1), null));
+        possibleMoves.add(new ChessMove(myPosition, new ChessPosition(currentRow + 1, currentCol + 2), null));
+        possibleMoves.add(new ChessMove(myPosition, new ChessPosition(currentRow + 1, currentCol - 2), null));
+        possibleMoves.add(new ChessMove(myPosition, new ChessPosition(currentRow - 1, currentCol + 2), null));
+        possibleMoves.add(new ChessMove(myPosition, new ChessPosition(currentRow - 1, currentCol - 2), null));
 
         return possibleMoves;
     }
