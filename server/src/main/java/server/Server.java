@@ -66,16 +66,16 @@ public class Server {
     }
 
 
-    private <RequestClass, ServiceClass> Object authTokenHandler(Request request, Response response,
-                                                                 String endPointName,
-                                                                 Class<RequestClass> requestClass,
-                                                                 Class<ServiceClass> serviceClass) throws NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
+    private <T, U> Object authTokenHandler(Request request, Response response,
+                                           String endPointName,
+                                           Class<T> requestClass,
+                                           Class<U> serviceClass) throws NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
         ParentResponse res;
-        RequestClass requestBody = getRequestBody(request, requestClass);
+        T requestBody = getRequestBody(request, requestClass);
         String authToken = request.headers("Authorization");
 
 
-        ServiceClass service = serviceClass.getDeclaredConstructor().newInstance();
+        U service = serviceClass.getDeclaredConstructor().newInstance();
 
         Method method = serviceClass.getMethod(endPointName, requestClass, String.class);
 
@@ -86,14 +86,14 @@ public class Server {
         return new Gson().toJson(res);
     }
 
-    private <RequestClass, ServiceClass> Object handler(Request request, Response response,
-                                                        String endPointName,
-                                                        Class<RequestClass> requestClass,
-                                                        Class<ServiceClass> serviceClass) throws NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
+    private <T, U> Object handler(Request request, Response response,
+                                  String endPointName,
+                                  Class<T> requestClass,
+                                  Class<U> serviceClass) throws NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
         ParentResponse res;
-        RequestClass requestBody = getRequestBody(request, requestClass);
+        T requestBody = getRequestBody(request, requestClass);
 
-        ServiceClass service = serviceClass.getDeclaredConstructor().newInstance();
+        U service = serviceClass.getDeclaredConstructor().newInstance();
 
         Method method = serviceClass.getMethod(endPointName, requestClass);
 

@@ -46,7 +46,7 @@ public class UserDaoTests {
         dao.createUser("testUsername", "testPassword", "testEmail");
         dao.createUser("testUsername2", "testPassword2", "testEmail2");
         dao.createUser("testUsername3", "testPassword3", "testEmail3");
-        dao.createUser("testUsernam4", "testPassword4", "testEmail4");
+        dao.createUser("testUsername4", "testPassword4", "testEmail4");
 
         UserData expected = new UserData("testUsername3", "testPassword3", "testEmail3");
         UserData actual = dao.getUser("testUsername3");
