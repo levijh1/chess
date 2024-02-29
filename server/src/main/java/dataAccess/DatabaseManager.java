@@ -15,7 +15,7 @@ public class DatabaseManager {
     static {
         try {
             try (var propStream = Thread.currentThread().getContextClassLoader().getResourceAsStream("db.properties")) {
-                if (propStream == null) throw new Exception("Unable to laod db.properties");
+                if (propStream == null) throw new Exception("Unable to load db.properties");
                 Properties props = new Properties();
                 props.load(propStream);
                 databaseName = props.getProperty("db.name");
@@ -34,13 +34,14 @@ public class DatabaseManager {
     /**
      * Creates the database if it does not already exist.
      */
-    static void createDatabase() throws DataAccessException {
+    public static void createDatabase() throws DataAccessException {
         try {
-            var statement = "CREATE DATABASE IF NOT EXISTS " + databaseName;
+            var statement = "CREATE DATABASE IF NOT EXISTS " + databaseName; //TODO: do we have to use the one shown in class or is this fine?
             var conn = DriverManager.getConnection(connectionUrl, user, password);
             try (var preparedStatement = conn.prepareStatement(statement)) {
                 preparedStatement.executeUpdate();
             }
+
         } catch (SQLException e) {
             throw new DataAccessException(e.getMessage());
         }
@@ -66,5 +67,54 @@ public class DatabaseManager {
         } catch (SQLException e) {
             throw new DataAccessException(e.getMessage());
         }
+    }
+
+    public static void createTables() throws DataAccessException {
+        Connection connection = DatabaseManager.getConnection();
+
+        String sql = "CREATE TABLE AuthTokens (" +
+                "username VARCHAR(255) not null," +
+                "authToken VARCHAR(255) not null" +
+                ")" +
+                "CREATE TABLE Users (" +
+                "username VARCHAR(255) not null," +
+                "password VARCHAR(255) not null," +
+                "email VARCHAR(255) not null" +
+                ")" +
+                "CREATE TABLE games ( " +
+                "gameId INT AUTO_INCREMENT PRIMARY KEY not null," +
+                "whiteUsername VARCHAR(255)," +
+                "blackUsername VARCHAR(255)," +
+                "gameName VARCHAR(255) not null," +
+                "game JSON not null" +
+                ")";
+
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            if (stmt.executeUpdate() != 1) {
+                System.out.println("Failed to update");
+            }
+        } catch (SQLException ex) {
+            //error
+        }
+
+//            statement = "CREATE TABLE AuthTokens (" +
+//                    "username VARCHAR(255) not null," +
+//                    "authToken VARCHAR(255) not null" +
+//                    ")" +
+//                    "CREATE TABLE Users (" +
+//                    "username VARCHAR(255) not null," +
+//                    "password VARCHAR(255) not null," +
+//                    "email VARCHAR(255) not null" +
+//                    ")" +
+//                    "CREATE TABLE games ( " +
+//                    "gameId INT AUTO_INCREMENT PRIMARY KEY not null," +
+//                    "whiteUsername VARCHAR(255)," +
+//                    "blackUsername VARCHAR(255)," +
+//                    "gameName VARCHAR(255) not null," +
+//                    "game JSON not null" +
+//                    ")";
+//        try (var preparedStatement = conn.prepareStatement(statement)) {
+//            preparedStatement.executeUpdate();
+//        }
     }
 }

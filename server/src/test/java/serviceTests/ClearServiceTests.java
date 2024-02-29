@@ -2,6 +2,7 @@ package serviceTests;
 
 import chess.ChessGame;
 import dataAccess.AuthTokenDao;
+import dataAccess.DataAccessException;
 import dataAccess.GameDao;
 import dataAccess.UserDao;
 import model.AuthData;
@@ -15,7 +16,7 @@ import java.util.ArrayList;
 
 public class ClearServiceTests {
     @Test
-    public void successfulClear() {
+    public void successfulClear() throws DataAccessException {
         ClearService service = new ClearService();
 
         UserDao userDao = new UserDao();

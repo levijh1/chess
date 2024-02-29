@@ -8,7 +8,7 @@ import server.response.RegisterAndLoginResponse;
 import server.response.ParentResponse;
 
 public class RegisterService {
-    public ParentResponse register(RegisterRequest r) {
+    public ParentResponse register(RegisterRequest r) throws DataAccessException {
         String password = r.password();
         String username = r.username();
         String email = r.email();

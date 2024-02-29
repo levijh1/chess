@@ -1,6 +1,8 @@
 package server;
 
 import com.google.gson.Gson;
+import dataAccess.DataAccessException;
+import dataAccess.DatabaseManager;
 import server.request.*;
 import server.response.*;
 import service.*;
@@ -16,6 +18,13 @@ public class Server {
     }
 
     public int run(int desiredPort) {
+        try {
+            DatabaseManager.createDatabase();
+            DatabaseManager.createTables();
+        } catch (DataAccessException e) {
+            throw new RuntimeException(e);
+        }
+
         Spark.port(desiredPort);
 
         Spark.staticFiles.location("web");

@@ -20,7 +20,7 @@ public class AuthTokenDaoTests {
     }
 
     @Test
-    public void createAuthTest() {
+    public void createAuthTest() throws DataAccessException {
         String actual = dao.createAuth("username");
 
         Assertions.assertNotNull(actual);

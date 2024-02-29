@@ -12,7 +12,7 @@ import server.response.ParentResponse;
 import java.util.Objects;
 
 public class LoginService {
-    public ParentResponse login(LoginRequest r) {
+    public ParentResponse login(LoginRequest r) throws DataAccessException {
         UserData userData;
         String username = r.username();
         String password = r.password();
