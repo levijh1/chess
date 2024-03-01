@@ -72,30 +72,40 @@ public class DatabaseManager {
     public static void createTables() throws DataAccessException {
         Connection connection = DatabaseManager.getConnection();
 
-        String sql = "CREATE TABLE AuthTokens (" +
-                "username VARCHAR(255) not null," +
+        String[] sqlStatements = {"CREATE TABLE AuthTokens (" +
+                "username VARCHAR(255) not null, " +
                 "authToken VARCHAR(255) not null" +
-                ")" +
+                ")",
                 "CREATE TABLE Users (" +
-                "username VARCHAR(255) not null," +
-                "password VARCHAR(255) not null," +
-                "email VARCHAR(255) not null" +
-                ")" +
-                "CREATE TABLE games ( " +
-                "gameId INT AUTO_INCREMENT PRIMARY KEY not null," +
-                "whiteUsername VARCHAR(255)," +
-                "blackUsername VARCHAR(255)," +
-                "gameName VARCHAR(255) not null," +
-                "game JSON not null" +
-                ")";
-
-        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
-            if (stmt.executeUpdate() != 1) {
-                System.out.println("Failed to update");
+                        "username VARCHAR(255) not null, " +
+                        "password VARCHAR(255) not null, " +
+//                        "email VARCHAR(255) not null" +
+                        ")",
+                "CREATE TABLE games (" +
+                        "gameId INT AUTO_INCREMENT PRIMARY KEY not null, " +
+                        "whiteUsername VARCHAR(255), " +
+                        "blackUsername VARCHAR(255), " +
+                        "gameName VARCHAR(255) not null, " +
+                        "game JSON not null" +
+                        ")"};
+//        String sql =
+//                """
+//                        CREATE TABLE IF NOT EXISTS games (
+//                             gameId INT AUTO_INCREMENT PRIMARY KEY not null,
+//                             whiteUsername VARCHAR(255),
+//                             blackUsername VARCHAR(255),
+//                             gameName VARCHAR(255) not null,
+//                             game JSON not null
+//                        )
+//                        """;
+        for (String sql : sqlStatements) {
+            try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+                stmt.executeUpdate();
+            } catch (SQLException ex) {
+                //error
             }
-        } catch (SQLException ex) {
-            //error
         }
+
 
 //            statement = "CREATE TABLE AuthTokens (" +
 //                    "username VARCHAR(255) not null," +
