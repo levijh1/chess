@@ -3,6 +3,9 @@ package dataAccess;
 import java.sql.*;
 import java.util.Properties;
 
+import static java.sql.Statement.RETURN_GENERATED_KEYS;
+import static java.sql.Types.NULL;
+
 public class DatabaseManager {
     private static final String databaseName;
     private static final String user;
@@ -69,62 +72,59 @@ public class DatabaseManager {
         }
     }
 
-    public static void createTables() throws DataAccessException {
-        Connection connection = DatabaseManager.getConnection();
+    public static int executeUpdate(String statement, Object... params) throws DataAccessException {
+        try (var conn = DatabaseManager.getConnection()) {
+            try (var ps = conn.prepareStatement(statement, RETURN_GENERATED_KEYS)) {
+                for (var i = 0; i < params.length; i++) {
+                    var param = params[i];
+                    if (param instanceof String p) ps.setString(i + 1, p);
+                    else if (param instanceof Integer p) ps.setInt(i + 1, p);
+//                    else if (param instanceof Object p) ps.setString(i + 1, (String) p);
+                    else if (param == null) ps.setNull(i + 1, NULL);
+                }
 
-        String[] sqlStatements = {"CREATE TABLE AuthTokens (" +
+                if (ps.executeUpdate() == 1) {
+                    try (ResultSet generatedKeys = ps.getGeneratedKeys()) {
+                        if (generatedKeys.next()) {
+                            return generatedKeys.getInt(1);
+                        }
+                    }
+                }
+
+                return 0;
+            }
+        } catch (SQLException e) {
+            throw new DataAccessException(e.getMessage());
+        }
+    }
+
+    public static void createTables() throws DataAccessException {
+//        Connection connection = DatabaseManager.getConnection();
+
+        String[] sqlStatements = {"CREATE TABLE IF NOT EXISTS AuthTokens (" +
                 "username VARCHAR(255) not null, " +
                 "authToken VARCHAR(255) not null" +
                 ")",
-                "CREATE TABLE Users (" +
+                "CREATE TABLE IF NOT EXISTS Users (" +
                         "username VARCHAR(255) not null, " +
                         "password VARCHAR(255) not null, " +
-//                        "email VARCHAR(255) not null" +
+                        "email VARCHAR(255) not null" +
                         ")",
-                "CREATE TABLE games (" +
+                "CREATE TABLE IF NOT EXISTS Games (" +
                         "gameId INT AUTO_INCREMENT PRIMARY KEY not null, " +
                         "whiteUsername VARCHAR(255), " +
                         "blackUsername VARCHAR(255), " +
                         "gameName VARCHAR(255) not null, " +
                         "game JSON not null" +
-                        ")"};
-//        String sql =
-//                """
-//                        CREATE TABLE IF NOT EXISTS games (
-//                             gameId INT AUTO_INCREMENT PRIMARY KEY not null,
-//                             whiteUsername VARCHAR(255),
-//                             blackUsername VARCHAR(255),
-//                             gameName VARCHAR(255) not null,
-//                             game JSON not null
-//                        )
-//                        """;
+                        ")"
+        };
         for (String sql : sqlStatements) {
-            try (PreparedStatement stmt = connection.prepareStatement(sql)) {
-                stmt.executeUpdate();
-            } catch (SQLException ex) {
-                //error
-            }
+            executeUpdate(sql);
+//            try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+//                stmt.executeUpdate();
+//            } catch (SQLException ex) {
+//                //error
+//            }
         }
-
-
-//            statement = "CREATE TABLE AuthTokens (" +
-//                    "username VARCHAR(255) not null," +
-//                    "authToken VARCHAR(255) not null" +
-//                    ")" +
-//                    "CREATE TABLE Users (" +
-//                    "username VARCHAR(255) not null," +
-//                    "password VARCHAR(255) not null," +
-//                    "email VARCHAR(255) not null" +
-//                    ")" +
-//                    "CREATE TABLE games ( " +
-//                    "gameId INT AUTO_INCREMENT PRIMARY KEY not null," +
-//                    "whiteUsername VARCHAR(255)," +
-//                    "blackUsername VARCHAR(255)," +
-//                    "gameName VARCHAR(255) not null," +
-//                    "game JSON not null" +
-//                    ")";
-//        try (var preparedStatement = conn.prepareStatement(statement)) {
-//            preparedStatement.executeUpdate();
-//        }
     }
 }
