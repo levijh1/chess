@@ -122,8 +122,12 @@ public class DatabaseManager {
                             data = rs.getString(outputColumn);
                         }
                         if (outputType == AuthData.class) {
-                            data = rs.getObject("outputColumn", AuthData.class);
+                            String username = rs.getString("username");
+                            String authToken = rs.getString("authToken");
+
+                            resultList.add(new AuthData(username, authToken));
                         }
+
                         resultList.add(data);
                     }
                 }
