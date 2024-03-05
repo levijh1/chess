@@ -14,6 +14,7 @@ import server.response.*;
 import service.*;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class ListGamesServiceTests {
     private final ListGamesService listGamesService = new ListGamesService();
@@ -30,19 +31,19 @@ public class ListGamesServiceTests {
 
     @Test
     public void successfulListGames() throws DataAccessException {
-        ArrayList<GameData> expectedList = new ArrayList<GameData>();
-        expectedList.add(new GameData(1, null, null, "testName1", new ChessGame()));
-        expectedList.add(new GameData(2, null, null, "testName2", new ChessGame()));
-
-        expected = new ListGamesResponse(expectedList);
-
         registerService.register(new RegisterRequest("testUsername", "testPassword", "testEmail"));
         RegisterAndLoginResponse loginResponse = (RegisterAndLoginResponse) loginService.login(new LoginRequest("testUsername", "testPassword"));
         String authToken = loginResponse.getAuthToken();
-        createGameService.createGame(new CreateGameRequest("testName1"), authToken);
-        createGameService.createGame(new CreateGameRequest("testName2"), authToken);
+        CreateGameResponse response1 = (CreateGameResponse) createGameService.createGame(new CreateGameRequest("testName1"), authToken);
+        CreateGameResponse response2 = (CreateGameResponse) createGameService.createGame(new CreateGameRequest("testName2"), authToken);
 
         ParentResponse actual = listGamesService.listGames(new GenericRequest(), authToken);
+
+        List<Object> expectedList = new ArrayList<>();
+        expectedList.add(new GameData(response1.getGameID(), null, null, "testName1", new ChessGame()));
+        expectedList.add(new GameData(response2.getGameID(), null, null, "testName2", new ChessGame()));
+        expected = new ListGamesResponse(expectedList);
+
 
         Assertions.assertEquals(expected, actual);
     }

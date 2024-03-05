@@ -66,7 +66,6 @@ public class JoinGameServiceTests {
         Assertions.assertEquals(expected, actual);
     }
 
-    //TODO: Figure out how to make tests fails when there is an exception instead of throwing an exception
     @Test
     public void spotAlreadyTakenInGame() throws DataAccessException {
         expected = new ErrorResponse("Error: already taken", 403);

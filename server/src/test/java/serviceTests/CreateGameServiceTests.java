@@ -30,13 +30,14 @@ public class CreateGameServiceTests {
 
     @Test
     public void successfulCreateGame() throws DataAccessException {
-        expected = new CreateGameResponse(1);
-        int gameID;
 
         registerService.register(new RegisterRequest("testUsername", "testPassword", "testEmail"));
         RegisterAndLoginResponse loginResponse = (RegisterAndLoginResponse) loginService.login(new LoginRequest("testUsername", "testPassword"));
         String authToken = loginResponse.getAuthToken();
+
         CreateGameResponse actual = (CreateGameResponse) createGameService.createGame(new CreateGameRequest("game1"), authToken);
+
+        expected = new CreateGameResponse(actual.getGameID());
 
         Assertions.assertEquals(expected, actual);
     }

@@ -1,14 +1,12 @@
 package server.response;
 
-import model.GameData;
-
-import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 public class ListGamesResponse extends ParentResponse {
-    private final ArrayList<GameData> games;
+    private final List<Object> games;
 
-    public ListGamesResponse(ArrayList<GameData> games) {
+    public ListGamesResponse(List<Object> games) {
         this.games = games;
     }
 

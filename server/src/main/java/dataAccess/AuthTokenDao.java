@@ -10,9 +10,6 @@ import static dataAccess.DatabaseManager.executeQuery;
 import static dataAccess.DatabaseManager.executeUpdate;
 
 public class AuthTokenDao {
-    private static final ArrayList<AuthData> authTokens = new ArrayList<>();
-
-
     public String createAuth(String username) throws DataAccessException {
         UUID tokenUUID = UUID.randomUUID();
         String authToken = tokenUUID.toString();
@@ -27,7 +24,7 @@ public class AuthTokenDao {
 
     public String getAuth(String authToken) throws DataAccessException {
         String sql = "SELECT username FROM AuthTokens WHERE authToken = ?";
-        List<Object> resultList = executeQuery(sql, String.class, authToken);
+        List<Object> resultList = executeQuery(sql, "username", authToken);
         try {
             return (String) resultList.getFirst();
         } catch (Exception ex) {
@@ -42,7 +39,7 @@ public class AuthTokenDao {
 
     public static List<Object> getAuthTokens() throws DataAccessException {
         String sql = "SELECT * FROM AuthTokens";
-        return executeQuery(sql, AuthData.class);
+        return executeQuery(sql, "AuthData");
     }
 
     public void clearAuthTokens() throws DataAccessException {

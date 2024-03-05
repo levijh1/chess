@@ -1,7 +1,10 @@
 package dataAccess;
 
+import chess.ChessGame;
+import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import model.AuthData;
+import model.GameData;
 import model.UserData;
 
 import java.sql.*;
@@ -18,6 +21,7 @@ public class DatabaseManager {
     private static final String password;
     private static final String connectionUrl;
 
+    //TODO: Write messages for DataAccessException
     /*
      * Load the database information for the db.properties file.
      */
@@ -85,7 +89,6 @@ public class DatabaseManager {
                     var param = params[i];
                     if (param instanceof String p) ps.setString(i + 1, p);
                     else if (param instanceof Integer p) ps.setInt(i + 1, p);
-                    else if (param instanceof JsonObject p) ps.setString(i + 1, ((JsonObject) param).toString());
                     else if (param == null) ps.setNull(i + 1, NULL);
                 }
 
@@ -104,7 +107,7 @@ public class DatabaseManager {
         }
     }
 
-    public static List<Object> executeQuery(String statement, Class outputType, Object... params) throws DataAccessException {
+    public static List<Object> executeQuery(String statement, String outputType, Object... params) throws DataAccessException {
         try (var conn = DatabaseManager.getConnection()) {
             try (var ps = conn.prepareStatement(statement, RETURN_GENERATED_KEYS)) {
                 for (var i = 0; i < params.length; i++) {
@@ -118,22 +121,38 @@ public class DatabaseManager {
                 List<Object> resultList = new ArrayList<>();
                 try (var rs = ps.executeQuery()) {
                     while (rs.next()) {
-                        if (outputType == String.class) {
+                        if (outputType == "username") {
                             resultList.add(rs.getString("username"));
                         }
-                        if (outputType == AuthData.class) {
+                        if (outputType == "whiteUsername") {
+                            resultList.add(rs.getString("whiteUsername"));
+                        }
+                        if (outputType == "blackUsername") {
+                            resultList.add(rs.getString("blackUsername"));
+                        }
+                        if (outputType == "AuthData") {
                             String username = rs.getString("username");
                             String authToken = rs.getString("authToken");
 
                             resultList.add(new AuthData(username, authToken));
                         }
 
-                        if (outputType == UserData.class) {
+                        if (outputType == "UserData") {
                             String username = rs.getString("username");
                             String password = rs.getString("password");
                             String email = rs.getString("email");
 
                             resultList.add(new UserData(username, password, email));
+                        }
+
+                        if (outputType == "GameData") {
+                            int gameId = rs.getInt("gameId");
+                            String whiteUsername = rs.getString("whiteUsername");
+                            String blackUsername = rs.getString("blackUsername");
+                            String gameName = rs.getString("gameName");
+                            ChessGame game = new Gson().fromJson(rs.getString("game"), ChessGame.class);
+
+                            resultList.add(new GameData(gameId, whiteUsername, blackUsername, gameName, game));
                         }
                     }
                 }
@@ -145,6 +164,9 @@ public class DatabaseManager {
     }
 
     public static void createTables() throws DataAccessException {
+        //TODO: Move this to the creation of every DAO (as part of the constructor)
+        //TODO: password needs to be larger than 60 characters
+        //TODO: ChessGame needs to be several hundred characters long
         String[] sqlStatements = {"CREATE TABLE IF NOT EXISTS AuthTokens (" +
                 "username VARCHAR(255) not null, " +
                 "authToken VARCHAR(255) not null" +

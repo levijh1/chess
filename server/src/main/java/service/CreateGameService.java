@@ -10,7 +10,7 @@ import server.response.ErrorResponse;
 import server.response.ParentResponse;
 
 public class CreateGameService {
-    public ParentResponse createGame(CreateGameRequest r, String authToken) {
+    public ParentResponse createGame(CreateGameRequest r, String authToken) throws DataAccessException {
         String gameName = r.gameName();
         int gameID;
 

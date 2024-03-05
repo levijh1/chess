@@ -10,10 +10,11 @@ import server.response.ListGamesResponse;
 import server.response.ParentResponse;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class ListGamesService {
-    public ParentResponse listGames(GenericRequest r, String authToken) {
-        ArrayList<GameData> gameList;
+    public ParentResponse listGames(GenericRequest r, String authToken) throws DataAccessException {
+        List<Object> gameList;
 
         AuthTokenDao authTokenDao = new AuthTokenDao();
 

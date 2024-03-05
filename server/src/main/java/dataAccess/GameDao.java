@@ -1,61 +1,60 @@
 package dataAccess;
 
 import chess.ChessGame;
+import com.google.gson.Gson;
 import model.GameData;
 import server.request.PlayerColor;
 
-import java.util.ArrayList;
-import java.util.Objects;
+import java.util.List;
+
+import static dataAccess.DatabaseManager.executeQuery;
+import static dataAccess.DatabaseManager.executeUpdate;
 
 public class GameDao {
-    private static final ArrayList<GameData> games = new ArrayList<>();
-    private static int gameIdCounter = 1;
-
-    public int createGame(String whiteUsername, String blackUsername, String gameName, ChessGame game) {
-        int gameID = gameIdCounter;
-        gameIdCounter += 1;
-        games.add(new GameData(gameID, whiteUsername, blackUsername, gameName, game));
-        return gameID;
+    public int createGame(String whiteUsername, String blackUsername, String gameName, ChessGame game) throws DataAccessException {
+        String sql = "INSERT INTO Games(whiteUsername, blackUsername, gameName, game) VALUES (?, ?, ?, ?)";
+        String jsonGame = new Gson().toJson(game);
+        return executeUpdate(sql, whiteUsername, blackUsername, gameName, jsonGame);
     }
 
-    public GameData getGameData(int gameID) throws DataAccessException {
-        for (GameData gameData : games) {
-            if (gameData.getGameID() == gameID) {
-                return gameData;
-            }
+    public GameData getGameData(int gameId) throws DataAccessException {
+        String sql = "SELECT * FROM Games WHERE gameId = ?";
+        List<Object> resultList = executeQuery(sql, "GameData", gameId);
+
+        try {
+            return (GameData) resultList.getFirst();
+        } catch (Exception ex) {
+            throw new DataAccessException(ex.getMessage());
+        }
+    }
+
+    public static List<Object> getGames() throws DataAccessException {
+        String sql = "SELECT * FROM Games";
+        return executeQuery(sql, "GameData");
+    }
+
+    public void clearGames() throws DataAccessException {
+        String sql = "DELETE FROM Games";
+        executeUpdate(sql);
+    }
+
+    public void updateGame(int gameId, String username, PlayerColor playerColor) throws DataAccessException {
+        String sql;
+        List<Object> resultList;
+        if (playerColor == PlayerColor.WHITE) {
+            sql = "SELECT whiteUsername FROM Games WHERE gameId = ?";
+            resultList = executeQuery(sql, "whiteUsername", gameId);
+            sql = "UPDATE Games SET whiteUsername = ? WHERE gameId = ?";
+        } else {
+            sql = "SELECT blackUsername FROM Games WHERE gameId = ?";
+            resultList = executeQuery(sql, "blackUsername", gameId);
+            sql = "UPDATE Games SET blackUsername = ? WHERE gameId = ?";
         }
 
-        throw new DataAccessException("Game does not exist");
-    }
-
-    public static ArrayList<GameData> getGames() {
-        return games;
-    }
-
-    public void clearGames() {
-        games.clear();
-        gameIdCounter = 1;
-    }
-
-    public void updateGame(int gameID, String username, PlayerColor playerColor) throws DataAccessException {
-        for (int i = 0; i < games.size(); i++) {
-            GameData oldgameData = games.get(i);
-            if (oldgameData.getGameID() == gameID) {
-                if (Objects.equals(playerColor, PlayerColor.WHITE)) {
-                    if (oldgameData.getWhiteUsername() != null) {
-                        throw new DataAccessException("playerColor is already taken");
-                    }
-                    games.set(i, new GameData(oldgameData.gameID(), username, oldgameData.blackUsername(), oldgameData.gameName(), oldgameData.game()));
-                }
-                if (Objects.equals(playerColor, PlayerColor.BLACK)) {
-                    if (oldgameData.getBlackUsername() != null) {
-                        throw new DataAccessException("playerColor is already taken");
-                    }
-                    games.set(i, new GameData(oldgameData.gameID(), oldgameData.whiteUsername(), username, oldgameData.gameName(), oldgameData.game()));
-                }
-                return;
-            }
+        if (resultList.get(0) != null) {
+            throw new DataAccessException("Username already occupied in game");
         }
 
+        executeUpdate(sql, username, gameId);
     }
 }
