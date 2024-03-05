@@ -8,6 +8,8 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.UUID;
 
+import static dataAccess.DatabaseManager.executeUpdate;
+
 public class AuthTokenDao {
     private static final ArrayList<AuthData> authTokens = new ArrayList<>();
 
@@ -16,21 +18,10 @@ public class AuthTokenDao {
         UUID tokenUUID = UUID.randomUUID();
         String authToken = tokenUUID.toString();
 
-        Connection connection = DatabaseManager.getConnection();
-
         String sql = "INSERT INTO AuthTokens (username, authToken)" +
                 "VALUES (?, ?)";
 
-        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
-            stmt.setString(1, username);
-            stmt.setString(2, authToken);
-
-            if (stmt.executeUpdate() != 1) {
-                System.out.println("Failed to update");
-            }
-        } catch (SQLException ex) {
-            //error
-        }
+        executeUpdate(sql, username, authToken);
 
         return authToken;
 

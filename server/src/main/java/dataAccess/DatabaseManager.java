@@ -1,5 +1,7 @@
 package dataAccess;
 
+import com.google.gson.JsonObject;
+
 import java.sql.*;
 import java.util.Properties;
 
@@ -79,7 +81,7 @@ public class DatabaseManager {
                     var param = params[i];
                     if (param instanceof String p) ps.setString(i + 1, p);
                     else if (param instanceof Integer p) ps.setInt(i + 1, p);
-//                    else if (param instanceof Object p) ps.setString(i + 1, (String) p);
+                    else if (param instanceof JsonObject p) ps.setString(i + 1, ((JsonObject) param).toString());
                     else if (param == null) ps.setNull(i + 1, NULL);
                 }
 
@@ -99,8 +101,6 @@ public class DatabaseManager {
     }
 
     public static void createTables() throws DataAccessException {
-//        Connection connection = DatabaseManager.getConnection();
-
         String[] sqlStatements = {"CREATE TABLE IF NOT EXISTS AuthTokens (" +
                 "username VARCHAR(255) not null, " +
                 "authToken VARCHAR(255) not null" +
@@ -120,11 +120,6 @@ public class DatabaseManager {
         };
         for (String sql : sqlStatements) {
             executeUpdate(sql);
-//            try (PreparedStatement stmt = connection.prepareStatement(sql)) {
-//                stmt.executeUpdate();
-//            } catch (SQLException ex) {
-//                //error
-//            }
         }
     }
 }
