@@ -1,5 +1,6 @@
 package serviceTests;
 
+import dataAccess.DataAccessException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -18,12 +19,12 @@ public class LoginServiceTests {
     private final ClearService clearService = new ClearService();
 
     @BeforeEach
-    public void setUp() {
+    public void setUp() throws DataAccessException {
         clearService.clear();
     }
 
     @Test
-    public void successfulLoginTest() {
+    public void successfulLoginTest() throws DataAccessException {
         RegisterAndLoginResponse expected = new RegisterAndLoginResponse("testUsername", "someAuthToken");
 
         registerService.register(new RegisterRequest("testUsername", "testPassword", "testEmail"));
@@ -33,7 +34,7 @@ public class LoginServiceTests {
     }
 
     @Test
-    public void usernameDoesNotExist() {
+    public void usernameDoesNotExist() throws DataAccessException {
         ParentResponse expected = new ErrorResponse("Error: unauthorized", 401);
 
         registerService.register(new RegisterRequest("testUsername1", "testPassword1", "testEmail"));
@@ -43,7 +44,7 @@ public class LoginServiceTests {
     }
 
     @Test
-    public void incorrectPassword() {
+    public void incorrectPassword() throws DataAccessException {
         ParentResponse expected = new ErrorResponse("Error: unauthorized", 401);
 
         registerService.register(new RegisterRequest("testUsername1", "testPassword1", "testEmail"));

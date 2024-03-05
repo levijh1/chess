@@ -1,5 +1,6 @@
 package serviceTests;
 
+import dataAccess.DataAccessException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -19,12 +20,12 @@ public class JoinGameServiceTests {
     private ParentResponse expected;
 
     @BeforeEach
-    public void setUp() {
+    public void setUp() throws DataAccessException {
         clearService.clear();
     }
 
     @Test
-    public void successfulJoinGame() {
+    public void successfulJoinGame() throws DataAccessException {
         expected = new ParentResponse();
         int gameID;
 
@@ -39,7 +40,7 @@ public class JoinGameServiceTests {
     }
 
     @Test
-    public void unauthorizedJoinGame() {
+    public void unauthorizedJoinGame() throws DataAccessException {
         expected = new ErrorResponse("Error: unauthorized", 401);
         int gameID;
 
@@ -54,7 +55,7 @@ public class JoinGameServiceTests {
     }
 
     @Test
-    public void gameIdDoesNotExist() {
+    public void gameIdDoesNotExist() throws DataAccessException {
         expected = new ErrorResponse("Error: bad request", 400);
 
         registerService.register(new RegisterRequest("testUsername", "testPassword", "testEmail"));
@@ -65,8 +66,9 @@ public class JoinGameServiceTests {
         Assertions.assertEquals(expected, actual);
     }
 
+    //TODO: Figure out how to make tests fails when there is an exception instead of throwing an exception
     @Test
-    public void spotAlreadyTakenInGame() {
+    public void spotAlreadyTakenInGame() throws DataAccessException {
         expected = new ErrorResponse("Error: already taken", 403);
         int gameID;
 

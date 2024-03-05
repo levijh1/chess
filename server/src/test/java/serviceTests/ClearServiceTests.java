@@ -13,6 +13,7 @@ import org.junit.jupiter.api.Test;
 import service.ClearService;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class ClearServiceTests {
     @Test
@@ -39,7 +40,7 @@ public class ClearServiceTests {
         service.clear();
         ArrayList<UserData> actualUsers = UserDao.getUsers();
         ArrayList<GameData> actualGames = GameDao.getGames();
-        ArrayList<AuthData> actualAuthTokens = AuthTokenDao.getAuthTokens();
+        List<Object> actualAuthTokens = AuthTokenDao.getAuthTokens();
 
         Assertions.assertEquals(expectedUsers, actualUsers);
         Assertions.assertEquals(expectedGames, actualGames);

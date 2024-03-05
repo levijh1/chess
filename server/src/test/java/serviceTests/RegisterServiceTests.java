@@ -1,5 +1,6 @@
 package serviceTests;
 
+import dataAccess.DataAccessException;
 import dataAccess.UserDao;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -23,7 +24,7 @@ public class RegisterServiceTests {
 
 
     @Test
-    public void BasicRegisterTest() {
+    public void BasicRegisterTest() throws DataAccessException {
         expected = new RegisterAndLoginResponse("testUsername", "someAuthToken");
 
         ParentResponse actual = service.register(new RegisterRequest("testUsername", "testPassword", "testEmail"));
@@ -32,7 +33,7 @@ public class RegisterServiceTests {
     }
 
     @Test
-    public void UsernameAlreadyTakenTest() {
+    public void UsernameAlreadyTakenTest() throws DataAccessException {
         expected = new ErrorResponse("Error: already taken", 403);
 
         service.register(new RegisterRequest("testUsername", "testPassword1", "testEmail"));

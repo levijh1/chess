@@ -1,5 +1,6 @@
 package serviceTests;
 
+import dataAccess.DataAccessException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -23,12 +24,12 @@ public class CreateGameServiceTests {
     private ParentResponse expected;
 
     @BeforeEach
-    public void setUp() {
+    public void setUp() throws DataAccessException {
         clearService.clear();
     }
 
     @Test
-    public void successfulCreateGame() {
+    public void successfulCreateGame() throws DataAccessException {
         expected = new CreateGameResponse(1);
         int gameID;
 
@@ -41,7 +42,7 @@ public class CreateGameServiceTests {
     }
 
     @Test
-    public void unauthorizedCreateGame() {
+    public void unauthorizedCreateGame() throws DataAccessException {
         expected = new ErrorResponse("Error: unauthorized", 401);
         int gameID;
 

@@ -1,6 +1,7 @@
 package serviceTests;
 
 import chess.ChessGame;
+import dataAccess.DataAccessException;
 import model.GameData;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -23,12 +24,12 @@ public class ListGamesServiceTests {
     private ParentResponse expected;
 
     @BeforeEach
-    public void setUp() {
+    public void setUp() throws DataAccessException {
         clearService.clear();
     }
 
     @Test
-    public void successfulListGames() {
+    public void successfulListGames() throws DataAccessException {
         ArrayList<GameData> expectedList = new ArrayList<GameData>();
         expectedList.add(new GameData(1, null, null, "testName1", new ChessGame()));
         expectedList.add(new GameData(2, null, null, "testName2", new ChessGame()));
@@ -47,7 +48,7 @@ public class ListGamesServiceTests {
     }
 
     @Test
-    public void unauthorizedListGames() {
+    public void unauthorizedListGames() throws DataAccessException {
         expected = new ErrorResponse("Error: unauthorized", 401);
 
         registerService.register(new RegisterRequest("testUsername", "testPassword", "testEmail"));

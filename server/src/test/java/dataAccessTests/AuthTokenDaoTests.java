@@ -8,13 +8,15 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.List;
 
 public class AuthTokenDaoTests {
     AuthTokenDao dao = new AuthTokenDao();
 
     @BeforeEach
-    public void setUp() {
+    public void setUp() throws DataAccessException {
         dao = new AuthTokenDao();
         dao.clearAuthTokens();
     }
@@ -43,7 +45,7 @@ public class AuthTokenDaoTests {
 
         String token = dao.createAuth("testUsername");
         dao.deleteAuth(token);
-        ArrayList<AuthData> actual = AuthTokenDao.getAuthTokens();
+        List<Object> actual = AuthTokenDao.getAuthTokens();
 
         Assertions.assertEquals(expected, actual);
     }

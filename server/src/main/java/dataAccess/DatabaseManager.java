@@ -1,8 +1,11 @@
 package dataAccess;
 
 import com.google.gson.JsonObject;
+import model.AuthData;
 
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
 
 import static java.sql.Statement.RETURN_GENERATED_KEYS;
@@ -94,6 +97,37 @@ public class DatabaseManager {
                 }
 
                 return 0;
+            }
+        } catch (SQLException e) {
+            throw new DataAccessException(e.getMessage());
+        }
+    }
+
+    public static List<Object> executeQuery(String statement, String outputColumn, Class outputType, Object... params) throws DataAccessException {
+        try (var conn = DatabaseManager.getConnection()) {
+            try (var ps = conn.prepareStatement(statement, RETURN_GENERATED_KEYS)) {
+                for (var i = 0; i < params.length; i++) {
+                    var param = params[i];
+                    if (param instanceof String p) ps.setString(i + 1, p);
+                    else if (param instanceof Integer p) ps.setInt(i + 1, p);
+                    else if (param instanceof JsonObject p) ps.setString(i + 1, ((JsonObject) param).toString());
+                    else if (param == null) ps.setNull(i + 1, NULL);
+                }
+
+                List<Object> resultList = new ArrayList<>();
+                Object data = null;
+                try (var rs = ps.executeQuery()) {
+                    while (rs.next()) {
+                        if (outputType == String.class) {
+                            data = rs.getString(outputColumn);
+                        }
+                        if (outputType == AuthData.class) {
+                            data = rs.getObject("outputColumn", AuthData.class);
+                        }
+                        resultList.add(data);
+                    }
+                }
+                return resultList;
             }
         } catch (SQLException e) {
             throw new DataAccessException(e.getMessage());

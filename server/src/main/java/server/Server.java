@@ -12,7 +12,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 public class Server {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws DataAccessException {
         new ClearService().clear();
         new Server().run(8080);
     }
@@ -66,7 +66,7 @@ public class Server {
         return handler(request, response, "register", RegisterRequest.class, RegisterService.class);
     }
 
-    private Object clear(Request request, Response response) {
+    private Object clear(Request request, Response response) throws DataAccessException {
         ClearService clearService = new ClearService();
         ParentResponse res = clearService.clear();
 
