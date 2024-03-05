@@ -2,6 +2,7 @@ package service;
 
 import dataAccess.AuthTokenDao;
 import dataAccess.DataAccessException;
+import dataAccess.PasswordHasher;
 import dataAccess.UserDao;
 import model.UserData;
 import server.request.LoginRequest;
@@ -13,7 +14,6 @@ import java.util.Objects;
 
 public class LoginService {
     public ParentResponse login(LoginRequest r) throws DataAccessException {
-        UserData userData;
         String username = r.username();
         String password = r.password();
 
@@ -22,13 +22,14 @@ public class LoginService {
         AuthTokenDao authTokenDao = new AuthTokenDao();
 
         try {
-            userData = userDao.getUser(username); //verify that user doesn't already exist
+            userDao.getUser(username); //verify that user doesn't already exist
         } catch (DataAccessException ex) {
             return new ErrorResponse("Error: unauthorized", 401);
         }
 
         // Check that password matches
-        if (!Objects.equals(userData.getPassword(), password)) {
+        PasswordHasher passwordHasher = new PasswordHasher();
+        if (!passwordHasher.verifyPassword(username, password)) {
             return new ErrorResponse("Error: unauthorized", 401);
         }
 

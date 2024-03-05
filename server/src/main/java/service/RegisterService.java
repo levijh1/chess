@@ -20,11 +20,14 @@ public class RegisterService {
         UserDao userDao = new UserDao();
         AuthTokenDao authTokenDao = new AuthTokenDao();
 
+        PasswordHasher passwordHasher = new PasswordHasher();
+        String hashedPassword = passwordHasher.generateHashedPassword(password);
+
 
         try {
             userDao.getUser(username); //verify that user doesn't already exist
         } catch (DataAccessException ex) {
-            userDao.createUser(username, password, email);
+            userDao.createUser(username, hashedPassword, email);
             String generatedToken = authTokenDao.createAuth(username);
             return new RegisterAndLoginResponse(username, generatedToken);
         }

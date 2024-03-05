@@ -121,8 +121,12 @@ public class DatabaseManager {
                 List<Object> resultList = new ArrayList<>();
                 try (var rs = ps.executeQuery()) {
                     while (rs.next()) {
+                        //TODO:simplify this (maybe put all strings as catch statement at end)
                         if (outputType == "username") {
                             resultList.add(rs.getString("username"));
+                        }
+                        if (outputType == "password") {
+                            resultList.add(rs.getString("password"));
                         }
                         if (outputType == "whiteUsername") {
                             resultList.add(rs.getString("whiteUsername"));
