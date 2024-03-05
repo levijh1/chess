@@ -38,7 +38,7 @@ public class ClearServiceTests {
         authTokenDao.createAuth("testUsername2");
 
         service.clear();
-        ArrayList<UserData> actualUsers = UserDao.getUsers();
+        List<Object> actualUsers = UserDao.getUsers();
         ArrayList<GameData> actualGames = GameDao.getGames();
         List<Object> actualAuthTokens = AuthTokenDao.getAuthTokens();
 

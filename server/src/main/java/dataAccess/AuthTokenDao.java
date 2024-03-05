@@ -27,7 +27,7 @@ public class AuthTokenDao {
 
     public String getAuth(String authToken) throws DataAccessException {
         String sql = "SELECT username FROM AuthTokens WHERE authToken = ?";
-        List<Object> resultList = executeQuery(sql, "username", String.class, authToken);
+        List<Object> resultList = executeQuery(sql, String.class, authToken);
         try {
             return (String) resultList.getFirst();
         } catch (Exception ex) {
@@ -42,7 +42,7 @@ public class AuthTokenDao {
 
     public static List<Object> getAuthTokens() throws DataAccessException {
         String sql = "SELECT * FROM AuthTokens";
-        return executeQuery(sql, "authToken", AuthData.class);
+        return executeQuery(sql, AuthData.class);
     }
 
     public void clearAuthTokens() throws DataAccessException {

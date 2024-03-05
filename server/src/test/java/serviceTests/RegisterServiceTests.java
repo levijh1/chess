@@ -16,7 +16,7 @@ public class RegisterServiceTests {
     private ParentResponse expected;
 
     @BeforeEach
-    public void setUp() {
+    public void setUp() throws DataAccessException {
         service = new RegisterService();
         UserDao userDao = new UserDao();
         userDao.clearUsers();

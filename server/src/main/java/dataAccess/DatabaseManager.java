@@ -2,6 +2,7 @@ package dataAccess;
 
 import com.google.gson.JsonObject;
 import model.AuthData;
+import model.UserData;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -103,7 +104,7 @@ public class DatabaseManager {
         }
     }
 
-    public static List<Object> executeQuery(String statement, String outputColumn, Class outputType, Object... params) throws DataAccessException {
+    public static List<Object> executeQuery(String statement, Class outputType, Object... params) throws DataAccessException {
         try (var conn = DatabaseManager.getConnection()) {
             try (var ps = conn.prepareStatement(statement, RETURN_GENERATED_KEYS)) {
                 for (var i = 0; i < params.length; i++) {
@@ -115,11 +116,10 @@ public class DatabaseManager {
                 }
 
                 List<Object> resultList = new ArrayList<>();
-                Object data = null;
                 try (var rs = ps.executeQuery()) {
                     while (rs.next()) {
                         if (outputType == String.class) {
-                            data = rs.getString(outputColumn);
+                            resultList.add(rs.getString("username"));
                         }
                         if (outputType == AuthData.class) {
                             String username = rs.getString("username");
@@ -128,7 +128,13 @@ public class DatabaseManager {
                             resultList.add(new AuthData(username, authToken));
                         }
 
-                        resultList.add(data);
+                        if (outputType == UserData.class) {
+                            String username = rs.getString("username");
+                            String password = rs.getString("password");
+                            String email = rs.getString("email");
+
+                            resultList.add(new UserData(username, password, email));
+                        }
                     }
                 }
                 return resultList;

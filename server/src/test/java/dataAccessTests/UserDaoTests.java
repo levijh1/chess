@@ -8,25 +8,26 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class UserDaoTests {
     UserDao dao;
 
     @BeforeEach
-    public void setUp() {
+    public void setUp() throws DataAccessException {
         dao = new UserDao();
         dao.clearUsers();
     }
 
     @Test
-    public void createUserTest() {
+    public void createUserTest() throws DataAccessException {
 
         dao.createUser("testUsername", "testPassword", "testEmail");
 
         ArrayList<UserData> expected = new ArrayList<>();
         expected.add(new UserData("testUsername", "testPassword", "testEmail"));
 
-        ArrayList<UserData> actual = UserDao.getUsers();
+        List<Object> actual = UserDao.getUsers();
         Assertions.assertEquals(expected, actual);
     }
 
