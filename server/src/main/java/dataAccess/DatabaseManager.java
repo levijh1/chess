@@ -48,6 +48,8 @@ public class DatabaseManager {
      * Creates the database if it does not already exist.
      */
     public static void createDatabase() throws DataAccessException {
+        deepClear(); //comment this out in real code
+
         try {
             var statement = "CREATE DATABASE IF NOT EXISTS " + databaseName; //TODO: do we have to use the one shown in class or is this fine?
             var conn = DriverManager.getConnection(connectionUrl, user, password);
@@ -179,7 +181,7 @@ public class DatabaseManager {
         //TODO: password needs to be larger than 60 characters
         //TODO: ChessGame needs to be several hundred characters long
         String[] sqlStatements = {"CREATE TABLE IF NOT EXISTS AuthTokens (" +
-                "username VARCHAR(255) not null, " +
+                "username VARCHAR(255) PRIMARY KEY not null, " +
                 "authToken VARCHAR(255) not null" +
                 ")",
                 "CREATE TABLE IF NOT EXISTS Users (" +
@@ -198,5 +200,10 @@ public class DatabaseManager {
         for (String sql : sqlStatements) {
             executeUpdate(sql);
         }
+    }
+
+    public static void deepClear() throws DataAccessException {
+        String sql = "DROP TABLE Users " + "DROP TABLE Games " + "DROP TABLE AuthTokens";
+        executeUpdate(sql);
     }
 }

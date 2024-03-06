@@ -30,6 +30,15 @@ public class AuthTokenDaoTests {
     }
 
     @Test
+    public void badCreateAuthTest() throws DataAccessException {
+        try {
+            String actual = dao.createAuth(null);
+        } catch (Exception ex) {
+            Assertions.assertTrue(true);
+        }
+    }
+
+    @Test
     public void getAuthTest() throws DataAccessException {
         String expected = "testUsername";
 
@@ -37,6 +46,17 @@ public class AuthTokenDaoTests {
         String actual = dao.getAuth(token);
 
         Assertions.assertEquals(expected, actual);
+    }
+
+    @Test
+    public void badGetAuthTest() throws DataAccessException {
+        String expected = "testUsername1";
+
+        String token = dao.createAuth("testUsername2");
+        String actual = dao.getAuth(token);
+
+        Assertions.assertNotEquals(expected, actual);
+
     }
 
     @Test
@@ -50,5 +70,45 @@ public class AuthTokenDaoTests {
         Assertions.assertEquals(expected, actual);
     }
 
+    @Test
+    public void badDeleteAuthTest() throws DataAccessException {
+        try {
+            dao.createAuth("testUsername");
+            dao.deleteAuth("badToken");
+        } catch (Exception ex) {
+            Assertions.assertTrue(true);
+        }
+    }
+
+    @Test
+    public void getAuthTokensTest() throws DataAccessException {
+        String token1 = dao.createAuth("testUsername1");
+        String token2 = dao.createAuth("testUsername2");
+        List<Object> actual = dao.getAuthTokens();
+
+        ArrayList<AuthData> expected = new ArrayList<AuthData>();
+        expected.add(new AuthData("testUsername1", token1));
+        expected.add(new AuthData("testUsername2", token2));
+
+        Assertions.assertEquals(actual, expected);
+    }
+
+    @Test
+    //test for getting list without any elements
+    public void badGetAuthTokensTest() throws DataAccessException {
+        List<Object> actual = dao.getAuthTokens();
+
+        Assertions.assertEquals(actual, new ArrayList<AuthData>());
+    }
+
+    @Test
+    public void clearAuthTokensTest() throws DataAccessException {
+        dao.createAuth("testUsername1");
+        dao.createAuth("testUsername2");
+        dao.clearAuthTokens();
+
+        List<Object> actual = dao.getAuthTokens();
+        Assertions.assertEquals(actual, new ArrayList<AuthData>());
+    }
 
 }
