@@ -20,7 +20,6 @@ public class DatabaseManager {
     private static final String password;
     private static final String connectionUrl;
 
-    //TODO: Write messages for DataAccessException
     /*
      * Load the database information for the db.properties file.
      */
@@ -48,7 +47,7 @@ public class DatabaseManager {
      */
     public static void createDatabase() throws DataAccessException {
         try {
-            var statement = "CREATE DATABASE IF NOT EXISTS " + databaseName; //TODO: do we have to use the one shown in class or is this fine?
+            var statement = "CREATE DATABASE IF NOT EXISTS " + databaseName;
             var conn = DriverManager.getConnection(connectionUrl, user, password);
             try (var preparedStatement = conn.prepareStatement(statement)) {
                 preparedStatement.executeUpdate();
