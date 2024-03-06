@@ -157,16 +157,16 @@ public class DatabaseManager {
 
     public static void createTables() throws DataAccessException {
         String[] sqlStatements = {"CREATE TABLE IF NOT EXISTS AuthTokens (" +
-                "username VARCHAR(255) PRIMARY KEY not null, " +
-                "authToken VARCHAR(255) not null" +
+                "username VARCHAR(255) not null, " +
+                "authToken VARCHAR(255) PRIMARY KEY not null" +
                 ")",
                 "CREATE TABLE IF NOT EXISTS Users (" +
                         "username VARCHAR(255) not null, " +
-                        "password VARCHAR(255) not null, " +
+                        "password VARCHAR(255) PRIMARY KEY not null, " +
                         "email VARCHAR(255) not null" +
                         ")",
                 "CREATE TABLE IF NOT EXISTS Games (" +
-                        "gameId INT AUTO_INCREMENT not null, " +
+                        "gameId INT AUTO_INCREMENT PRIMARY KEY not null, " +
                         "whiteUsername VARCHAR(255), " +
                         "blackUsername VARCHAR(255), " +
                         "gameName VARCHAR(255) not null, " +
