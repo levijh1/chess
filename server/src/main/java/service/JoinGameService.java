@@ -9,7 +9,6 @@ import server.response.ParentResponse;
 
 public class JoinGameService {
     public ParentResponse joinGame(JoinGameRequest r, String authToken) {
-//        String playerColor = r.playerColor();
         server.request.PlayerColor playerColor = r.playerColor();
         int gameID = r.gameID();
         String username;
@@ -30,7 +29,9 @@ public class JoinGameService {
         }
 
         try {
-            gameDao.updateGame(gameID, username, playerColor);
+            if (playerColor != null) {
+                gameDao.updateGame(gameID, username, playerColor);
+            }
         } catch (DataAccessException ex) {
             return new ErrorResponse("Error: already taken", 403);
         }

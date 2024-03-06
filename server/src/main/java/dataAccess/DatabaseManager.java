@@ -58,6 +58,14 @@ public class DatabaseManager {
         } catch (SQLException e) {
             throw new DataAccessException(e.getMessage());
         }
+
+//        UserDao userDao = new UserDao();
+//        AuthTokenDao authTokenDao = new AuthTokenDao();
+//        GameDao gameDao = new GameDao();
+//
+//        userDao.clearUsers();
+//        authTokenDao.clearAuthTokens();
+//        gameDao.clearGames();
     }
 
     /**
@@ -92,11 +100,10 @@ public class DatabaseManager {
                     else if (param == null) ps.setNull(i + 1, NULL);
                 }
 
-                if (ps.executeUpdate() == 1) {
-                    try (ResultSet generatedKeys = ps.getGeneratedKeys()) {
-                        if (generatedKeys.next()) {
-                            return generatedKeys.getInt(1);
-                        }
+                ps.executeUpdate();
+                try (ResultSet generatedKeys = ps.getGeneratedKeys()) {
+                    if (generatedKeys.next()) {
+                        return generatedKeys.getInt(1);
                     }
                 }
 

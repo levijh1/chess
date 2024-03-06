@@ -14,6 +14,10 @@ public class CreateGameService {
         String gameName = r.gameName();
         int gameID;
 
+        if (gameName == null) {
+            return new ErrorResponse("Error: bad request", 400);
+        }
+
         AuthTokenDao authTokenDao = new AuthTokenDao();
         GameDao gameDao = new GameDao();
 
