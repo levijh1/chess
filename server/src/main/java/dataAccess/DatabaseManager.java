@@ -48,8 +48,6 @@ public class DatabaseManager {
      * Creates the database if it does not already exist.
      */
     public static void createDatabase() throws DataAccessException {
-        deepClear(); //comment this out in real code
-
         try {
             var statement = "CREATE DATABASE IF NOT EXISTS " + databaseName; //TODO: do we have to use the one shown in class or is this fine?
             var conn = DriverManager.getConnection(connectionUrl, user, password);
@@ -190,7 +188,7 @@ public class DatabaseManager {
                         "email VARCHAR(255) not null" +
                         ")",
                 "CREATE TABLE IF NOT EXISTS Games (" +
-                        "gameId INT AUTO_INCREMENT PRIMARY KEY not null, " +
+                        "gameId INT AUTO_INCREMENT not null, " +
                         "whiteUsername VARCHAR(255), " +
                         "blackUsername VARCHAR(255), " +
                         "gameName VARCHAR(255) not null, " +

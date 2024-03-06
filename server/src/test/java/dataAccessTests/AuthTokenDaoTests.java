@@ -56,7 +56,6 @@ public class AuthTokenDaoTests {
         String actual = dao.getAuth(token);
 
         Assertions.assertNotEquals(expected, actual);
-
     }
 
     @Test
