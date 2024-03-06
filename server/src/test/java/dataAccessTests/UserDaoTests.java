@@ -2,7 +2,6 @@ package dataAccessTests;
 
 import dataAccess.DataAccessException;
 import dataAccess.UserDao;
-import model.AuthData;
 import model.UserData;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -33,7 +32,7 @@ public class UserDaoTests {
     }
 
     @Test
-    public void badCreateUserTest() throws DataAccessException {
+    public void badCreateUserTest() {
         try {
             dao.createUser(null, "testPassword", "testEmail");
         } catch (Exception ex) {
@@ -54,7 +53,7 @@ public class UserDaoTests {
 
     @Test
     //requesting user that isn't in database
-    public void badGetUserTest() throws DataAccessException {
+    public void badGetUserTest() {
         try {
             dao.getUser("testUsername");
         } catch (Exception ex) {
@@ -82,7 +81,7 @@ public class UserDaoTests {
         dao.createUser("testUsername3", "testPassword3", "testEmail3");
         dao.createUser("testUsername4", "testPassword4", "testEmail4");
 
-        List<Object> actual = dao.getUsers();
+        List<Object> actual = UserDao.getUsers();
 
         ArrayList<UserData> expected = new ArrayList<>();
         expected.add(new UserData("testUsername", "testPassword", "testEmail"));
@@ -96,7 +95,7 @@ public class UserDaoTests {
     @Test
     //test for getting list without any elements
     public void badGetUsersTest() throws DataAccessException {
-        List<Object> actual = dao.getUsers();
+        List<Object> actual = UserDao.getUsers();
 
         Assertions.assertEquals(actual, new ArrayList<UserData>());
     }
@@ -109,7 +108,7 @@ public class UserDaoTests {
         dao.createUser("testUsername4", "testPassword4", "testEmail4");
         dao.clearUsers();
 
-        List<Object> actual = dao.getUsers();
+        List<Object> actual = UserDao.getUsers();
         Assertions.assertEquals(actual, new ArrayList<UserData>());
     }
 }

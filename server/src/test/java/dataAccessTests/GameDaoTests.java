@@ -3,7 +3,6 @@ package dataAccessTests;
 import chess.ChessGame;
 import dataAccess.DataAccessException;
 import dataAccess.GameDao;
-import model.AuthData;
 import model.GameData;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -34,7 +33,7 @@ public class GameDaoTests {
     }
 
     @Test
-    public void badCreateGameTest() throws DataAccessException {
+    public void badCreateGameTest() {
         try {
             dao.createGame("whiteTest", "blackTest", null, new ChessGame());
         } catch (Exception ex) {
@@ -57,7 +56,7 @@ public class GameDaoTests {
         int gameId = dao.createGame("whiteTest", "blackTest", "Game1", new ChessGame());
 
         try {
-            GameData actual = dao.getGameData(gameId + 1);
+            dao.getGameData(gameId + 1);
         } catch (Exception ex) {
             Assertions.assertTrue(true);
         }
@@ -69,7 +68,7 @@ public class GameDaoTests {
         int gameID2 = dao.createGame("whiteTest", "blackTest", "Game2", new ChessGame());
         int gameID3 = dao.createGame("whiteTest", "blackTest", "Game3", new ChessGame());
         int gameID4 = dao.createGame("whiteTest", "blackTest", "Game4", new ChessGame());
-        List<Object> actual = dao.getGames();
+        List<Object> actual = GameDao.getGames();
 
         ArrayList<GameData> expected = new ArrayList<>();
         expected.add(new GameData(gameID1, "whiteTest", "blackTest", "Game1", new ChessGame()));
@@ -82,19 +81,19 @@ public class GameDaoTests {
 
     @Test
     public void badGetGamesTest() throws DataAccessException {
-        List<Object> actual = dao.getGames();
+        List<Object> actual = GameDao.getGames();
 
         Assertions.assertEquals(actual, new ArrayList<GameData>());
     }
 
     @Test
     public void clearGamesTest() throws DataAccessException {
-        int gameID1 = dao.createGame("whiteTest", "blackTest", "Game1", new ChessGame());
-        int gameID2 = dao.createGame("whiteTest", "blackTest", "Game2", new ChessGame());
-        int gameID3 = dao.createGame("whiteTest", "blackTest", "Game3", new ChessGame());
-        int gameID4 = dao.createGame("whiteTest", "blackTest", "Game4", new ChessGame());
+        dao.createGame("whiteTest", "blackTest", "Game1", new ChessGame());
+        dao.createGame("whiteTest", "blackTest", "Game2", new ChessGame());
+        dao.createGame("whiteTest", "blackTest", "Game3", new ChessGame());
+        dao.createGame("whiteTest", "blackTest", "Game4", new ChessGame());
         dao.clearGames();
-        List<Object> actual = dao.getGames();
+        List<Object> actual = GameDao.getGames();
 
         Assertions.assertEquals(actual, new ArrayList<GameData>());
     }

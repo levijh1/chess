@@ -2,7 +2,6 @@ package dataAccess;
 
 import chess.ChessGame;
 import com.google.gson.Gson;
-import com.google.gson.JsonObject;
 import model.AuthData;
 import model.GameData;
 import model.UserData;
@@ -58,14 +57,6 @@ public class DatabaseManager {
         } catch (SQLException e) {
             throw new DataAccessException(e.getMessage());
         }
-
-//        UserDao userDao = new UserDao();
-//        AuthTokenDao authTokenDao = new AuthTokenDao();
-//        GameDao gameDao = new GameDao();
-//
-//        userDao.clearUsers();
-//        authTokenDao.clearAuthTokens();
-//        gameDao.clearGames();
     }
 
     /**
@@ -93,12 +84,7 @@ public class DatabaseManager {
     public static int executeUpdate(String statement, Object... params) throws DataAccessException {
         try (var conn = DatabaseManager.getConnection()) {
             try (var ps = conn.prepareStatement(statement, RETURN_GENERATED_KEYS)) {
-                for (var i = 0; i < params.length; i++) {
-                    var param = params[i];
-                    if (param instanceof String p) ps.setString(i + 1, p);
-                    else if (param instanceof Integer p) ps.setInt(i + 1, p);
-                    else if (param == null) ps.setNull(i + 1, NULL);
-                }
+                fillStatementParameters(ps, params);
 
                 ps.executeUpdate();
                 try (ResultSet generatedKeys = ps.getGeneratedKeys()) {
@@ -117,54 +103,37 @@ public class DatabaseManager {
     public static List<Object> executeQuery(String statement, String outputType, Object... params) throws DataAccessException {
         try (var conn = DatabaseManager.getConnection()) {
             try (var ps = conn.prepareStatement(statement, RETURN_GENERATED_KEYS)) {
-                for (var i = 0; i < params.length; i++) {
-                    var param = params[i];
-                    if (param instanceof String p) ps.setString(i + 1, p);
-                    else if (param instanceof Integer p) ps.setInt(i + 1, p);
-                    else if (param instanceof JsonObject p) ps.setString(i + 1, ((JsonObject) param).toString());
-                    else if (param == null) ps.setNull(i + 1, NULL);
-                }
+                fillStatementParameters(ps, params);
 
                 List<Object> resultList = new ArrayList<>();
                 try (var rs = ps.executeQuery()) {
                     while (rs.next()) {
-                        //TODO:simplify this (maybe put all strings as catch statement at end)
-                        if (outputType == "username") {
-                            resultList.add(rs.getString("username"));
-                        }
-                        if (outputType == "password") {
-                            resultList.add(rs.getString("password"));
-                        }
-                        if (outputType == "whiteUsername") {
-                            resultList.add(rs.getString("whiteUsername"));
-                        }
-                        if (outputType == "blackUsername") {
-                            resultList.add(rs.getString("blackUsername"));
-                        }
-                        if (outputType == "AuthData") {
-                            String username = rs.getString("username");
-                            String authToken = rs.getString("authToken");
+                        switch (outputType) {
+                            case "AuthData" -> {
+                                String username = rs.getString("username");
+                                String authToken = rs.getString("authToken");
 
-                            resultList.add(new AuthData(username, authToken));
-                        }
+                                resultList.add(new AuthData(username, authToken));
+                            }
+                            case "UserData" -> {
+                                String username = rs.getString("username");
+                                String password = rs.getString("password");
+                                String email = rs.getString("email");
 
-                        if (outputType == "UserData") {
-                            String username = rs.getString("username");
-                            String password = rs.getString("password");
-                            String email = rs.getString("email");
+                                resultList.add(new UserData(username, password, email));
+                            }
+                            case "GameData" -> {
+                                int gameId = rs.getInt("gameId");
+                                String whiteUsername = rs.getString("whiteUsername");
+                                String blackUsername = rs.getString("blackUsername");
+                                String gameName = rs.getString("gameName");
+                                ChessGame game = new Gson().fromJson(rs.getString("game"), ChessGame.class);
 
-                            resultList.add(new UserData(username, password, email));
+                                resultList.add(new GameData(gameId, whiteUsername, blackUsername, gameName, game));
+                            }
+                            case null, default -> resultList.add(rs.getString(outputType));
                         }
 
-                        if (outputType == "GameData") {
-                            int gameId = rs.getInt("gameId");
-                            String whiteUsername = rs.getString("whiteUsername");
-                            String blackUsername = rs.getString("blackUsername");
-                            String gameName = rs.getString("gameName");
-                            ChessGame game = new Gson().fromJson(rs.getString("game"), ChessGame.class);
-
-                            resultList.add(new GameData(gameId, whiteUsername, blackUsername, gameName, game));
-                        }
                     }
                 }
                 return resultList;
@@ -174,10 +143,20 @@ public class DatabaseManager {
         }
     }
 
+    private static void fillStatementParameters(PreparedStatement ps, Object[] params) throws SQLException {
+        for (var i = 0; i < params.length; i++) {
+            var param = params[i];
+            switch (param) {
+                case String p -> ps.setString(i + 1, p);
+                case Integer p -> ps.setInt(i + 1, p);
+                case null -> ps.setNull(i + 1, NULL);
+                default -> {
+                }
+            }
+        }
+    }
+
     public static void createTables() throws DataAccessException {
-        //TODO: Move this to the creation of every DAO (as part of the constructor)
-        //TODO: password needs to be larger than 60 characters
-        //TODO: ChessGame needs to be several hundred characters long
         String[] sqlStatements = {"CREATE TABLE IF NOT EXISTS AuthTokens (" +
                 "username VARCHAR(255) PRIMARY KEY not null, " +
                 "authToken VARCHAR(255) not null" +
@@ -198,10 +177,5 @@ public class DatabaseManager {
         for (String sql : sqlStatements) {
             executeUpdate(sql);
         }
-    }
-
-    public static void deepClear() throws DataAccessException {
-        String sql = "DROP TABLE Users " + "DROP TABLE Games " + "DROP TABLE AuthTokens";
-        executeUpdate(sql);
     }
 }

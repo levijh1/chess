@@ -8,7 +8,6 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,9 +29,9 @@ public class AuthTokenDaoTests {
     }
 
     @Test
-    public void badCreateAuthTest() throws DataAccessException {
+    public void badCreateAuthTest() {
         try {
-            String actual = dao.createAuth(null);
+            dao.createAuth(null);
         } catch (Exception ex) {
             Assertions.assertTrue(true);
         }
@@ -60,7 +59,7 @@ public class AuthTokenDaoTests {
 
     @Test
     public void deleteAuthTest() throws DataAccessException {
-        ArrayList<AuthData> expected = new ArrayList<AuthData>();
+        ArrayList<AuthData> expected = new ArrayList<>();
 
         String token = dao.createAuth("testUsername");
         dao.deleteAuth(token);
@@ -70,7 +69,7 @@ public class AuthTokenDaoTests {
     }
 
     @Test
-    public void badDeleteAuthTest() throws DataAccessException {
+    public void badDeleteAuthTest() {
         try {
             dao.createAuth("testUsername");
             dao.deleteAuth("badToken");
@@ -83,9 +82,9 @@ public class AuthTokenDaoTests {
     public void getAuthTokensTest() throws DataAccessException {
         String token1 = dao.createAuth("testUsername1");
         String token2 = dao.createAuth("testUsername2");
-        List<Object> actual = dao.getAuthTokens();
+        List<Object> actual = AuthTokenDao.getAuthTokens();
 
-        ArrayList<AuthData> expected = new ArrayList<AuthData>();
+        ArrayList<AuthData> expected = new ArrayList<>();
         expected.add(new AuthData("testUsername1", token1));
         expected.add(new AuthData("testUsername2", token2));
 
@@ -95,7 +94,7 @@ public class AuthTokenDaoTests {
     @Test
     //test for getting list without any elements
     public void badGetAuthTokensTest() throws DataAccessException {
-        List<Object> actual = dao.getAuthTokens();
+        List<Object> actual = AuthTokenDao.getAuthTokens();
 
         Assertions.assertEquals(actual, new ArrayList<AuthData>());
     }
@@ -106,7 +105,7 @@ public class AuthTokenDaoTests {
         dao.createAuth("testUsername2");
         dao.clearAuthTokens();
 
-        List<Object> actual = dao.getAuthTokens();
+        List<Object> actual = AuthTokenDao.getAuthTokens();
         Assertions.assertEquals(actual, new ArrayList<AuthData>());
     }
 
