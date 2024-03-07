@@ -1010,7 +1010,7 @@ sys|schema||mysql.sys|localhost|TRIGGER|G</Grants>
     </schema>
     <schema id="292" parent="1" name="chess">
       <Current>1</Current>
-      <LastIntrospectionLocalTimestamp>2024-03-06.00:21:20</LastIntrospectionLocalTimestamp>
+      <LastIntrospectionLocalTimestamp>2024-03-06.01:30:18</LastIntrospectionLocalTimestamp>
       <CollationName>utf8mb4_0900_ai_ci</CollationName>
     </schema>
     <user id="293" parent="1" name="mysql.infoschema">
@@ -1054,54 +1054,74 @@ sys|schema||mysql.sys|localhost|TRIGGER|G</Grants>
       <NotNull>1</NotNull>
       <Position>2</Position>
     </column>
-    <column id="302" parent="298" name="gameId">
+    <index id="302" parent="297" name="PRIMARY">
+      <ColNames>authToken</ColNames>
+      <Type>btree</Type>
+      <Unique>1</Unique>
+    </index>
+    <key id="303" parent="297" name="PRIMARY">
+      <NameSurrogate>1</NameSurrogate>
+      <Primary>1</Primary>
+      <UnderlyingIndexName>PRIMARY</UnderlyingIndexName>
+    </key>
+    <column id="304" parent="298" name="gameId">
       <AutoIncrement>1</AutoIncrement>
       <DasType>int|0s</DasType>
       <NotNull>1</NotNull>
       <Position>1</Position>
     </column>
-    <column id="303" parent="298" name="whiteUsername">
+    <column id="305" parent="298" name="whiteUsername">
       <DasType>varchar(255)|0s</DasType>
       <Position>2</Position>
     </column>
-    <column id="304" parent="298" name="blackUsername">
+    <column id="306" parent="298" name="blackUsername">
       <DasType>varchar(255)|0s</DasType>
       <Position>3</Position>
     </column>
-    <column id="305" parent="298" name="gameName">
+    <column id="307" parent="298" name="gameName">
       <DasType>varchar(255)|0s</DasType>
       <NotNull>1</NotNull>
       <Position>4</Position>
     </column>
-    <column id="306" parent="298" name="game">
+    <column id="308" parent="298" name="game">
       <DasType>json|0s</DasType>
       <NotNull>1</NotNull>
       <Position>5</Position>
     </column>
-    <index id="307" parent="298" name="PRIMARY">
+    <index id="309" parent="298" name="PRIMARY">
       <ColNames>gameId</ColNames>
       <Type>btree</Type>
       <Unique>1</Unique>
     </index>
-    <key id="308" parent="298" name="PRIMARY">
+    <key id="310" parent="298" name="PRIMARY">
       <NameSurrogate>1</NameSurrogate>
       <Primary>1</Primary>
       <UnderlyingIndexName>PRIMARY</UnderlyingIndexName>
     </key>
-    <column id="309" parent="299" name="username">
+    <column id="311" parent="299" name="username">
       <DasType>varchar(255)|0s</DasType>
       <NotNull>1</NotNull>
       <Position>1</Position>
     </column>
-    <column id="310" parent="299" name="password">
+    <column id="312" parent="299" name="password">
       <DasType>varchar(255)|0s</DasType>
       <NotNull>1</NotNull>
       <Position>2</Position>
     </column>
-    <column id="311" parent="299" name="email">
+    <column id="313" parent="299" name="email">
       <DasType>varchar(255)|0s</DasType>
       <NotNull>1</NotNull>
       <Position>3</Position>
     </column>
+    <index id="314" parent="299" name="PRIMARY">
+      <ColNames>password</ColNames>
+      <Type>btree</Type>
+      <Unique>1</Unique>
+    </index>
+    <key id="315" parent="299" name="PRIMARY">
+      <NameSurrogate>1</NameSurrogate>
+      <Primary>1</Primary>
+      <UnderlyingIndexName>PRIMARY</UnderlyingIndexName>
+    </key>
   </database-model>
 </dataSource>
