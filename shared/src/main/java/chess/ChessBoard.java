@@ -172,4 +172,15 @@ public class ChessBoard {
 
 
     }
+
+    public ChessGame.TeamColor getPieceColorString(int boardRow, int boardCol) {
+        ChessPiece currentPiece = this.getPiece(new ChessPosition(boardRow, boardCol));
+
+        if (currentPiece == null) {
+            return null;
+        }
+
+        return currentPiece.getTeamColor();
+
+    }
 }

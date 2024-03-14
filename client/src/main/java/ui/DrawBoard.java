@@ -1,6 +1,7 @@
 package ui;
 
 import chess.ChessBoard;
+import chess.ChessGame;
 
 import java.io.PrintStream;
 import java.nio.charset.StandardCharsets;
@@ -57,15 +58,26 @@ public class DrawBoard {
     }
 
     private static void drawInteriorRows(PrintStream out, ChessBoard board) {
+        String piece;
+        ChessGame.TeamColor pieceColor;
+
         for (int boardRow = 8; boardRow > 0; --boardRow) {
             drawNumberRowBox(out, boardRow);
 
-            for (int boardCol = 0; boardCol < 8; ++boardCol) {
-//                String piece = board.getPieceString(boardRow, boardCol);
+            for (int boardCol = 1; boardCol < 9; ++boardCol) {
+                piece = board.getPieceString(boardRow, boardCol);
+                if (piece != null) {
+                    pieceColor = board.getPieceColorString(boardRow, boardCol);
+                    if (pieceColor == ChessGame.TeamColor.WHITE) {
+                        out.print(SET_TEXT_COLOR_WHITE);
+                    } else {
+                        out.print(SET_TEXT_COLOR_BLACK);
+                    }
+                }
                 if ((boardCol + boardRow) % 2 == 0) {
-                    drawBlueBox(out, " ");
+                    drawBlueBox(out, piece);
                 } else {
-                    drawRedBox(out, " ");
+                    drawRedBox(out, piece);
                 }
             }
 
