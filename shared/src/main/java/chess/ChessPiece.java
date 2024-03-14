@@ -44,6 +44,10 @@ public class ChessPiece {
         return this.type;
     }
 
+    public String getPieceTypeString() {
+        return this.type.name();
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

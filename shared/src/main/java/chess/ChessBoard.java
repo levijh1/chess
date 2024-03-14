@@ -150,4 +150,26 @@ public class ChessBoard {
         this.addPiece(new ChessPosition(8, 7), new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.KNIGHT));
         this.addPiece(new ChessPosition(8, 8), new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.ROOK));
     }
+
+    public String getPieceString(int boardRow, int boardCol) {
+        ChessPiece currentPiece = this.getPiece(new ChessPosition(boardRow, boardCol));
+
+        if (currentPiece == null) {
+            return " ";
+        }
+
+        String currentPieceType = currentPiece.getPieceTypeString();
+
+        return switch (currentPieceType) {
+            case ("KING") -> "K";
+            case ("QUEEN") -> "Q";
+            case ("BISHOP") -> "B";
+            case ("KNIGHT") -> "N";
+            case ("ROOK") -> "R";
+            case ("PAWN") -> "P";
+            default -> throw new IllegalStateException("Unexpected value: " + currentPieceType);
+        };
+
+
+    }
 }
