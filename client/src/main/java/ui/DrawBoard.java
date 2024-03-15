@@ -21,7 +21,7 @@ public class DrawBoard {
         drawBothBoards(exampleBoard);
     }
 
-    private static void drawBothBoards(ChessBoard board) {
+    public static void drawBothBoards(ChessBoard board) {
         drawBoard(board, ChessGame.TeamColor.BLACK);
         drawBlackRow();
         drawBoard(board, ChessGame.TeamColor.WHITE);

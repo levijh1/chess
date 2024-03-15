@@ -13,7 +13,7 @@ import com.google.gson.Gson;
 
 
 public class ClientCommunicator {
-    public <T> ParentResponse sendRequest(String requestMethod, String urlString, T request, String authToken) throws IOException {
+    public <T> ParentResponse sendRequest(String requestMethod, String urlString, T request, Class<? extends ParentResponse> responseClass, String authToken) throws IOException {
         URL url = new URL(urlString);
         InputStream responseBody;
 
@@ -39,7 +39,7 @@ public class ClientCommunicator {
 
             responseBody = connection.getInputStream();
             String responseString = convertStreamToString(responseBody);
-            return new Gson().fromJson(responseString, RegisterAndLoginResponse.class);
+            return new Gson().fromJson(responseString, responseClass);
         } else {
             //server returned an HTTP ERROR
             responseBody = connection.getErrorStream();

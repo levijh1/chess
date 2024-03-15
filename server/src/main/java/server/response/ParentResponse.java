@@ -1,5 +1,6 @@
 package server.response;
 
+import java.util.List;
 import java.util.Objects;
 
 public class ParentResponse {
@@ -11,6 +12,14 @@ public class ParentResponse {
 
     public String getAuthToken() throws Exception {
         throw new Exception("No getAuthToken method declared for this class");
+    }
+
+    public List<Object> getGames() throws Exception {
+        throw new Exception("No getGames method declared for this class");
+    }
+
+    public int getGameID() throws Exception {
+        throw new Exception("No getGameID method declared for this class");
     }
 
     @Override

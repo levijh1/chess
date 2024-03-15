@@ -29,6 +29,10 @@ public class Client {
                 result = serverFacade.eval(line);
                 if (!Objects.equals(result, "quit")) {
                     out.print(SET_TEXT_COLOR_BLUE + result);
+                    if (!line.equals("help")) {
+                        out.print("\n\n");
+                        out.print(serverFacade.help());
+                    }
                 }
             } catch (Throwable e) {
                 var msg = e.toString();

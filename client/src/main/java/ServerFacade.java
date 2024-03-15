@@ -1,9 +1,17 @@
+import chess.ChessGame;
+import model.GameData;
+import server.request.CreateGameRequest;
 import server.request.GenericRequest;
 import server.request.LoginRequest;
 import server.request.RegisterRequest;
+import server.response.CreateGameResponse;
+import server.response.ListGamesResponse;
 import server.response.ParentResponse;
+import server.response.RegisterAndLoginResponse;
+import ui.DrawBoard;
 
 import java.util.Arrays;
+import java.util.List;
 
 public class ServerFacade {
     private final ClientCommunicator server = new ClientCommunicator();
@@ -22,7 +30,7 @@ public class ServerFacade {
             case "login" -> login(params[0], params[1]);
             case "register" -> register(params[0], params[1], params[2]);
             case "logout" -> logout();
-            case "create" -> createGame();
+            case "create" -> createGame(params[0]);
             case "list" -> listGames();
             case "join" -> joinGame();
             case "observe" -> joinObserver();
@@ -55,7 +63,7 @@ public class ServerFacade {
     private String login(String username, String password) {
         try {
             LoginRequest loginRequest = new LoginRequest(username, password);
-            ParentResponse response = server.sendRequest("POST", serverUrl + "/session", loginRequest, authToken);
+            ParentResponse response = server.sendRequest("POST", serverUrl + "/session", loginRequest, RegisterAndLoginResponse.class, authToken);
 
             try {
                 this.authToken = response.getAuthToken();
@@ -71,7 +79,7 @@ public class ServerFacade {
     private String register(String username, String password, String email) {
         try {
             RegisterRequest registerRequest = new RegisterRequest(username, password, email);
-            ParentResponse response = server.sendRequest("POST", serverUrl + "/user", registerRequest, authToken);
+            ParentResponse response = server.sendRequest("POST", serverUrl + "/user", registerRequest, RegisterAndLoginResponse.class, authToken);
 
             try {
                 this.authToken = response.getAuthToken();
@@ -91,7 +99,7 @@ public class ServerFacade {
         try {
             GenericRequest genericRequest = new GenericRequest();
             try {
-                server.sendRequest("DELETE", serverUrl + "/session", genericRequest, authToken);
+                server.sendRequest("DELETE", serverUrl + "/session", genericRequest, ParentResponse.class, authToken);
                 this.authToken = null;
                 return "Successful logout!";
             } catch (Exception ex) {
@@ -103,23 +111,44 @@ public class ServerFacade {
 
     }
 
-    private String createGame() {
-        return null;
+    private String createGame(String gameName) {
+        try {
+            CreateGameRequest createGameRequest = new CreateGameRequest(gameName);
+            ParentResponse response = server.sendRequest("POST", serverUrl + "/game", createGameRequest, CreateGameResponse.class, authToken);
 
+            try {
+                return "Game created successfully!";
+            } catch (Exception ex) {
+                return "Game creation not successful";
+            }
+        } catch (Exception ex) {
+            return ex.getMessage();
+        }
     }
 
     private String listGames() {
-//        try {
-//            GenericRequest genericRequest = new GenericRequest();
-//            try {
-//                server.sendRequest("GET", serverUrl + "/game", genericRequest, authToken);
-//                return "Successful logout!";
-//            } catch (Exception ex) {
-//                return "logout not successful. Not already logged in";
-//            }
-//        } catch (Exception ex) {
-//            return ex.getMessage();
-//        }
+        try {
+            GenericRequest genericRequest = new GenericRequest();
+            try {
+                ParentResponse response = server.sendRequest("GET", serverUrl + "/game", genericRequest, ListGamesResponse.class, authToken);
+                List<Object> Games = response.getGames();
+                int i = 0;
+                for (Object game : Games) {
+                    GameData gameData = (GameData) game;
+                    i += 1;
+                    System.out.println("Game Number: " + i);
+                    System.out.println("Game Name: " + gameData.getGameName());
+                    System.out.println("Black Team Username: " + gameData.getWhiteUsername());
+                    System.out.print("White Team Username: " + gameData.getWhiteUsername());
+                    DrawBoard.drawBothBoards(gameData.getGame().getBoard());
+                }
+                return "All games listed";
+            } catch (Exception ex) {
+                return ex.getMessage();
+            }
+        } catch (Exception ex) {
+            return ex.getMessage();
+        }
 
     }
 

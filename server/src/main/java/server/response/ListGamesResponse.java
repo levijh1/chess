@@ -10,6 +10,10 @@ public class ListGamesResponse extends ParentResponse {
         this.games = games;
     }
 
+    public List<Object> getGames() {
+        return games;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
