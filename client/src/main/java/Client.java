@@ -1,4 +1,3 @@
-import javax.script.AbstractScriptEngine;
 import java.io.PrintStream;
 import java.nio.charset.StandardCharsets;
 import java.util.Objects;
@@ -7,10 +6,10 @@ import java.util.Scanner;
 import static ui.EscapeSequences.*;
 
 public class Client {
-    private ClientCommunicator clientCommunicator;
+    private ServerFacade serverFacade;
 
     public Client(String serverUrl) {
-        clientCommunicator = new ClientCommunicator(serverUrl);
+        serverFacade = new ServerFacade(serverUrl);
     }
 
     public void run() {
@@ -18,7 +17,7 @@ public class Client {
 
         out.println("Welcome to 240 chess!");
         out.print(SET_TEXT_COLOR_BLUE);
-        out.print(clientCommunicator.help());
+        out.print(serverFacade.help());
 
         Scanner scanner = new Scanner(System.in);
         var result = "";
@@ -27,7 +26,7 @@ public class Client {
             String line = scanner.nextLine();
 
             try {
-                result = clientCommunicator.eval(line);
+                result = serverFacade.eval(line);
                 if (!Objects.equals(result, "quit")) {
                     out.print(SET_TEXT_COLOR_BLUE + result);
                 }
