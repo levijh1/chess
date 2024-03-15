@@ -1,17 +1,23 @@
+import javax.script.AbstractScriptEngine;
 import java.io.PrintStream;
 import java.nio.charset.StandardCharsets;
+import java.util.Objects;
 import java.util.Scanner;
 
 import static ui.EscapeSequences.*;
 
 public class Client {
-    private String authToken = null;
+    private ClientCommunicator clientCommunicator;
 
-    public void runClient() {
-        ClientCommunicator clientCommunicator = new ClientCommunicator();
+    public Client(String serverUrl) {
+        clientCommunicator = new ClientCommunicator(serverUrl);
+    }
+
+    public void run() {
         var out = new PrintStream(System.out, true, StandardCharsets.UTF_8);
 
         out.println("Welcome to 240 chess!");
+        out.print(SET_TEXT_COLOR_BLUE);
         out.print(clientCommunicator.help());
 
         Scanner scanner = new Scanner(System.in);
@@ -22,7 +28,9 @@ public class Client {
 
             try {
                 result = clientCommunicator.eval(line);
-                out.print(SET_TEXT_COLOR_BLUE + result);
+                if (!Objects.equals(result, "quit")) {
+                    out.print(SET_TEXT_COLOR_BLUE + result);
+                }
             } catch (Throwable e) {
                 var msg = e.toString();
                 out.print(msg);
