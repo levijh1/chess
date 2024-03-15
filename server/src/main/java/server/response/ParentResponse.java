@@ -9,6 +9,10 @@ public class ParentResponse {
         return statusCode;
     }
 
+    public String getAuthToken() throws Exception {
+        throw new Exception("No getAuthToken method declared for this class");
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

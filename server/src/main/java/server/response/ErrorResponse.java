@@ -30,4 +30,8 @@ public class ErrorResponse extends ParentResponse {
                 ", statusCode=" + statusCode +
                 '}';
     }
+
+    public String getErrorMessage() {
+        return message;
+    }
 }

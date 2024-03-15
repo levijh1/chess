@@ -39,6 +39,6 @@ public class Client {
     }
 
     private void printPrompt(PrintStream out) {
-        out.print("\n" + RESET_TEXT_COLOR + ">>> " + SET_TEXT_COLOR_GREEN);
+        out.print("\n" + SET_TEXT_COLOR_WHITE + ">>> " + SET_TEXT_COLOR_GREEN);
     }
 }

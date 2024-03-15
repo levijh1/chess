@@ -1,6 +1,8 @@
+import server.request.GenericRequest;
+import server.request.LoginRequest;
 import server.request.RegisterRequest;
+import server.response.ParentResponse;
 
-import java.io.IOException;
 import java.util.Arrays;
 
 public class ServerFacade {
@@ -17,7 +19,7 @@ public class ServerFacade {
         var cmd = (tokens.length > 0) ? tokens[0] : "help";
         var params = Arrays.copyOfRange(tokens, 1, tokens.length);
         return switch (cmd) {
-            case "login" -> login();
+            case "login" -> login(params[0], params[1]);
             case "register" -> register(params[0], params[1], params[2]);
             case "logout" -> logout();
             case "create" -> createGame();
@@ -50,21 +52,54 @@ public class ServerFacade {
         }
     }
 
-    private String login() {
-        return null;
+    private String login(String username, String password) {
+        try {
+            LoginRequest loginRequest = new LoginRequest(username, password);
+            ParentResponse response = server.sendRequest("POST", serverUrl + "/session", loginRequest, authToken);
+
+            try {
+                this.authToken = response.getAuthToken();
+                return "Successful login!";
+            } catch (Exception ex) {
+                return "login not successful. Check your password or make sure that username is already registered";
+            }
+        } catch (Exception ex) {
+            return ex.getMessage();
+        }
     }
 
     private String register(String username, String password, String email) {
         try {
             RegisterRequest registerRequest = new RegisterRequest(username, password, email);
-            return server.doPost(serverUrl + "/user", registerRequest, null);
+            ParentResponse response = server.sendRequest("POST", serverUrl + "/user", registerRequest, authToken);
+
+            try {
+                this.authToken = response.getAuthToken();
+                return "Successfully registered and logged in!";
+            } catch (Exception ex) {
+                return "Register not successful. Try a different username.";
+            }
         } catch (Exception ex) {
             return ex.getMessage();
         }
     }
 
     private String logout() {
-        return null;
+        if (authToken == null) {
+            return "You are already logged out";
+        }
+        try {
+            GenericRequest genericRequest = new GenericRequest();
+            try {
+                server.sendRequest("DELETE", serverUrl + "/session", genericRequest, authToken);
+                this.authToken = null;
+                return "Successful logout!";
+            } catch (Exception ex) {
+                return "logout not successful. Not already logged in";
+            }
+        } catch (Exception ex) {
+            return ex.getMessage();
+        }
 
     }
 
@@ -74,8 +109,17 @@ public class ServerFacade {
     }
 
     private String listGames() {
-//        server.doGet(serverUrl, authToken);
-        return null;
+//        try {
+//            GenericRequest genericRequest = new GenericRequest();
+//            try {
+//                server.sendRequest("GET", serverUrl + "/game", genericRequest, authToken);
+//                return "Successful logout!";
+//            } catch (Exception ex) {
+//                return "logout not successful. Not already logged in";
+//            }
+//        } catch (Exception ex) {
+//            return ex.getMessage();
+//        }
 
     }
 
