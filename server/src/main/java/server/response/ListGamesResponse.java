@@ -1,16 +1,18 @@
 package server.response;
 
+import model.GameData;
+
 import java.util.List;
 import java.util.Objects;
 
 public class ListGamesResponse extends ParentResponse {
-    private final List<Object> games;
+    private final List<GameData> games;
 
-    public ListGamesResponse(List<Object> games) {
+    public ListGamesResponse(List<GameData> games) {
         this.games = games;
     }
 
-    public List<Object> getGames() {
+    public List<GameData> getGames() {
         return games;
     }
 

@@ -1,22 +1,24 @@
 import chess.ChessGame;
 import model.GameData;
-import server.request.CreateGameRequest;
-import server.request.GenericRequest;
-import server.request.LoginRequest;
-import server.request.RegisterRequest;
+import server.request.*;
 import server.response.CreateGameResponse;
 import server.response.ListGamesResponse;
 import server.response.ParentResponse;
 import server.response.RegisterAndLoginResponse;
 import ui.DrawBoard;
 
+import java.io.IOException;
+import java.lang.reflect.Field;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Objects;
 
 public class ServerFacade {
     private final ClientCommunicator server = new ClientCommunicator();
     private final String serverUrl;
     private String authToken = null;
+    HashMap<Integer, Integer> mostRecentGameNumbers = new HashMap<>();
 
     public ServerFacade(String serverUrl) {
         this.serverUrl = serverUrl;
@@ -32,8 +34,13 @@ public class ServerFacade {
             case "logout" -> logout();
             case "create" -> createGame(params[0]);
             case "list" -> listGames();
-            case "join" -> joinGame();
-            case "observe" -> joinObserver();
+            case "join" -> {
+                if (params.length >= 2)
+                    yield joinGame(params[0], params[1]);
+                else
+                    yield joinGame(params[0], null);
+            }
+            case "observe" -> joinGame(params[0], null);
             case "quit" -> "quit";
             default -> help();
         };
@@ -131,16 +138,17 @@ public class ServerFacade {
             GenericRequest genericRequest = new GenericRequest();
             try {
                 ParentResponse response = server.sendRequest("GET", serverUrl + "/game", genericRequest, ListGamesResponse.class, authToken);
-                List<Object> Games = response.getGames();
+                List<GameData> Games = response.getGames();
                 int i = 0;
-                for (Object game : Games) {
-                    GameData gameData = (GameData) game;
+                mostRecentGameNumbers.clear();
+                for (GameData game : Games) {
                     i += 1;
                     System.out.println("Game Number: " + i);
-                    System.out.println("Game Name: " + gameData.getGameName());
-                    System.out.println("Black Team Username: " + gameData.getWhiteUsername());
-                    System.out.print("White Team Username: " + gameData.getWhiteUsername());
-                    DrawBoard.drawBothBoards(gameData.getGame().getBoard());
+                    mostRecentGameNumbers.put(i, game.getGameID());
+                    System.out.println("Game Name: " + game.getGameName());
+                    System.out.println("Black Team Username: " + game.getWhiteUsername());
+                    System.out.println("White Team Username: " + game.getWhiteUsername());
+                    DrawBoard.drawBothBoards(game.getGame().getBoard());
                 }
                 return "All games listed";
             } catch (Exception ex) {
@@ -149,16 +157,29 @@ public class ServerFacade {
         } catch (Exception ex) {
             return ex.getMessage();
         }
-
     }
 
-    private String joinGame() {
-        return null;
+    private String joinGame(String gameNumberString, String playerColor) {
+        try {
+            PlayerColor playerColorEnum;
+            int gameNumber = Integer.parseInt(gameNumberString);
+            int gameId = mostRecentGameNumbers.get(gameNumber);
+            try {
+                playerColorEnum = Enum.valueOf(PlayerColor.class, playerColor);
+            } catch (Exception ex) {
+                playerColorEnum = null;
+            }
 
-    }
+            JoinGameRequest joinGameRequest = new JoinGameRequest(playerColorEnum, gameId);
+            ParentResponse response = server.sendRequest("PUT", serverUrl + "/game", joinGameRequest, ParentResponse.class, authToken);
 
-    private String joinObserver() {
-        return null;
-
+            try {
+                return "Game joined successfully!";
+            } catch (Exception ex) {
+                return "Joining game not successful";
+            }
+        } catch (Exception ex) {
+            return ex.getMessage();
+        }
     }
 }

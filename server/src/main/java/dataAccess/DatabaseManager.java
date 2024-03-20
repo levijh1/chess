@@ -121,18 +121,42 @@ public class DatabaseManager {
 
                                 resultList.add(new UserData(username, password, email));
                             }
-                            case "GameData" -> {
-                                int gameId = rs.getInt("gameId");
-                                String whiteUsername = rs.getString("whiteUsername");
-                                String blackUsername = rs.getString("blackUsername");
-                                String gameName = rs.getString("gameName");
-                                ChessGame game = new Gson().fromJson(rs.getString("game"), ChessGame.class);
-
-                                resultList.add(new GameData(gameId, whiteUsername, blackUsername, gameName, game));
-                            }
+//                            case "GameData" -> {
+//                                int gameId = rs.getInt("gameId");
+//                                String whiteUsername = rs.getString("whiteUsername");
+//                                String blackUsername = rs.getString("blackUsername");
+//                                String gameName = rs.getString("gameName");
+//                                ChessGame game = new Gson().fromJson(rs.getString("game"), ChessGame.class);
+//
+//                                resultList.add(new GameData(gameId, whiteUsername, blackUsername, gameName, game));
+//                            }
                             case null, default -> resultList.add(rs.getString(outputType));
                         }
 
+                    }
+                }
+                return resultList;
+            }
+        } catch (SQLException e) {
+            throw new DataAccessException(e.getMessage());
+        }
+    }
+
+    public static List<GameData> executeQueryGameData(String statement, String outputType, Object... params) throws DataAccessException {
+        try (var conn = DatabaseManager.getConnection()) {
+            try (var ps = conn.prepareStatement(statement, RETURN_GENERATED_KEYS)) {
+                fillStatementParameters(ps, params);
+
+                List<GameData> resultList = new ArrayList<>();
+                try (var rs = ps.executeQuery()) {
+                    while (rs.next()) {
+                        int gameId = rs.getInt("gameId");
+                        String whiteUsername = rs.getString("whiteUsername");
+                        String blackUsername = rs.getString("blackUsername");
+                        String gameName = rs.getString("gameName");
+                        ChessGame game = new Gson().fromJson(rs.getString("game"), ChessGame.class);
+
+                        resultList.add(new GameData(gameId, whiteUsername, blackUsername, gameName, game));
                     }
                 }
                 return resultList;

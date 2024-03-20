@@ -7,8 +7,7 @@ import server.request.PlayerColor;
 
 import java.util.List;
 
-import static dataAccess.DatabaseManager.executeQuery;
-import static dataAccess.DatabaseManager.executeUpdate;
+import static dataAccess.DatabaseManager.*;
 
 public class GameDao {
     public int createGame(String whiteUsername, String blackUsername, String gameName, ChessGame game) throws DataAccessException {
@@ -19,18 +18,18 @@ public class GameDao {
 
     public GameData getGameData(int gameId) throws DataAccessException {
         String sql = "SELECT * FROM Games WHERE gameId = ?";
-        List<Object> resultList = executeQuery(sql, "GameData", gameId);
+        List<GameData> resultList = executeQueryGameData(sql, "GameData", gameId);
 
         try {
-            return (GameData) resultList.getFirst();
+            return resultList.getFirst();
         } catch (Exception ex) {
             throw new DataAccessException(ex.getMessage());
         }
     }
 
-    public static List<Object> getGames() throws DataAccessException {
+    public static List<GameData> getGames() throws DataAccessException {
         String sql = "SELECT * FROM Games";
-        return executeQuery(sql, "GameData");
+        return executeQueryGameData(sql, "GameData");
     }
 
     public void clearGames() throws DataAccessException {
@@ -40,19 +39,20 @@ public class GameDao {
 
     public void updateGame(int gameId, String username, PlayerColor playerColor) throws DataAccessException {
         String sql = null;
-        List<Object> resultList = null;
+        List<GameData> resultList = null;
         if (playerColor == PlayerColor.WHITE) {
             sql = "SELECT whiteUsername FROM Games WHERE gameId = ?";
-            resultList = executeQuery(sql, "whiteUsername", gameId);
+            resultList = executeQueryGameData(sql, "whiteUsername", gameId);
             sql = "UPDATE Games SET whiteUsername = ? WHERE gameId = ?";
         }
         if (playerColor == PlayerColor.BLACK) {
             sql = "SELECT blackUsername FROM Games WHERE gameId = ?";
-            resultList = executeQuery(sql, "blackUsername", gameId);
+            resultList = executeQueryGameData(sql, "blackUsername", gameId);
             sql = "UPDATE Games SET blackUsername = ? WHERE gameId = ?";
         }
 
-        if (resultList.get(0) == null) {
+        assert resultList != null;
+        if (resultList.getFirst() == null) {
             executeUpdate(sql, username, gameId);
         } else {
             throw new DataAccessException("Username already occupied in game");

@@ -28,7 +28,7 @@ public class GameDaoTests {
         ArrayList<GameData> expected = new ArrayList<>();
         expected.add(new GameData(gameId, "whiteTest", "blackTest", "Game1", new ChessGame()));
 
-        List<Object> actual = GameDao.getGames();
+        List<GameData> actual = GameDao.getGames();
         Assertions.assertEquals(expected, actual);
     }
 
@@ -68,7 +68,7 @@ public class GameDaoTests {
         int gameID2 = dao.createGame("whiteTest", "blackTest", "Game2", new ChessGame());
         int gameID3 = dao.createGame("whiteTest", "blackTest", "Game3", new ChessGame());
         int gameID4 = dao.createGame("whiteTest", "blackTest", "Game4", new ChessGame());
-        List<Object> actual = GameDao.getGames();
+        List<GameData> actual = GameDao.getGames();
 
         ArrayList<GameData> expected = new ArrayList<>();
         expected.add(new GameData(gameID1, "whiteTest", "blackTest", "Game1", new ChessGame()));
@@ -81,7 +81,7 @@ public class GameDaoTests {
 
     @Test
     public void badGetGamesTest() throws DataAccessException {
-        List<Object> actual = GameDao.getGames();
+        List<GameData> actual = GameDao.getGames();
 
         Assertions.assertEquals(actual, new ArrayList<GameData>());
     }
@@ -93,7 +93,7 @@ public class GameDaoTests {
         dao.createGame("whiteTest", "blackTest", "Game3", new ChessGame());
         dao.createGame("whiteTest", "blackTest", "Game4", new ChessGame());
         dao.clearGames();
-        List<Object> actual = GameDao.getGames();
+        List<GameData> actual = GameDao.getGames();
 
         Assertions.assertEquals(actual, new ArrayList<GameData>());
     }

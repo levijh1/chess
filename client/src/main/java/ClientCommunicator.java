@@ -7,6 +7,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URL;
 import java.net.HttpURLConnection;
+import java.util.Objects;
 import java.util.Scanner;
 
 import com.google.gson.Gson;
@@ -19,9 +20,12 @@ public class ClientCommunicator {
 
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 
-        connection.setReadTimeout(5000);
+//        connection.setReadTimeout(5000);
         connection.setRequestMethod(requestMethod);
-        connection.setDoOutput(true);
+
+        if (!Objects.equals(requestMethod, "GET")) {
+            connection.setDoOutput(true);
+        }
 
         if (authToken != null) {
             connection.addRequestProperty("Authorization", authToken);
@@ -29,9 +33,11 @@ public class ClientCommunicator {
 
         connection.connect();
 
-        try (OutputStream requestBody = connection.getOutputStream();) {
-            String jsonRequest = new Gson().toJson(request);
-            requestBody.write(jsonRequest.getBytes());
+        if (!Objects.equals(requestMethod, "GET")) {
+            try (OutputStream requestBody = connection.getOutputStream();) {
+                String jsonRequest = new Gson().toJson(request);
+                requestBody.write(jsonRequest.getBytes());
+            }
         }
 
         if (connection.getResponseCode() == HttpURLConnection.HTTP_OK) {

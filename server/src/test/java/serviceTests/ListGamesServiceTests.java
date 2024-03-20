@@ -39,7 +39,7 @@ public class ListGamesServiceTests {
 
         ParentResponse actual = listGamesService.listGames(new GenericRequest(), authToken);
 
-        List<Object> expectedList = new ArrayList<>();
+        List<GameData> expectedList = new ArrayList<>();
         expectedList.add(new GameData(response1.getGameID(), null, null, "testName1", new ChessGame()));
         expectedList.add(new GameData(response2.getGameID(), null, null, "testName2", new ChessGame()));
         expected = new ListGamesResponse(expectedList);

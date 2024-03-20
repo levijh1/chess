@@ -14,7 +14,7 @@ import java.util.List;
 
 public class ListGamesService {
     public ParentResponse listGames(GenericRequest r, String authToken) throws DataAccessException {
-        List<Object> gameList;
+        List<GameData> gameList;
 
         AuthTokenDao authTokenDao = new AuthTokenDao();
 

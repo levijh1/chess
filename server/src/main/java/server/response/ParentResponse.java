@@ -1,5 +1,7 @@
 package server.response;
 
+import model.GameData;
+
 import java.util.List;
 import java.util.Objects;
 
@@ -14,7 +16,7 @@ public class ParentResponse {
         throw new Exception("No getAuthToken method declared for this class");
     }
 
-    public List<Object> getGames() throws Exception {
+    public List<GameData> getGames() throws Exception {
         throw new Exception("No getGames method declared for this class");
     }
 
