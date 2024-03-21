@@ -1,3 +1,5 @@
+package client;
+
 import java.io.PrintStream;
 import java.nio.charset.StandardCharsets;
 import java.util.Objects;
@@ -8,8 +10,8 @@ import static ui.EscapeSequences.*;
 public class Client {
     private ServerFacade serverFacade;
 
-    public Client(String serverUrl) {
-        serverFacade = new ServerFacade(serverUrl);
+    public Client(int port) {
+        serverFacade = new ServerFacade(port);
     }
 
     public void run() {
@@ -17,7 +19,7 @@ public class Client {
 
         out.println("Welcome to 240 chess!");
         out.print(SET_TEXT_COLOR_BLUE);
-        out.print(serverFacade.help());
+        serverFacade.help();
 
         Scanner scanner = new Scanner(System.in);
         var result = "";
@@ -26,12 +28,12 @@ public class Client {
             String line = scanner.nextLine();
 
             try {
+                out.print(SET_TEXT_COLOR_BLUE);
                 result = serverFacade.eval(line);
                 if (!Objects.equals(result, "quit")) {
-                    out.print(SET_TEXT_COLOR_BLUE + result);
                     if (!line.equals("help")) {
                         out.print("\n\n");
-                        out.print(serverFacade.help());
+                        serverFacade.help();
                     }
                 }
             } catch (Throwable e) {

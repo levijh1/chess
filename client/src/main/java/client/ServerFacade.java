@@ -1,4 +1,5 @@
-import chess.ChessGame;
+package client;
+
 import model.GameData;
 import server.request.*;
 import server.response.CreateGameResponse;
@@ -7,12 +8,9 @@ import server.response.ParentResponse;
 import server.response.RegisterAndLoginResponse;
 import ui.DrawBoard;
 
-import java.io.IOException;
-import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Objects;
 
 import static ui.EscapeSequences.SET_TEXT_COLOR_BLUE;
 
@@ -22,8 +20,8 @@ public class ServerFacade {
     private String authToken = null;
     HashMap<Integer, Integer> mostRecentGameNumbers = new HashMap<>();
 
-    public ServerFacade(String serverUrl) {
-        this.serverUrl = serverUrl;
+    public ServerFacade(int port) {
+        this.serverUrl = "http://localhost:" + String.valueOf(port);
     }
 
     public String eval(String input) {
@@ -51,14 +49,14 @@ public class ServerFacade {
 
     public String help() {
         if (authToken == null) {
-            return """
+            System.out.print("""
                     \tregister <USERNAME> <PASSWORD> <EMAIL> - to create an account
                     \tlogin <USERNAME> <PASSWORD> - to play chess
                     \tquit - playing chess
                     \thelp - with possible commands
-                    """;
+                    """);
         } else {
-            return """
+            System.out.print("""
                     \tcreate <GAMENAME> - create a game
                     \tlist - list all available games
                     \tjoin <GAMEID> [WHITE|BLACK|<empty>] - play in a game
@@ -66,40 +64,43 @@ public class ServerFacade {
                     \tlogout - when you are done
                     \tquit - playing chess
                     \thelp - with possible commands
-                    """;
+                    """);
         }
+        return "";
     }
 
-    private String login(String username, String password) {
+    public String login(String username, String password) {
         try {
             LoginRequest loginRequest = new LoginRequest(username, password);
             ParentResponse response = server.sendRequest("POST", serverUrl + "/session", loginRequest, RegisterAndLoginResponse.class, authToken);
 
             try {
                 this.authToken = response.getAuthToken();
-                return "Successful login!";
+                System.out.println("Successful login!");
             } catch (Exception ex) {
-                return "login not successful. Check your password or make sure that username is already registered";
+                System.out.println("login not successful. Check your password or make sure that username is already registered");
             }
         } catch (Exception ex) {
-            return ex.getMessage();
+            System.out.println(ex.getMessage());
         }
+        return this.authToken;
     }
 
-    private String register(String username, String password, String email) {
+    public String register(String username, String password, String email) {
         try {
             RegisterRequest registerRequest = new RegisterRequest(username, password, email);
             ParentResponse response = server.sendRequest("POST", serverUrl + "/user", registerRequest, RegisterAndLoginResponse.class, authToken);
 
             try {
                 this.authToken = response.getAuthToken();
-                return "Successfully registered and logged in!";
+                System.out.println("Successful register!");
             } catch (Exception ex) {
-                return "Register not successful. Try a different username.";
+                System.out.println("Register not successful.");
             }
         } catch (Exception ex) {
-            return ex.getMessage();
+            System.out.println(ex.getMessage());
         }
+        return this.authToken;
     }
 
     private String logout() {

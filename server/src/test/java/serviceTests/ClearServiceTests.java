@@ -39,7 +39,7 @@ public class ClearServiceTests {
 
         service.clear();
         List<Object> actualUsers = UserDao.getUsers();
-        List<Object> actualGames = GameDao.getGames();
+        List<GameData> actualGames = GameDao.getGames();
         List<Object> actualAuthTokens = AuthTokenDao.getAuthTokens();
 
         Assertions.assertEquals(expectedUsers, actualUsers);

@@ -1,3 +1,5 @@
+package client;
+
 import server.response.ErrorResponse;
 import server.response.ParentResponse;
 import server.response.RegisterAndLoginResponse;
