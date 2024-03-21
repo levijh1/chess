@@ -21,7 +21,7 @@ public class ServerFacade {
     HashMap<Integer, Integer> mostRecentGameNumbers = new HashMap<>();
 
     public ServerFacade(int port) {
-        this.serverUrl = "http://localhost:" + String.valueOf(port);
+        this.serverUrl = "http://localhost:" + port;
     }
 
     public String eval(String input) {
@@ -126,22 +126,24 @@ public class ServerFacade {
         return this.authToken;
     }
 
-    private String createGame(String gameName) {
+    public String createGame(String gameName) {
         try {
             CreateGameRequest createGameRequest = new CreateGameRequest(gameName);
             ParentResponse response = server.sendRequest("POST", serverUrl + "/game", createGameRequest, CreateGameResponse.class, authToken);
 
             System.out.println("Game created successfully!");
 
+            return String.valueOf(response.getGameID());
         } catch (Exception ex) {
             System.out.println("Game creation not successful");
             System.out.println(ex.getMessage());
+            return null;
         }
 
-        return "";
+
     }
 
-    private String listGames() {
+    public String listGames() {
         try {
             GenericRequest genericRequest = new GenericRequest();
             try {
@@ -160,6 +162,7 @@ public class ServerFacade {
                     DrawBoard.drawBothBoards(game.getGame().getBoard());
                 }
                 System.out.println("All games listed");
+                return mostRecentGameNumbers.toString();
             } catch (Exception ex) {
                 System.out.println(ex.getMessage());
             }
@@ -167,10 +170,10 @@ public class ServerFacade {
             System.out.println(ex.getMessage());
         }
 
-        return "";
+        return null;
     }
 
-    private String joinGame(String gameNumberString, String playerColor) {
+    public String joinGame(String gameNumberString, String playerColor) {
         try {
             PlayerColor playerColorEnum;
             int gameNumber = Integer.parseInt(gameNumberString);
@@ -187,6 +190,7 @@ public class ServerFacade {
                 System.out.println(response.getMessage());
             } catch (Exception ex) {
                 System.out.println("Game joined successfully!");
+                return "Success";
             }
         } catch (Exception ex) {
             System.out.println("Joining or Observing game not successful");
@@ -194,6 +198,6 @@ public class ServerFacade {
             System.out.println(ex.getMessage());
         }
 
-        return "";
+        return null;
     }
 }
