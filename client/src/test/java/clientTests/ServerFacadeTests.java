@@ -88,7 +88,7 @@ public class ServerFacadeTests {
         facade.logout();
         Assertions.assertEquals(facade.help(), preLoginMenu);
 
-        facade.register("Username", "password", "email");
+        facade.register("helpUsername", "helpPassword", "helpEmail");
         Assertions.assertEquals(facade.help(), postLoginMenu);
     }
 

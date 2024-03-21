@@ -59,10 +59,10 @@ public class ServerFacade {
             return preLoginMenu;
         } else {
             String postLoginMenu = """
-                    \tcreate <GAMENAME> - create a game
+                    \tcreate <GAME NAME> - create a game
                     \tlist - list all available games
-                    \tjoin <GAMEID> [WHITE|BLACK|<empty>] - play in a game
-                    \tobserve <GAMEID> - watch a game
+                    \tjoin <GAME ID> [WHITE|BLACK|<empty>] - play in a game
+                    \tobserve <GAME ID> - watch a game
                     \tlogout - when you are done
                     \tquit - playing chess
                     \thelp - with possible commands
