@@ -51,13 +51,10 @@ public class GameDao {
             sql = "UPDATE Games SET blackUsername = ? WHERE gameId = ?";
         }
 
-        assert resultList != null;
-        if (resultList.getFirst() == null) {
+        if (resultList.isEmpty()) {
             executeUpdate(sql, username, gameId);
         } else {
             throw new DataAccessException("Username already occupied in game");
         }
-
-
     }
 }

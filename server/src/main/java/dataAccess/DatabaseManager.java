@@ -158,8 +158,10 @@ public class DatabaseManager {
 
                         resultList.add(new GameData(gameId, whiteUsername, blackUsername, gameName, game));
                     }
+                    return resultList;
+                } catch (Exception ex) {
+                    return resultList;
                 }
-                return resultList;
             }
         } catch (SQLException e) {
             throw new DataAccessException(e.getMessage());

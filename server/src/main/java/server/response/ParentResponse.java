@@ -16,6 +16,10 @@ public class ParentResponse {
         throw new Exception("No getAuthToken method declared for this class");
     }
 
+    public String getMessage() throws Exception {
+        throw new Exception("No getMessage method declared for this class");
+    }
+
     public List<GameData> getGames() throws Exception {
         throw new Exception("No getGames method declared for this class");
     }

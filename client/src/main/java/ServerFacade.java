@@ -14,6 +14,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
 
+import static ui.EscapeSequences.SET_TEXT_COLOR_BLUE;
+
 public class ServerFacade {
     private final ClientCommunicator server = new ClientCommunicator();
     private final String serverUrl;
@@ -35,10 +37,11 @@ public class ServerFacade {
             case "create" -> createGame(params[0]);
             case "list" -> listGames();
             case "join" -> {
-                if (params.length >= 2)
+                if (params.length >= 2) {
                     yield joinGame(params[0], params[1]);
-                else
+                } else {
                     yield joinGame(params[0], null);
+                }
             }
             case "observe" -> joinGame(params[0], null);
             case "quit" -> "quit";
@@ -49,9 +52,9 @@ public class ServerFacade {
     public String help() {
         if (authToken == null) {
             return """
-                    \tregister <USERNAME> <PASSWORD> <EMAIL> - to create an account       
-                    \tlogin <USERNAME> <PASSWORD> - to play chess           
-                    \tquit - playing chess            
+                    \tregister <USERNAME> <PASSWORD> <EMAIL> - to create an account
+                    \tlogin <USERNAME> <PASSWORD> - to play chess
+                    \tquit - playing chess
                     \thelp - with possible commands
                     """;
         } else {
@@ -143,10 +146,11 @@ public class ServerFacade {
                 mostRecentGameNumbers.clear();
                 for (GameData game : Games) {
                     i += 1;
-                    System.out.println("Game Number: " + i);
+                    System.out.print(SET_TEXT_COLOR_BLUE);
+                    System.out.println("\nGame Number: " + i);
                     mostRecentGameNumbers.put(i, game.getGameID());
                     System.out.println("Game Name: " + game.getGameName());
-                    System.out.println("Black Team Username: " + game.getWhiteUsername());
+                    System.out.println("Black Team Username: " + game.getBlackUsername());
                     System.out.println("White Team Username: " + game.getWhiteUsername());
                     DrawBoard.drawBothBoards(game.getGame().getBoard());
                 }
@@ -165,20 +169,21 @@ public class ServerFacade {
             int gameNumber = Integer.parseInt(gameNumberString);
             int gameId = mostRecentGameNumbers.get(gameNumber);
             try {
-                playerColorEnum = Enum.valueOf(PlayerColor.class, playerColor);
+                playerColorEnum = PlayerColor.valueOf(playerColor.toUpperCase());
             } catch (Exception ex) {
                 playerColorEnum = null;
             }
-
             JoinGameRequest joinGameRequest = new JoinGameRequest(playerColorEnum, gameId);
             ParentResponse response = server.sendRequest("PUT", serverUrl + "/game", joinGameRequest, ParentResponse.class, authToken);
 
             try {
-                return "Game joined successfully!";
+                return response.getMessage();
             } catch (Exception ex) {
-                return "Joining game not successful";
+                return "Game joined successfully!";
             }
         } catch (Exception ex) {
+            System.out.println("Joining or Observing game not successful");
+            System.out.println("Try listing games first or checking your input values");
             return ex.getMessage();
         }
     }
