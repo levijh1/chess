@@ -49,14 +49,16 @@ public class ServerFacade {
 
     public String help() {
         if (authToken == null) {
-            System.out.print("""
+            String preLoginMenu = """
                     \tregister <USERNAME> <PASSWORD> <EMAIL> - to create an account
                     \tlogin <USERNAME> <PASSWORD> - to play chess
                     \tquit - playing chess
                     \thelp - with possible commands
-                    """);
+                    """;
+            System.out.print(preLoginMenu);
+            return preLoginMenu;
         } else {
-            System.out.print("""
+            String postLoginMenu = """
                     \tcreate <GAMENAME> - create a game
                     \tlist - list all available games
                     \tjoin <GAMEID> [WHITE|BLACK|<empty>] - play in a game
@@ -64,9 +66,10 @@ public class ServerFacade {
                     \tlogout - when you are done
                     \tquit - playing chess
                     \thelp - with possible commands
-                    """);
+                    """;
+            System.out.print(postLoginMenu);
+            return postLoginMenu;
         }
-        return "";
     }
 
     public String login(String username, String password) {
@@ -103,23 +106,24 @@ public class ServerFacade {
         return this.authToken;
     }
 
-    private String logout() {
+    public String logout() {
         if (authToken == null) {
-            return "You are already logged out";
+            System.out.println("You are already logged out");
         }
         try {
             GenericRequest genericRequest = new GenericRequest();
             try {
                 server.sendRequest("DELETE", serverUrl + "/session", genericRequest, ParentResponse.class, authToken);
                 this.authToken = null;
-                return "Successful logout!";
+                System.out.println("Successful logout!");
             } catch (Exception ex) {
-                return "logout not successful. Not already logged in";
+                System.out.println("logout not successful. Not already logged in");
             }
         } catch (Exception ex) {
-            return ex.getMessage();
+            System.out.println(ex.getMessage());
         }
 
+        return this.authToken;
     }
 
     private String createGame(String gameName) {
@@ -127,14 +131,14 @@ public class ServerFacade {
             CreateGameRequest createGameRequest = new CreateGameRequest(gameName);
             ParentResponse response = server.sendRequest("POST", serverUrl + "/game", createGameRequest, CreateGameResponse.class, authToken);
 
-            try {
-                return "Game created successfully!";
-            } catch (Exception ex) {
-                return "Game creation not successful";
-            }
+            System.out.println("Game created successfully!");
+
         } catch (Exception ex) {
-            return ex.getMessage();
+            System.out.println("Game creation not successful");
+            System.out.println(ex.getMessage());
         }
+
+        return "";
     }
 
     private String listGames() {
@@ -155,13 +159,15 @@ public class ServerFacade {
                     System.out.println("White Team Username: " + game.getWhiteUsername());
                     DrawBoard.drawBothBoards(game.getGame().getBoard());
                 }
-                return "All games listed";
+                System.out.println("All games listed");
             } catch (Exception ex) {
-                return ex.getMessage();
+                System.out.println(ex.getMessage());
             }
         } catch (Exception ex) {
-            return ex.getMessage();
+            System.out.println(ex.getMessage());
         }
+
+        return "";
     }
 
     private String joinGame(String gameNumberString, String playerColor) {
@@ -178,14 +184,16 @@ public class ServerFacade {
             ParentResponse response = server.sendRequest("PUT", serverUrl + "/game", joinGameRequest, ParentResponse.class, authToken);
 
             try {
-                return response.getMessage();
+                System.out.println(response.getMessage());
             } catch (Exception ex) {
-                return "Game joined successfully!";
+                System.out.println("Game joined successfully!");
             }
         } catch (Exception ex) {
             System.out.println("Joining or Observing game not successful");
             System.out.println("Try listing games first or checking your input values");
-            return ex.getMessage();
+            System.out.println(ex.getMessage());
         }
+
+        return "";
     }
 }
