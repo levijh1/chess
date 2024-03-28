@@ -37,7 +37,7 @@ public class DrawBoard {
         drawInteriorRows(out, board, color);
         drawLetterRow(out, color);
 
-        out.print(RESET_BG_COLOR);
+        out.print(SET_BG_COLOR_BLACK);
         out.print(SET_TEXT_COLOR_WHITE);
     }
 

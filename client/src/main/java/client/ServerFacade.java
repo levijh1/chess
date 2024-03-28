@@ -18,6 +18,7 @@ public class ServerFacade {
     private final ClientCommunicator server = new ClientCommunicator();
     private final String serverUrl;
     private String authToken = null;
+    boolean gameJoined = false;
     HashMap<Integer, Integer> mostRecentGameNumbers = new HashMap<>();
 
     public ServerFacade(int port) {
@@ -57,6 +58,17 @@ public class ServerFacade {
                     """;
             System.out.print(preLoginMenu);
             return preLoginMenu;
+        } else if (gameJoined) {
+            String gameplayMenu = """
+                    \tredraw - show the chess board again
+                    \tleave - remove user from the game
+                    \tmove <MOVE> - move piece on the board
+                    \tresign - forfeit and end the game
+                    \thighlight <PIECE LOCATION> - show all legal moves
+                    \thelp - with possible commands
+                    """;
+            System.out.print(gameplayMenu);
+            return gameplayMenu;
         } else {
             String postLoginMenu = """
                     \tcreate <GAME NAME> - create a game
@@ -202,8 +214,10 @@ public class ServerFacade {
                         DrawBoard.drawBoard(game.getGame().getBoard(), playerColorEnum);
                     }
                 }
+                
+                System.out.print(SET_TEXT_COLOR_BLUE);
                 System.out.println("Game joined successfully!");
-
+                gameJoined = true;
                 return "Success";
             }
         } catch (Exception ex) {
