@@ -30,6 +30,9 @@ public class Client {
             try {
                 out.print(SET_TEXT_COLOR_BLUE);
                 result = serverFacade.eval(line);
+                if (result == null) {
+                    result = "";
+                }
                 if (!Objects.equals(result, "quit")) {
                     if (!line.equals("help")) {
                         out.print("\n\n");

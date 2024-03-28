@@ -2,6 +2,7 @@ package ui;
 
 import chess.ChessBoard;
 import chess.ChessGame;
+import server.request.PlayerColor;
 
 import java.io.PrintStream;
 import java.nio.charset.StandardCharsets;
@@ -22,12 +23,12 @@ public class DrawBoard {
     }
 
     public static void drawBothBoards(ChessBoard board) {
-        drawBoard(board, ChessGame.TeamColor.BLACK);
+        drawBoard(board, PlayerColor.BLACK);
         drawBlackRow();
-        drawBoard(board, ChessGame.TeamColor.WHITE);
+        drawBoard(board, PlayerColor.WHITE);
     }
 
-    public static void drawBoard(ChessBoard board, ChessGame.TeamColor color) {
+    public static void drawBoard(ChessBoard board, PlayerColor color) {
         var out = new PrintStream(System.out, true, StandardCharsets.UTF_8);
 
         out.print(ERASE_SCREEN);
@@ -40,8 +41,8 @@ public class DrawBoard {
         out.print(SET_TEXT_COLOR_WHITE);
     }
 
-    private static void drawInteriorRows(PrintStream out, ChessBoard board, ChessGame.TeamColor playerColor) {
-        if (playerColor == ChessGame.TeamColor.WHITE) {
+    private static void drawInteriorRows(PrintStream out, ChessBoard board, PlayerColor playerColor) {
+        if (playerColor == PlayerColor.WHITE) {
             for (int boardRow = 8; boardRow > 0; --boardRow) {
                 drawNumberRowBox(out, boardRow);
                 for (int boardCol = 1; boardCol < 9; ++boardCol) {
@@ -84,9 +85,9 @@ public class DrawBoard {
         }
     }
 
-    private static void drawLetterRow(PrintStream out, ChessGame.TeamColor color) {
+    private static void drawLetterRow(PrintStream out, PlayerColor color) {
         List<String> columnLetters;
-        if (color == ChessGame.TeamColor.WHITE) {
+        if (color == PlayerColor.WHITE) {
             columnLetters = whiteColumnLetters;
         } else {
             columnLetters = blackColumnLetters;

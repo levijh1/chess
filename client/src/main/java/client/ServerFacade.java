@@ -154,14 +154,13 @@ public class ServerFacade {
                 for (GameData game : Games) {
                     i += 1;
                     System.out.print(SET_TEXT_COLOR_BLUE);
-                    System.out.println("\nGame Number: " + i);
+                    System.out.println("\nGame ID: " + i);
                     mostRecentGameNumbers.put(i, game.getGameID());
                     System.out.println("Game Name: " + game.getGameName());
                     System.out.println("Black Team Username: " + game.getBlackUsername());
                     System.out.println("White Team Username: " + game.getWhiteUsername());
-                    DrawBoard.drawBothBoards(game.getGame().getBoard());
                 }
-                System.out.println("All games listed");
+                System.out.println("\nAll games listed");
                 return mostRecentGameNumbers.toString();
             } catch (Exception ex) {
                 System.out.println(ex.getMessage());
@@ -189,7 +188,22 @@ public class ServerFacade {
             try {
                 System.out.println(response.getMessage());
             } catch (Exception ex) {
+                GenericRequest genericRequest = new GenericRequest();
+                response = server.sendRequest("GET", serverUrl + "/game", genericRequest, ListGamesResponse.class, authToken);
+                List<GameData> Games = response.getGames();
+                int i = 0;
+                mostRecentGameNumbers.clear();
+                for (GameData game : Games) {
+                    i += 1;
+                    if (i == gameNumber) {
+                        if (playerColorEnum == null) {
+                            playerColorEnum = PlayerColor.WHITE;
+                        }
+                        DrawBoard.drawBoard(game.getGame().getBoard(), playerColorEnum);
+                    }
+                }
                 System.out.println("Game joined successfully!");
+
                 return "Success";
             }
         } catch (Exception ex) {
