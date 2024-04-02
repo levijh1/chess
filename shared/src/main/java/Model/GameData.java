@@ -5,6 +5,7 @@ import chess.ChessGame;
 import java.util.Objects;
 
 public record GameData(int gameID, String whiteUsername, String blackUsername, String gameName, ChessGame game) {
+    private static final String status = "progress";
 
     public int getGameID() {
         return gameID;

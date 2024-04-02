@@ -1,5 +1,7 @@
 package client;
 
+import chess.ChessMove;
+import chess.ChessPosition;
 import model.GameData;
 import server.request.*;
 import server.response.CreateGameResponse;
@@ -8,18 +10,18 @@ import server.response.ParentResponse;
 import server.response.RegisterAndLoginResponse;
 import ui.DrawBoard;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 import static ui.EscapeSequences.SET_TEXT_COLOR_BLUE;
 
 public class ServerFacade {
-    private final ClientCommunicator server = new ClientCommunicator();
+    private final HttpCommunicator server = new HttpCommunicator();
     private final String serverUrl;
     private String authToken = null;
     boolean gameJoined = false;
     HashMap<Integer, Integer> mostRecentGameNumbers = new HashMap<>();
+    private int enteredGameId;
+    private String loggedInUsername;
 
     public ServerFacade(int port) {
         this.serverUrl = "http://localhost:" + port;
@@ -29,6 +31,7 @@ public class ServerFacade {
         var tokens = input.toLowerCase().split(" ");
         var cmd = (tokens.length > 0) ? tokens[0] : "help";
         var params = Arrays.copyOfRange(tokens, 1, tokens.length);
+        //TODO: Make three switch statements that are separated by if statements (one for each menu)
         return switch (cmd) {
             case "login" -> login(params[0], params[1]);
             case "register" -> register(params[0], params[1], params[2]);
@@ -43,6 +46,11 @@ public class ServerFacade {
                 }
             }
             case "observe" -> joinGame(params[0], null);
+            case "redraw" -> redraw();
+            case "leave" -> leave();
+            case "move" -> movePiece();
+            case "resign" -> resign();
+            case "highlight" -> highlightPossibleMoves(params[0]);
             case "quit" -> "quit";
             default -> help();
         };
@@ -91,6 +99,7 @@ public class ServerFacade {
 
             try {
                 this.authToken = response.getAuthToken();
+                loggedInUsername = username;
                 System.out.println("Successful login!");
             } catch (Exception ex) {
                 System.out.println("login not successful. Check your password or make sure that username is already registered");
@@ -98,6 +107,7 @@ public class ServerFacade {
         } catch (Exception ex) {
             System.out.println(ex.getMessage());
         }
+
         return this.authToken;
     }
 
@@ -108,6 +118,7 @@ public class ServerFacade {
 
             try {
                 this.authToken = response.getAuthToken();
+                loggedInUsername = username;
                 System.out.println("Successful register!");
             } catch (Exception ex) {
                 System.out.println("Register not successful.");
@@ -184,6 +195,7 @@ public class ServerFacade {
         return null;
     }
 
+    //TODO: have it use websocket as well to notify all players
     public String joinGame(String gameNumberString, String playerColor) {
         try {
             PlayerColor playerColorEnum;
@@ -211,13 +223,14 @@ public class ServerFacade {
                         if (playerColorEnum == null) {
                             playerColorEnum = PlayerColor.WHITE;
                         }
-                        DrawBoard.drawBoard(game.getGame().getBoard(), playerColorEnum);
+                        DrawBoard.drawBoard(game.getGame().getBoard(), playerColorEnum, null, null);
                     }
                 }
-                
+
                 System.out.print(SET_TEXT_COLOR_BLUE);
                 System.out.println("Game joined successfully!");
                 gameJoined = true;
+                enteredGameId = gameId;
                 return "Success";
             }
         } catch (Exception ex) {
@@ -226,6 +239,58 @@ public class ServerFacade {
             System.out.println(ex.getMessage());
         }
 
+        return null;
+    }
+
+    private String redraw() {
+        return null;
+    }
+
+    private String leave() {
+        enteredGameId = -1;
+        return null;
+    }
+
+    private String movePiece() {
+        return null;
+    }
+
+    private String resign() {
+        return null;
+    }
+
+    private String highlightPossibleMoves(String pieceLocation) {
+        ParentResponse response;
+        PlayerColor playerColorEnum = PlayerColor.WHITE;
+
+        //Parse string
+        int column = pieceLocation.charAt(0) - 'a' + 1;
+        int row = pieceLocation.charAt(1) - '1' + 1;
+        ChessPosition piecePosition = new ChessPosition(row, column);
+
+        try {
+            GenericRequest genericRequest = new GenericRequest();
+            response = server.sendRequest("GET", serverUrl + "/game", genericRequest, ListGamesResponse.class, authToken);
+            List<GameData> Games = response.getGames();
+            mostRecentGameNumbers.clear();
+            for (GameData game : Games) {
+                if (game.getGameID() == enteredGameId) {
+
+                    Collection<ChessMove> possibleMoves = game.getGame().validMoves(piecePosition);
+                    ArrayList<ChessPosition> possibleEndLocations = new ArrayList<ChessPosition>();
+                    for (ChessMove move : possibleMoves) {
+                        possibleEndLocations.add(move.getEndPosition());
+                    }
+
+                    if (Objects.equals(game.getBlackUsername(), loggedInUsername)) {
+                        playerColorEnum = PlayerColor.BLACK;
+                    }
+                    DrawBoard.drawBoard(game.getGame().getBoard(), playerColorEnum, possibleEndLocations, piecePosition);
+                }
+            }
+        } catch (Exception ex) {
+            return ex.getMessage();
+        }
         return null;
     }
 }

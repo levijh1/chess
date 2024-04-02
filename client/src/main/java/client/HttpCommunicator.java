@@ -2,7 +2,6 @@ package client;
 
 import server.response.ErrorResponse;
 import server.response.ParentResponse;
-import server.response.RegisterAndLoginResponse;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -15,7 +14,7 @@ import java.util.Scanner;
 import com.google.gson.Gson;
 
 
-public class ClientCommunicator {
+public class HttpCommunicator {
     public <T> ParentResponse sendRequest(String requestMethod, String urlString, T request, Class<? extends ParentResponse> responseClass, String authToken) throws IOException {
         URL url = new URL(urlString);
         InputStream responseBody;
