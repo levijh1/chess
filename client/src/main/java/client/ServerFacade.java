@@ -1,5 +1,6 @@
 package client;
 
+import chess.ChessBoard;
 import chess.ChessMove;
 import chess.ChessPosition;
 import model.GameData;
@@ -9,13 +10,22 @@ import server.response.ListGamesResponse;
 import server.response.ParentResponse;
 import server.response.RegisterAndLoginResponse;
 import ui.DrawBoard;
+import webSocketMessages.serverMessages.LoadGameMessage;
+import webSocketMessages.serverMessages.NotificationMessage;
+import webSocketMessages.serverMessages.ErrorMessage;
+import webSocketMessages.serverMessages.ServerMessage;
 
+
+import javax.websocket.DeploymentException;
+import java.io.IOException;
+import java.net.URISyntaxException;
 import java.util.*;
 
 import static ui.EscapeSequences.SET_TEXT_COLOR_BLUE;
 
-public class ServerFacade {
-    private final HttpCommunicator server = new HttpCommunicator();
+public class ServerFacade implements ServerMessageObserver {
+    private final HttpCommunicator httpCommunicator = new HttpCommunicator();
+    private final WebsocketCommunicator websocketCommunicator = new WebsocketCommunicator(this);
     private final String serverUrl;
     private String authToken = null;
     boolean gameJoined = false;
@@ -59,6 +69,28 @@ public class ServerFacade {
         };
     }
 
+    //    //TODO: Fix this and create methods that can deal with this
+    @Override
+    public void notify(ServerMessage message) {
+        switch (message.getServerMessageType()) {
+            case NOTIFICATION -> displayNotification(((NotificationMessage) message).getMessage());
+            case ERROR -> displayError(((ErrorMessage) message).getErrorMessage());
+            case LOAD_GAME -> loadGame(((LoadGameMessage) message).getGame());
+        }
+    }
+
+    private void displayNotification(String message) {
+        System.out.println(message);
+    }
+
+    private void displayError(String errorMessage) {
+        System.out.println(errorMessage);
+    }
+
+    private void loadGame(ChessBoard gameBoard) {
+        DrawBoard.drawBoard(gameBoard, currentColor, null, null);
+    }
+
     public String help() {
         if (authToken == null) {
             String preLoginMenu = """
@@ -98,7 +130,7 @@ public class ServerFacade {
     public String login(String username, String password) {
         try {
             LoginRequest loginRequest = new LoginRequest(username, password);
-            ParentResponse response = server.sendRequest("POST", serverUrl + "/session", loginRequest, RegisterAndLoginResponse.class, authToken);
+            ParentResponse response = httpCommunicator.sendRequest("POST", serverUrl + "/session", loginRequest, RegisterAndLoginResponse.class, authToken);
 
             try {
                 this.authToken = response.getAuthToken();
@@ -117,7 +149,7 @@ public class ServerFacade {
     public String register(String username, String password, String email) {
         try {
             RegisterRequest registerRequest = new RegisterRequest(username, password, email);
-            ParentResponse response = server.sendRequest("POST", serverUrl + "/user", registerRequest, RegisterAndLoginResponse.class, authToken);
+            ParentResponse response = httpCommunicator.sendRequest("POST", serverUrl + "/user", registerRequest, RegisterAndLoginResponse.class, authToken);
 
             try {
                 this.authToken = response.getAuthToken();
@@ -139,7 +171,7 @@ public class ServerFacade {
         try {
             GenericRequest genericRequest = new GenericRequest();
             try {
-                server.sendRequest("DELETE", serverUrl + "/session", genericRequest, ParentResponse.class, authToken);
+                httpCommunicator.sendRequest("DELETE", serverUrl + "/session", genericRequest, ParentResponse.class, authToken);
                 this.authToken = null;
                 System.out.println("Successful logout!");
             } catch (Exception ex) {
@@ -155,7 +187,7 @@ public class ServerFacade {
     public String createGame(String gameName) {
         try {
             CreateGameRequest createGameRequest = new CreateGameRequest(gameName);
-            ParentResponse response = server.sendRequest("POST", serverUrl + "/game", createGameRequest, CreateGameResponse.class, authToken);
+            ParentResponse response = httpCommunicator.sendRequest("POST", serverUrl + "/game", createGameRequest, CreateGameResponse.class, authToken);
 
             System.out.println("Game created successfully!");
 
@@ -173,7 +205,7 @@ public class ServerFacade {
         try {
             GenericRequest genericRequest = new GenericRequest();
             try {
-                ParentResponse response = server.sendRequest("GET", serverUrl + "/game", genericRequest, ListGamesResponse.class, authToken);
+                ParentResponse response = httpCommunicator.sendRequest("GET", serverUrl + "/game", genericRequest, ListGamesResponse.class, authToken);
                 List<GameData> Games = response.getGames();
                 int i = 0;
                 mostRecentGameNumbers.clear();
@@ -210,7 +242,8 @@ public class ServerFacade {
                 playerColorEnum = null;
             }
             JoinGameRequest joinGameRequest = new JoinGameRequest(playerColorEnum, gameId);
-            ParentResponse response = server.sendRequest("PUT", serverUrl + "/game", joinGameRequest, ParentResponse.class, authToken);
+            ParentResponse response = httpCommunicator.sendRequest("PUT", serverUrl + "/game", joinGameRequest, ParentResponse.class, authToken);
+
 
             try {
                 System.out.println(response.getMessage());
@@ -310,7 +343,7 @@ public class ServerFacade {
         try {
             ParentResponse response;
             GenericRequest genericRequest = new GenericRequest();
-            response = server.sendRequest("GET", serverUrl + "/game", genericRequest, ListGamesResponse.class, authToken);
+            response = httpCommunicator.sendRequest("GET", serverUrl + "/game", genericRequest, ListGamesResponse.class, authToken);
             List<GameData> Games = response.getGames();
             mostRecentGameNumbers.clear();
             for (GameData game : Games) {

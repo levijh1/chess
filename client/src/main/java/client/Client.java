@@ -1,5 +1,6 @@
 package client;
 
+import webSocketMessages.serverMessages.NotificationMessage;
 import webSocketMessages.serverMessages.ServerMessage;
 
 import java.io.PrintStream;
@@ -9,7 +10,7 @@ import java.util.Scanner;
 
 import static ui.EscapeSequences.*;
 
-public class Client implements ServerMessageObserver {
+public class Client {
     private ServerFacade serverFacade;
 
     public Client(int port) {
@@ -52,15 +53,4 @@ public class Client implements ServerMessageObserver {
     private void printPrompt(PrintStream out) {
         out.print("\n" + SET_TEXT_COLOR_WHITE + ">>> " + SET_TEXT_COLOR_GREEN);
     }
-
-    //TODO: Fix this and create methods that can deal with this
-    @Override
-    public void notify(ServerMessage message) {
-        switch (message.getServerMessageType()) {
-            case NOTIFICATION -> displayNotification(((NotificationMessage) message).getMessage());
-            case ERROR -> displayError(((ErrorMessage) message).getErrorMessage());
-            case LOAD_GAME -> loadGame(((LoadGameMessage) message).getGame());
-        }
-    }
-
 }
