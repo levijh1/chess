@@ -1,4 +1,4 @@
-package service;
+package httpService;
 
 import dataAccess.AuthTokenDao;
 import dataAccess.DataAccessException;
@@ -9,7 +9,6 @@ import server.response.ErrorResponse;
 import server.response.ListGamesResponse;
 import server.response.ParentResponse;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class ListGamesService {

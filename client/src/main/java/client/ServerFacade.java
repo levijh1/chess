@@ -14,6 +14,8 @@ import webSocketMessages.serverMessages.LoadGameMessage;
 import webSocketMessages.serverMessages.NotificationMessage;
 import webSocketMessages.serverMessages.ErrorMessage;
 import webSocketMessages.serverMessages.ServerMessage;
+import webSocketMessages.userCommands.UserGameCommand;
+import webSocketMessages.userCommands.LeaveCommand;
 
 
 import javax.websocket.DeploymentException;
@@ -284,14 +286,20 @@ public class ServerFacade implements ServerMessageObserver {
     }
 
     private String leave() {
-        GameData game = returnCurrentGame();
-        assert game != null;
-        if (Objects.equals(game.getBlackUsername(), loggedInUsername)) {
-            game.setBlackUsername(null);
+        try {
+            websocketCommunicator.send(new LeaveCommand(authToken, enteredGameId));
+        } catch (Exception ex) {
+            System.out.println(ex.getMessage());
+            return ex.getMessage();
         }
-        if (Objects.equals(game.getWhiteUsername(), loggedInUsername)) {
-            game.setWhiteUsername(null);
-        }
+//        GameData game = returnCurrentGame();
+//        assert game != null;
+//        if (Objects.equals(game.getBlackUsername(), loggedInUsername)) {
+//            game.setBlackUsername(null);
+//        }
+//        if (Objects.equals(game.getWhiteUsername(), loggedInUsername)) {
+//            game.setWhiteUsername(null);
+//        }
         enteredGameId = -1;
         gameJoined = false;
 

@@ -9,9 +9,9 @@ import server.request.RegisterRequest;
 import server.response.ErrorResponse;
 import server.response.RegisterAndLoginResponse;
 import server.response.ParentResponse;
-import service.ClearService;
-import service.RegisterService;
-import service.LoginService;
+import httpService.ClearService;
+import httpService.RegisterService;
+import httpService.LoginService;
 
 public class LoginServiceTests {
     private final LoginService loginService = new LoginService();

@@ -1,16 +1,13 @@
-package service;
+package httpService;
 
 import dataAccess.AuthTokenDao;
 import dataAccess.DataAccessException;
 import dataAccess.PasswordHasher;
 import dataAccess.UserDao;
-import model.UserData;
 import server.request.LoginRequest;
 import server.response.ErrorResponse;
 import server.response.RegisterAndLoginResponse;
 import server.response.ParentResponse;
-
-import java.util.Objects;
 
 public class LoginService {
     public ParentResponse login(LoginRequest r) throws DataAccessException {

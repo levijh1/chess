@@ -1,4 +1,4 @@
-package service;
+package httpService;
 
 import dataAccess.AuthTokenDao;
 import dataAccess.DataAccessException;

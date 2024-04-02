@@ -10,10 +10,10 @@ import server.request.RegisterRequest;
 import server.response.ErrorResponse;
 import server.response.RegisterAndLoginResponse;
 import server.response.ParentResponse;
-import service.ClearService;
-import service.LogoutService;
-import service.RegisterService;
-import service.LoginService;
+import httpService.ClearService;
+import httpService.LogoutService;
+import httpService.RegisterService;
+import httpService.LoginService;
 
 public class LogoutServiceTests {
     private final LogoutService logoutService = new LogoutService();

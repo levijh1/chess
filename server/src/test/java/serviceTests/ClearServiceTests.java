@@ -10,7 +10,7 @@ import model.GameData;
 import model.UserData;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import service.ClearService;
+import httpService.ClearService;
 
 import java.util.ArrayList;
 import java.util.List;

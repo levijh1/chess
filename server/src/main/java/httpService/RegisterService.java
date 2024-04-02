@@ -1,7 +1,6 @@
-package service;
+package httpService;
 
 import dataAccess.*;
-import model.UserData;
 import server.request.RegisterRequest;
 import server.response.ErrorResponse;
 import server.response.RegisterAndLoginResponse;

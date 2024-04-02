@@ -9,7 +9,7 @@ import server.request.RegisterRequest;
 import server.response.ErrorResponse;
 import server.response.RegisterAndLoginResponse;
 import server.response.ParentResponse;
-import service.RegisterService;
+import httpService.RegisterService;
 
 public class RegisterServiceTests {
     private RegisterService service;

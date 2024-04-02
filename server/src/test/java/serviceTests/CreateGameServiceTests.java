@@ -11,10 +11,10 @@ import server.response.CreateGameResponse;
 import server.response.ErrorResponse;
 import server.response.ParentResponse;
 import server.response.RegisterAndLoginResponse;
-import service.ClearService;
-import service.CreateGameService;
-import service.LoginService;
-import service.RegisterService;
+import httpService.ClearService;
+import httpService.CreateGameService;
+import httpService.LoginService;
+import httpService.RegisterService;
 
 public class CreateGameServiceTests {
     private final CreateGameService createGameService = new CreateGameService();

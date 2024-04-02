@@ -11,7 +11,7 @@ import server.request.GenericRequest;
 import server.request.LoginRequest;
 import server.request.RegisterRequest;
 import server.response.*;
-import service.*;
+import httpService.*;
 
 import java.util.ArrayList;
 import java.util.List;
