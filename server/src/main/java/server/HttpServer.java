@@ -11,10 +11,10 @@ import spark.*;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
-public class Server {
+public class HttpServer {
     public static void main(String[] args) throws DataAccessException {
         new ClearService().clear();
-        new Server().run(8080);
+        new HttpServer().run(8080);
     }
 
     public int run(int desiredPort) {

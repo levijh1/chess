@@ -4,8 +4,21 @@ import chess.ChessGame;
 
 import java.util.Objects;
 
-public record GameData(int gameID, String whiteUsername, String blackUsername, String gameName, ChessGame game) {
-    private static final String status = "progress";
+public class GameData {
+    int gameID;
+    String whiteUsername;
+    String blackUsername;
+    String gameName;
+    ChessGame game;
+    private String status = "progress";
+
+    public GameData(int gameID, String whiteUsername, String blackUsername, String gameName, ChessGame game) {
+        this.gameID = gameID;
+        this.whiteUsername = whiteUsername;
+        this.blackUsername = blackUsername;
+        this.gameName = gameName;
+        this.game = game;
+    }
 
     public int getGameID() {
         return gameID;
@@ -25,6 +38,18 @@ public record GameData(int gameID, String whiteUsername, String blackUsername, S
 
     public ChessGame getGame() {
         return game;
+    }
+
+    public void setStatus(String newStatus) {
+        status = newStatus;
+    }
+
+    public void setWhiteUsername(String whiteUsername) {
+        this.whiteUsername = whiteUsername;
+    }
+
+    public void setBlackUsername(String blackUsername) {
+        this.blackUsername = blackUsername;
     }
 
     @Override

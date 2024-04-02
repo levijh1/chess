@@ -251,21 +251,33 @@ public class ServerFacade {
     }
 
     private String leave() {
+        GameData game = returnCurrentGame();
+        assert game != null;
+        if (Objects.equals(game.getBlackUsername(), loggedInUsername)) {
+            game.setBlackUsername(null);
+        }
+        if (Objects.equals(game.getWhiteUsername(), loggedInUsername)) {
+            game.setWhiteUsername(null);
+        }
         enteredGameId = -1;
+        gameJoined = false;
+
+        //TODO: Send Leave message over websocket
         return null;
     }
 
     private String movePiece() {
+
+        //TODO: send movePiece message over websocket
         return null;
     }
 
     private String resign() {
+        //TODO: send resign Message over Websocket
         return null;
     }
 
     private String highlightPossibleMoves(String pieceLocation) {
-        PlayerColor playerColorEnum = PlayerColor.WHITE;
-
         //Parse string
         int column = pieceLocation.charAt(0) - 'a' + 1;
         int row = pieceLocation.charAt(1) - '1' + 1;
@@ -273,6 +285,7 @@ public class ServerFacade {
 
         try {
             GameData game = returnCurrentGame();
+            assert game != null;
             Collection<ChessMove> possibleMoves = game.getGame().validMoves(piecePosition);
 
             //If there is no piece at that location
@@ -285,7 +298,7 @@ public class ServerFacade {
             for (ChessMove move : possibleMoves) {
                 possibleEndLocations.add(move.getEndPosition());
             }
-            
+
             DrawBoard.drawBoard(game.getGame().getBoard(), currentColor, possibleEndLocations, piecePosition);
         } catch (Exception ex) {
             return ex.getMessage();
