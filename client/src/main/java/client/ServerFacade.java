@@ -20,8 +20,11 @@ public class ServerFacade {
     private String authToken = null;
     boolean gameJoined = false;
     HashMap<Integer, Integer> mostRecentGameNumbers = new HashMap<>();
+
+
     private int enteredGameId;
     private String loggedInUsername;
+    private PlayerColor currentColor = PlayerColor.WHITE;
 
     public ServerFacade(int port) {
         this.serverUrl = "http://localhost:" + port;
@@ -211,26 +214,23 @@ public class ServerFacade {
 
             try {
                 System.out.println(response.getMessage());
-            } catch (Exception ex) {
-                GenericRequest genericRequest = new GenericRequest();
-                response = server.sendRequest("GET", serverUrl + "/game", genericRequest, ListGamesResponse.class, authToken);
-                List<GameData> Games = response.getGames();
-                int i = 0;
-                mostRecentGameNumbers.clear();
-                for (GameData game : Games) {
-                    i += 1;
-                    if (i == gameNumber) {
-                        if (playerColorEnum == null) {
-                            playerColorEnum = PlayerColor.WHITE;
-                        }
-                        DrawBoard.drawBoard(game.getGame().getBoard(), playerColorEnum, null, null);
+            } catch (Exception ex1) {
+                try {
+                    enteredGameId = gameId;
+                    currentColor = playerColorEnum;
+                    GameData game = returnCurrentGame();
+                    if (playerColorEnum == null) {
+                        playerColorEnum = PlayerColor.WHITE;
                     }
+                    DrawBoard.drawBoard(game.getGame().getBoard(), playerColorEnum, null, null);
+
+                    System.out.print(SET_TEXT_COLOR_BLUE);
+                    System.out.println("Game joined successfully!");
+                    gameJoined = true;
+                } catch (Exception ex2) {
+                    return ex2.getMessage();
                 }
 
-                System.out.print(SET_TEXT_COLOR_BLUE);
-                System.out.println("Game joined successfully!");
-                gameJoined = true;
-                enteredGameId = gameId;
                 return "Success";
             }
         } catch (Exception ex) {
@@ -243,6 +243,10 @@ public class ServerFacade {
     }
 
     private String redraw() {
+        GameData game = returnCurrentGame();
+        assert game != null;
+        DrawBoard.drawBoard(game.getGame().getBoard(), currentColor, null, null);
+
         return null;
     }
 
@@ -260,7 +264,6 @@ public class ServerFacade {
     }
 
     private String highlightPossibleMoves(String pieceLocation) {
-        ParentResponse response;
         PlayerColor playerColorEnum = PlayerColor.WHITE;
 
         //Parse string
@@ -269,28 +272,44 @@ public class ServerFacade {
         ChessPosition piecePosition = new ChessPosition(row, column);
 
         try {
+            GameData game = returnCurrentGame();
+            Collection<ChessMove> possibleMoves = game.getGame().validMoves(piecePosition);
+
+            //If there is no piece at that location
+            if (possibleMoves == null) {
+                DrawBoard.drawBoard(game.getGame().getBoard(), currentColor, null, null);
+                return null;
+            }
+
+            ArrayList<ChessPosition> possibleEndLocations = new ArrayList<>();
+            for (ChessMove move : possibleMoves) {
+                possibleEndLocations.add(move.getEndPosition());
+            }
+            
+            DrawBoard.drawBoard(game.getGame().getBoard(), currentColor, possibleEndLocations, piecePosition);
+        } catch (Exception ex) {
+            return ex.getMessage();
+        }
+        return null;
+    }
+
+    private GameData returnCurrentGame() {
+        try {
+            ParentResponse response;
             GenericRequest genericRequest = new GenericRequest();
             response = server.sendRequest("GET", serverUrl + "/game", genericRequest, ListGamesResponse.class, authToken);
             List<GameData> Games = response.getGames();
             mostRecentGameNumbers.clear();
             for (GameData game : Games) {
                 if (game.getGameID() == enteredGameId) {
-
-                    Collection<ChessMove> possibleMoves = game.getGame().validMoves(piecePosition);
-                    ArrayList<ChessPosition> possibleEndLocations = new ArrayList<ChessPosition>();
-                    for (ChessMove move : possibleMoves) {
-                        possibleEndLocations.add(move.getEndPosition());
-                    }
-
-                    if (Objects.equals(game.getBlackUsername(), loggedInUsername)) {
-                        playerColorEnum = PlayerColor.BLACK;
-                    }
-                    DrawBoard.drawBoard(game.getGame().getBoard(), playerColorEnum, possibleEndLocations, piecePosition);
+                    return game;
                 }
             }
+            return null;
         } catch (Exception ex) {
-            return ex.getMessage();
+            return null;
         }
-        return null;
     }
 }
+
+
