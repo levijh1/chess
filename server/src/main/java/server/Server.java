@@ -11,10 +11,11 @@ import spark.*;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
-public class HttpServer {
+public class Server {
     public static void main(String[] args) throws DataAccessException {
         new ClearService().clear();
-        new HttpServer().run(8080);
+        new Server().run(8080);
+
     }
 
     public int run(int desiredPort) {
@@ -30,6 +31,7 @@ public class HttpServer {
         Spark.staticFiles.location("web");
 
         //Register handlers for each endpoint using the method reference syntax
+        Spark.webSocket("/connect", WebsocketHandler.class);
         Spark.delete("/db", this::clear);
         Spark.post("/user", this::register);
         Spark.post("/session", this::login);

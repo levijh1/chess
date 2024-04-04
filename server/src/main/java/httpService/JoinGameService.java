@@ -3,6 +3,7 @@ package httpService;
 import dataAccess.AuthTokenDao;
 import dataAccess.DataAccessException;
 import dataAccess.GameDao;
+import server.WebsocketHandler;
 import server.request.JoinGameRequest;
 import server.response.ErrorResponse;
 import server.response.ParentResponse;
@@ -37,6 +38,5 @@ public class JoinGameService {
         }
 
         return new ParentResponse();
-
     }
 }

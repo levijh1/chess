@@ -40,7 +40,7 @@ public class DrawBoard {
         drawLetterRow(out, color);
 
         out.print(SET_BG_COLOR_BLACK);
-        out.print(SET_TEXT_COLOR_WHITE);
+        out.print(SET_TEXT_COLOR_BLUE);
     }
 
     private static void drawInteriorRows(PrintStream out, ChessBoard board, PlayerColor playerColor, ArrayList<ChessPosition> possibleEndLocations, ChessPosition highlightPieceLocation) {

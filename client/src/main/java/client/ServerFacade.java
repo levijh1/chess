@@ -1,5 +1,6 @@
 package client;
 
+import chess.ChessGame;
 import chess.ChessMove;
 import chess.ChessPosition;
 import model.GameData;
@@ -9,6 +10,7 @@ import server.response.ListGamesResponse;
 import server.response.ParentResponse;
 import server.response.RegisterAndLoginResponse;
 import ui.DrawBoard;
+import webSocketMessages.userCommands.JoinPlayerCommand;
 import webSocketMessages.userCommands.LeaveCommand;
 
 import java.util.ArrayList;
@@ -20,7 +22,7 @@ import static ui.EscapeSequences.SET_TEXT_COLOR_BLUE;
 
 public class ServerFacade {
     private final HttpCommunicator httpCommunicator;
-    //    private final WebsocketCommunicator websocketCommunicator;
+    private WebsocketCommunicator websocketCommunicator;
     private final String serverUrl;
     private String authToken = null;
     boolean gameJoined = false;
@@ -29,10 +31,11 @@ public class ServerFacade {
     private int enteredGameId;
     private String loggedInUsername;
     private PlayerColor currentColor = PlayerColor.WHITE;
+    Client observer;
 
     public ServerFacade(String serverUrl, Client observer) {
         this.serverUrl = serverUrl;
-//        websocketCommunicator = new WebsocketCommunicator(observer);
+        this.observer = observer;
         httpCommunicator = new HttpCommunicator();
     }
 
@@ -196,21 +199,26 @@ public class ServerFacade {
                 try {
                     enteredGameId = gameId;
                     currentColor = playerColorEnum;
-                    GameData game = returnCurrentGame();
-                    if (playerColorEnum == null) {
-                        playerColorEnum = PlayerColor.WHITE;
-                    }
-                    DrawBoard.drawBoard(game.getGame().getBoard(), playerColorEnum, null, null);
+//                    GameData game = returnCurrentGame();
+//                    if (playerColorEnum == null) {
+//                        playerColorEnum = PlayerColor.WHITE;
+//                    }
+////                    DrawBoard.drawBoard(game.getGame().getBoard(), playerColorEnum, null, null);
 
                     System.out.print(SET_TEXT_COLOR_BLUE);
                     System.out.println("Game joined successfully!");
                     gameJoined = true;
                 } catch (Exception ex2) {
-                    return ex2.getMessage();
+                    throw ex2;
                 }
 
-                return "Success";
             }
+
+            websocketCommunicator = new WebsocketCommunicator(observer);
+            ChessGame.TeamColor teamColorEnum = ChessGame.TeamColor.valueOf(playerColor.toUpperCase());
+            websocketCommunicator.send(new JoinPlayerCommand(authToken, gameId, teamColorEnum));
+            return "Success";
+
         } catch (Exception ex) {
             System.out.println("Joining or Observing game not successful");
             System.out.println("Try listing games first or checking your input values");
@@ -229,24 +237,18 @@ public class ServerFacade {
     }
 
     public String leave() {
-//        try {
-//            websocketCommunicator.send(new LeaveCommand(authToken, enteredGameId));
-//        } catch (Exception ex) {
-//            System.out.println(ex.getMessage());
-//            return ex.getMessage();
-//        }
-////        GameData game = returnCurrentGame();
-////        assert game != null;
-////        if (Objects.equals(game.getBlackUsername(), loggedInUsername)) {
-////            game.setBlackUsername(null);
-////        }
-////        if (Objects.equals(game.getWhiteUsername(), loggedInUsername)) {
-////            game.setWhiteUsername(null);
-////        }
-//        enteredGameId = -1;
-//        gameJoined = false;
+        try {
+            websocketCommunicator.send(new LeaveCommand(authToken, enteredGameId));
+            websocketCommunicator.closeSession();
+        } catch (Exception ex) {
+            System.out.println(ex.getMessage());
+            return ex.getMessage();
+        }
 
-        //TODO: Send Leave message over websocket
+        enteredGameId = -1;
+        gameJoined = false;
+
+        System.out.println("You successfully left the game");
         return null;
     }
 

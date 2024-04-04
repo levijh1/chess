@@ -118,6 +118,8 @@ public class Client implements ServerMessageObserver {
             case ERROR -> displayError(((ErrorMessage) message).getErrorMessage());
             case LOAD_GAME -> loadGame(((LoadGameMessage) message).getGame());
         }
+
+        printPrompt(System.out);
     }
 
     private void displayNotification(String message) {
@@ -129,6 +131,7 @@ public class Client implements ServerMessageObserver {
     }
 
     private void loadGame(ChessBoard gameBoard) {
+        System.out.print("\n");
         DrawBoard.drawBoard(gameBoard, currentColor, null, null);
     }
 

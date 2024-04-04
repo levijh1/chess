@@ -8,11 +8,13 @@ import webSocketMessages.serverMessages.ServerMessage;
 import webSocketMessages.userCommands.UserGameCommand;
 
 import javax.websocket.*;
+import java.io.IOException;
 import java.lang.reflect.Type;
 import java.net.URI;
 import java.util.Scanner;
 
 public class WebsocketCommunicator extends Endpoint {
+    public Session session;
 
     public static void main(String[] args) throws Exception {
         var ws = new WebsocketCommunicator(new Client(8080));
@@ -24,9 +26,8 @@ public class WebsocketCommunicator extends Endpoint {
 //        }
     }
 
-    public Session session;
-
     public WebsocketCommunicator(ServerMessageObserver observer) {
+        //Construct new websocket communicator anytime you join a game
         try {
             URI uri = new URI("ws://localhost:8080/connect");
             WebSocketContainer container = ContainerProvider.getWebSocketContainer();
@@ -56,7 +57,7 @@ public class WebsocketCommunicator extends Endpoint {
         public ServerMessage deserialize(JsonElement jsonElement, Type type, JsonDeserializationContext context) throws JsonParseException {
             JsonObject jsonObject = jsonElement.getAsJsonObject();
 
-            String typeString = jsonObject.get("ServerMessageType").getAsString();
+            String typeString = jsonObject.get("serverMessageType").getAsString();
             ServerMessage.ServerMessageType serverMessageType = ServerMessage.ServerMessageType.valueOf(typeString);
 
             return switch (serverMessageType) {
@@ -73,6 +74,10 @@ public class WebsocketCommunicator extends Endpoint {
     }
 
     public void onOpen(Session session, EndpointConfig endpointConfig) {
+    }
+
+    public void closeSession() throws IOException {
+        session.close();
     }
 
 }

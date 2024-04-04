@@ -5,7 +5,7 @@ import org.junit.jupiter.api.*;
 import passoffTests.obfuscatedTestClasses.TestServerFacade;
 import passoffTests.testClasses.TestException;
 import passoffTests.testClasses.TestModels;
-import server.HttpServer;
+import server.Server;
 
 import java.lang.reflect.Method;
 import java.sql.Connection;
@@ -17,7 +17,7 @@ import java.util.List;
 public class PersistenceTests {
 
     private static TestServerFacade serverFacade;
-    private static HttpServer server;
+    private static Server server;
 
 
     @BeforeAll
@@ -32,7 +32,7 @@ public class PersistenceTests {
     }
 
     public static void startServer() {
-        server = new HttpServer();
+        server = new Server();
         var port = server.run(0);
         System.out.println("Started test HTTP server on " + port);
 

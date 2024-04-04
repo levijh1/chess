@@ -57,4 +57,22 @@ public class GameDao {
             throw new DataAccessException("Username already occupied in game");
         }
     }
+
+    public static void removePlayer(int gameId, String userName) throws DataAccessException {
+        String sql;
+        List<GameData> resultList;
+
+//        sql = "SELECT whiteUsername FROM Games WHERE gameId = ?";
+//        resultList = executeQueryGameData(sql, "whiteUsername", gameId);
+//        if (!resultList.isEmpty()) {
+//            sql = "UPDATE Games SET whiteUsername = ? WHERE gameId = ?";
+//            executeUpdate(sql, null, gameId);
+//        }
+
+        sql = "UPDATE Games SET whiteUsername = ? WHERE gameId = ? AND whiteUsername = ?";
+        executeUpdate(sql, null, gameId, userName);
+
+        sql = "UPDATE Games SET whiteUsername = ? WHERE gameId = ? AND blackUsername = ?";
+        executeUpdate(sql, null, gameId, userName);
+    }
 }
