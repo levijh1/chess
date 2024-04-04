@@ -3,7 +3,6 @@ package httpService;
 import dataAccess.AuthTokenDao;
 import dataAccess.DataAccessException;
 import dataAccess.GameDao;
-import server.WebsocketHandler;
 import server.request.JoinGameRequest;
 import server.response.ErrorResponse;
 import server.response.ParentResponse;
@@ -31,7 +30,7 @@ public class JoinGameService {
 
         try {
             if (playerColor != null) {
-                gameDao.updateGame(gameID, username, playerColor);
+                gameDao.updateGamePlayers(gameID, username, playerColor);
             }
         } catch (DataAccessException ex) {
             return new ErrorResponse("Error: already taken", 403);

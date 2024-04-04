@@ -171,6 +171,7 @@ public class Client implements ServerMessageObserver {
     }
 
     public String leave() {
+        currentColor = PlayerColor.WHITE;
         return serverFacade.leave();
     }
 

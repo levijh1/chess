@@ -44,10 +44,10 @@ public class DrawBoard {
     }
 
     private static void drawInteriorRows(PrintStream out, ChessBoard board, PlayerColor playerColor, ArrayList<ChessPosition> possibleEndLocations, ChessPosition highlightPieceLocation) {
-        if (playerColor == PlayerColor.WHITE) {
-            for (int boardRow = 8; boardRow > 0; --boardRow) {
+        if (playerColor == PlayerColor.BLACK) {
+            for (int boardRow = 1; boardRow < 9; ++boardRow) {
                 drawNumberRowBox(out, boardRow);
-                for (int boardCol = 1; boardCol < 9; ++boardCol) {
+                for (int boardCol = 8; boardCol > 0; --boardCol) {
                     drawBoardCoordinate(out, board, boardRow, boardCol, possibleEndLocations, highlightPieceLocation);
                 }
                 drawNumberRowBox(out, boardRow);
@@ -55,9 +55,9 @@ public class DrawBoard {
                 out.println();
             }
         } else {
-            for (int boardRow = 1; boardRow < 9; ++boardRow) {
+            for (int boardRow = 8; boardRow > 0; --boardRow) {
                 drawNumberRowBox(out, boardRow);
-                for (int boardCol = 8; boardCol > 0; --boardCol) {
+                for (int boardCol = 1; boardCol < 9; ++boardCol) {
                     drawBoardCoordinate(out, board, boardRow, boardCol, possibleEndLocations, highlightPieceLocation);
                 }
                 drawNumberRowBox(out, boardRow);

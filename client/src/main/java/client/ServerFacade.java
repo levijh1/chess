@@ -13,6 +13,7 @@ import ui.DrawBoard;
 import webSocketMessages.userCommands.JoinObserverCommand;
 import webSocketMessages.userCommands.JoinPlayerCommand;
 import webSocketMessages.userCommands.LeaveCommand;
+import webSocketMessages.userCommands.ResignCommand;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -247,6 +248,7 @@ public class ServerFacade {
 
         enteredGameId = -1;
         gameJoined = false;
+        currentColor = PlayerColor.WHITE;
 
         System.out.println("You successfully left the game");
         return null;
@@ -259,7 +261,13 @@ public class ServerFacade {
     }
 
     public String resign() {
-        //TODO: send resign Message over Websocket
+        try {
+            websocketCommunicator.send(new ResignCommand(authToken, enteredGameId));
+        } catch (Exception ex) {
+            System.out.println(ex.getMessage());
+            return ex.getMessage();
+        }
+
         return null;
     }
 

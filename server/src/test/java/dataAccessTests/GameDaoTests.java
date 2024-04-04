@@ -102,7 +102,7 @@ public class GameDaoTests {
     public void updateGameTest() throws DataAccessException {
         int gameID1 = dao.createGame(null, "blackTest", "Game1", new ChessGame());
 
-        dao.updateGame(gameID1, "updatedUsername", PlayerColor.WHITE);
+        dao.updateGamePlayers(gameID1, "updatedUsername", PlayerColor.WHITE);
         GameData actual = dao.getGameData(gameID1);
 
         GameData expected = new GameData(gameID1, "updatedUsername", "blackTest", "Game1", new ChessGame());
@@ -116,7 +116,7 @@ public class GameDaoTests {
         int gameID1 = dao.createGame("whiteTest", "blackTest", "Game1", new ChessGame());
 
         try {
-            dao.updateGame(gameID1, "updatedUsername", PlayerColor.WHITE);
+            dao.updateGamePlayers(gameID1, "updatedUsername", PlayerColor.WHITE);
         } catch (Exception ex) {
             Assertions.assertTrue(true);
         }

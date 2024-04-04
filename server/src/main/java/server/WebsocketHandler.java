@@ -6,6 +6,7 @@ import com.google.gson.*;
 import dataAccess.AuthTokenDao;
 import dataAccess.DataAccessException;
 import dataAccess.GameDao;
+import model.GameData;
 import org.eclipse.jetty.websocket.api.annotations.*;
 import org.eclipse.jetty.websocket.api.*;
 import webSocketMessages.serverMessages.ErrorMessage;
@@ -22,7 +23,6 @@ import java.lang.reflect.Type;
 public class WebsocketHandler {
     private static GameSessionDictionary gameSessions = new GameSessionDictionary();
 
-    //TODO: Make methods for each type of request
     @OnWebSocketMessage
     public void onMessage(Session session, String msg) throws Exception {
         UserGameCommand command = readJson(msg);
@@ -30,17 +30,12 @@ public class WebsocketHandler {
         String userName = getConnection(command.getAuthString(), session);
         if (userName != null) {
             switch (command.getCommandType()) {
-//                case JOIN_OBSERVER -> observe(userName, command);
-//                case MAKE_MOVE -> move(userName, command));
                 case LEAVE -> leave(userName, (LeaveCommand) command, session);
-//                case RESIGN -> resign(userName, command);
-
                 case JOIN_PLAYER -> joinPlayer(userName, (JoinPlayerCommand) command, session);
                 case JOIN_OBSERVER -> joinObserver(userName, (JoinObserverCommand) command, session);
                 case MAKE_MOVE -> {
                 }
-                case RESIGN -> {
-                }
+                case RESIGN -> resign(userName, (ResignCommand) command);
             }
         } else {
             sendResponse(session, new ErrorMessage(ServerMessage.ServerMessageType.ERROR, "Error: unauthorized"));
@@ -148,5 +143,19 @@ public class WebsocketHandler {
 
         ChessBoard board = gameDao.getGameData(gameId).getGame().getBoard();
         sendResponse(session, new LoadGameMessage(ServerMessage.ServerMessageType.LOAD_GAME, board));
+    }
+
+    private void resign(String userName, ResignCommand command) throws DataAccessException, IOException {
+        int gameId = command.getGameID();
+        GameDao gameDao = new GameDao();
+
+        GameData gameData = gameDao.getGameData(gameId);
+        gameData.setStatus("over");
+
+        for (Session sessionInGame : gameSessions.getSessionsForGame(gameId)) {
+            String message = userName + " has resigned from the game. Game is over";
+            sendResponse(sessionInGame, new NotificationMessage(ServerMessage.ServerMessageType.NOTIFICATION, message));
+        }
+
     }
 }
