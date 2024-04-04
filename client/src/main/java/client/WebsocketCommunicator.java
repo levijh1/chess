@@ -8,16 +8,14 @@ import webSocketMessages.serverMessages.ServerMessage;
 import webSocketMessages.userCommands.UserGameCommand;
 
 import javax.websocket.*;
-import java.io.IOException;
 import java.lang.reflect.Type;
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.Scanner;
 
 public class WebsocketCommunicator extends Endpoint {
 
     public static void main(String[] args) throws Exception {
-        var ws = new WebsocketCommunicator(new ServerFacade(8080));
+        var ws = new WebsocketCommunicator(new Client(8080));
         Scanner scanner = new Scanner(System.in);
 
 //        System.out.println("Enter a message you want to echo");

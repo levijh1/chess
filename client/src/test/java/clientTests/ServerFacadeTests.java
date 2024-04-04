@@ -1,6 +1,6 @@
 package clientTests;
 
-import client.ServerFacade;
+import client.Client;
 import org.junit.jupiter.api.*;
 import server.HttpServer;
 import passoffTests.obfuscatedTestClasses.TestServerFacade;
@@ -12,14 +12,14 @@ import java.util.Map;
 public class ServerFacadeTests {
 
     private static HttpServer server;
-    static ServerFacade facade;
+    static Client facade;
 
     @BeforeAll
     public static void init() {
         server = new HttpServer();
         var port = server.run(0);
         System.out.println("Started test HTTP server on " + port);
-        facade = new ServerFacade(port);
+        facade = new Client(port);
         TestServerFacade testServerFacade = new TestServerFacade("localhost", Integer.toString(port));
         testServerFacade.clear();
     }
