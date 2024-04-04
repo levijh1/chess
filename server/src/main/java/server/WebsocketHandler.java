@@ -20,10 +20,7 @@ import java.lang.reflect.Type;
 
 @WebSocket
 public class WebsocketHandler {
-    GameSessionDictionary gameSessions = new GameSessionDictionary();
-    //TODO: Create a dictionary (gameID: list of sessions) Look at example in petshop (connectionManager)
-    //loop through session.getRemote().sendString(jsonString);
-
+    private static GameSessionDictionary gameSessions = new GameSessionDictionary();
 
     //TODO: Make methods for each type of request
     @OnWebSocketMessage
@@ -48,8 +45,6 @@ public class WebsocketHandler {
         } else {
             sendResponse(session, new ErrorMessage(ServerMessage.ServerMessageType.ERROR, "Error: unauthorized"));
         }
-
-        //TODO: add authToken and session to map
     }
 
     private void sendResponse(Session session, ServerMessage messageObject) throws IOException {
@@ -110,7 +105,7 @@ public class WebsocketHandler {
 
             for (Session otherSession : gameSessions.getSessionsForGame(gameId)) {
                 if (otherSession != session) {
-                    sendResponse(session, message);
+                    sendResponse(otherSession, message);
                 }
             }
         } catch (Exception ex) {
@@ -130,7 +125,7 @@ public class WebsocketHandler {
         for (Session otherSession : gameSessions.getSessionsForGame(gameId)) {
             if (otherSession != session) {
                 String message = userName + " has joined this game as the " + teamColor.toString() + " player";
-                sendResponse(session, new NotificationMessage(ServerMessage.ServerMessageType.NOTIFICATION, message));
+                sendResponse(otherSession, new NotificationMessage(ServerMessage.ServerMessageType.NOTIFICATION, message));
             }
         }
 
@@ -147,7 +142,7 @@ public class WebsocketHandler {
         for (Session otherSession : gameSessions.getSessionsForGame(gameId)) {
             if (otherSession != session) {
                 String message = userName + " has joined this game as an observer";
-                sendResponse(session, new NotificationMessage(ServerMessage.ServerMessageType.NOTIFICATION, message));
+                sendResponse(otherSession, new NotificationMessage(ServerMessage.ServerMessageType.NOTIFICATION, message));
             }
         }
 

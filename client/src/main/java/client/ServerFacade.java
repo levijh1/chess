@@ -164,8 +164,8 @@ public class ServerFacade {
                     System.out.println("\nGame ID: " + i);
                     mostRecentGameNumbers.put(i, game.getGameID());
                     System.out.println("Game Name: " + game.getGameName());
-                    System.out.println("Black Team Username: " + game.getBlackUsername());
                     System.out.println("White Team Username: " + game.getWhiteUsername());
+                    System.out.println("Black Team Username: " + game.getBlackUsername());
                 }
                 System.out.println("\nAll games listed");
                 return mostRecentGameNumbers.toString();

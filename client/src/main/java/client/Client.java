@@ -160,6 +160,9 @@ public class Client implements ServerMessageObserver {
     }
 
     public String joinGame(String gameNumberString, String playerColor) {
+        if (Objects.equals(playerColor, "black")) {
+            currentColor = PlayerColor.BLACK;
+        }
         return serverFacade.joinGame(gameNumberString, playerColor);
     }
 
