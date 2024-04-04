@@ -10,6 +10,7 @@ import server.response.ListGamesResponse;
 import server.response.ParentResponse;
 import server.response.RegisterAndLoginResponse;
 import ui.DrawBoard;
+import webSocketMessages.userCommands.JoinObserverCommand;
 import webSocketMessages.userCommands.JoinPlayerCommand;
 import webSocketMessages.userCommands.LeaveCommand;
 
@@ -199,11 +200,6 @@ public class ServerFacade {
                 try {
                     enteredGameId = gameId;
                     currentColor = playerColorEnum;
-//                    GameData game = returnCurrentGame();
-//                    if (playerColorEnum == null) {
-//                        playerColorEnum = PlayerColor.WHITE;
-//                    }
-////                    DrawBoard.drawBoard(game.getGame().getBoard(), playerColorEnum, null, null);
 
                     System.out.print(SET_TEXT_COLOR_BLUE);
                     System.out.println("Game joined successfully!");
@@ -215,8 +211,12 @@ public class ServerFacade {
             }
 
             websocketCommunicator = new WebsocketCommunicator(observer);
-            ChessGame.TeamColor teamColorEnum = ChessGame.TeamColor.valueOf(playerColor.toUpperCase());
-            websocketCommunicator.send(new JoinPlayerCommand(authToken, gameId, teamColorEnum));
+            if (playerColor == null) {
+                websocketCommunicator.send(new JoinObserverCommand(authToken, gameId));
+            } else {
+                ChessGame.TeamColor teamColorEnum = ChessGame.TeamColor.valueOf(playerColor.toUpperCase());
+                websocketCommunicator.send(new JoinPlayerCommand(authToken, gameId, teamColorEnum));
+            }
             return "Success";
 
         } catch (Exception ex) {

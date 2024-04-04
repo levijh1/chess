@@ -12,10 +12,7 @@ import webSocketMessages.serverMessages.ErrorMessage;
 import webSocketMessages.serverMessages.LoadGameMessage;
 import webSocketMessages.serverMessages.NotificationMessage;
 import webSocketMessages.serverMessages.ServerMessage;
-import webSocketMessages.userCommands.JoinPlayerCommand;
-import webSocketMessages.userCommands.UserGameCommand;
-import webSocketMessages.userCommands.LeaveCommand;
-import websocketService.LeaveService;
+import webSocketMessages.userCommands.*;
 
 import java.io.IOException;
 import java.lang.reflect.Type;
@@ -42,8 +39,7 @@ public class WebsocketHandler {
 //                case RESIGN -> resign(userName, command);
 
                 case JOIN_PLAYER -> joinPlayer(userName, (JoinPlayerCommand) command, session);
-                case JOIN_OBSERVER -> {
-                }
+                case JOIN_OBSERVER -> joinObserver(userName, (JoinObserverCommand) command, session);
                 case MAKE_MOVE -> {
                 }
                 case RESIGN -> {
@@ -92,10 +88,10 @@ public class WebsocketHandler {
 
             return switch (userGameCommandType) {
                 case JOIN_PLAYER -> context.deserialize(jsonElement, JoinPlayerCommand.class);
-                case JOIN_OBSERVER -> null;
-                case MAKE_MOVE -> null;
+                case JOIN_OBSERVER -> context.deserialize(jsonElement, JoinObserverCommand.class);
+                case MAKE_MOVE -> context.deserialize(jsonElement, MakeMoveCommand.class);
                 case LEAVE -> context.deserialize(jsonElement, LeaveCommand.class);
-                case RESIGN -> null;
+                case RESIGN -> context.deserialize(jsonElement, ResignCommand.class);
             };
         }
     }
@@ -105,7 +101,8 @@ public class WebsocketHandler {
         ServerMessage message;
         int gameId = command.getGameID();
 
-        GameDao gameDao = new GameDao();
+        gameSessions.removeSessionFromGame(gameId, session);
+
 
         try {
             GameDao.removePlayer(gameId, userName);
@@ -141,4 +138,20 @@ public class WebsocketHandler {
         sendResponse(session, new LoadGameMessage(ServerMessage.ServerMessageType.LOAD_GAME, board));
     }
 
+    private void joinObserver(String userName, JoinObserverCommand command, Session session) throws IOException, DataAccessException {
+        GameDao gameDao = new GameDao();
+        int gameId = command.getGameID();
+
+        gameSessions.addSessionToGame(gameId, session);
+
+        for (Session otherSession : gameSessions.getSessionsForGame(gameId)) {
+            if (otherSession != session) {
+                String message = userName + " has joined this game as an observer";
+                sendResponse(session, new NotificationMessage(ServerMessage.ServerMessageType.NOTIFICATION, message));
+            }
+        }
+
+        ChessBoard board = gameDao.getGameData(gameId).getGame().getBoard();
+        sendResponse(session, new LoadGameMessage(ServerMessage.ServerMessageType.LOAD_GAME, board));
+    }
 }
