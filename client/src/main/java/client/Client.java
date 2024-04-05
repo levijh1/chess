@@ -102,7 +102,8 @@ public class Client implements ServerMessageObserver {
             case "observe" -> joinGame(params[0], null);
             case "redraw" -> redraw();
             case "leave" -> leave();
-            case "move" -> movePiece();
+            case "move" -> movePiece(params[0], params[1], null);
+            //TODO: add way to specify promotionPiece
             case "resign" -> resign();
             case "highlight" -> highlightPossibleMoves(params[0]);
             case "quit" -> "quit";
@@ -175,8 +176,8 @@ public class Client implements ServerMessageObserver {
         return serverFacade.leave();
     }
 
-    public String movePiece() {
-        return serverFacade.movePiece();
+    public String movePiece(String startingPositionString, String endingPositionString, String promotionPiece) {
+        return serverFacade.movePiece(startingPositionString, endingPositionString, promotionPiece);
     }
 
     public String resign() {

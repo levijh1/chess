@@ -69,9 +69,11 @@ public class GameDao {
         executeUpdate(sql, null, gameId, userName);
     }
 
-    public void updateGame(int gameId, GameData gameData) throws DataAccessException {
+    public void updateGame(int gameId, ChessGame game) throws DataAccessException {
         String sql;
         sql = "UPDATE Games SET game = ? WHERE gameId = ?";
-        executeUpdate(sql, gameData, gameId);
+
+        String jsonGame = new Gson().toJson(game);
+        executeUpdate(sql, jsonGame, gameId);
     }
 }

@@ -2,6 +2,7 @@ package client;
 
 import chess.ChessGame;
 import chess.ChessMove;
+import chess.ChessPiece;
 import chess.ChessPosition;
 import model.GameData;
 import server.request.*;
@@ -10,10 +11,7 @@ import server.response.ListGamesResponse;
 import server.response.ParentResponse;
 import server.response.RegisterAndLoginResponse;
 import ui.DrawBoard;
-import webSocketMessages.userCommands.JoinObserverCommand;
-import webSocketMessages.userCommands.JoinPlayerCommand;
-import webSocketMessages.userCommands.LeaveCommand;
-import webSocketMessages.userCommands.ResignCommand;
+import webSocketMessages.userCommands.*;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -55,9 +53,9 @@ public class ServerFacade {
             String gameplayMenu = """
                     \tredraw - show the chess board again
                     \tleave - remove user from the game
-                    \tmove <MOVE> - move piece on the board
+                    \tmove <startPosition> <endPosition> [promotionPieceType|empty]- move piece on the board (i.e. move c7 c5)
                     \tresign - forfeit and end the game
-                    \thighlight <PIECE LOCATION> - show all legal moves
+                    \thighlight <position> - show all legal moves (i.e. highlight f2)
                     \thelp - with possible commands
                     """;
             System.out.print(gameplayMenu);
@@ -254,12 +252,6 @@ public class ServerFacade {
         return null;
     }
 
-    public String movePiece() {
-
-        //TODO: send movePiece message over websocket
-        return null;
-    }
-
     public String resign() {
         try {
             websocketCommunicator.send(new ResignCommand(authToken, enteredGameId));
@@ -273,9 +265,10 @@ public class ServerFacade {
 
     public String highlightPossibleMoves(String pieceLocation) {
         //Parse string
-        int column = pieceLocation.charAt(0) - 'a' + 1;
-        int row = pieceLocation.charAt(1) - '1' + 1;
-        ChessPosition piecePosition = new ChessPosition(row, column);
+//        int column = pieceLocation.charAt(0) - 'a' + 1;
+//        int row = pieceLocation.charAt(1) - '1' + 1;
+//        ChessPosition piecePosition = new ChessPosition(row, column);
+        ChessPosition piecePosition = new ChessPosition(pieceLocation);
 
         try {
             GameData game = returnCurrentGame();
@@ -295,6 +288,37 @@ public class ServerFacade {
 
             DrawBoard.drawBoard(game.getGame().getBoard(), currentColor, possibleEndLocations, piecePosition);
         } catch (Exception ex) {
+            return ex.getMessage();
+        }
+        return null;
+    }
+
+    public String movePiece(String startLocation, String endLocation, String promotionPieceString) {
+        //Parse string
+//        int startColumn = startLocation.charAt(0) - 'a' + 1;
+//        int startRow = startLocation.charAt(1) - '1' + 1;
+//        ChessPosition startPosition = new ChessPosition(startRow, startColumn);
+        ChessPosition startPosition = new ChessPosition(startLocation);
+
+        //Parse string
+//        int endColumn = endLocation.charAt(0) - 'a' + 1;
+//        int endRow = endLocation.charAt(1) - '1' + 1;
+//        ChessPosition endPosition = new ChessPosition(endRow, endColumn);
+        ChessPosition endPosition = new ChessPosition(endLocation);
+
+        ChessPiece.PieceType promotionPieceType;
+        if (promotionPieceString == null) {
+            promotionPieceType = null;
+        } else {
+            promotionPieceType = ChessPiece.PieceType.valueOf(promotionPieceString.toUpperCase());
+        }
+
+        ChessMove newMove = new ChessMove(startPosition, endPosition, promotionPieceType);
+
+        try {
+            websocketCommunicator.send(new MakeMoveCommand(authToken, enteredGameId, newMove));
+        } catch (Exception ex) {
+            System.out.println(ex.getMessage());
             return ex.getMessage();
         }
         return null;

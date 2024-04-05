@@ -2,6 +2,9 @@ package server;
 
 import chess.ChessBoard;
 import chess.ChessGame;
+import chess.ChessMove;
+import chess.ChessPosition;
+import chess.InvalidMoveException;
 import com.google.gson.*;
 import dataAccess.AuthTokenDao;
 import dataAccess.DataAccessException;
@@ -33,8 +36,7 @@ public class WebsocketHandler {
                 case LEAVE -> leave(userName, (LeaveCommand) command, session);
                 case JOIN_PLAYER -> joinPlayer(userName, (JoinPlayerCommand) command, session);
                 case JOIN_OBSERVER -> joinObserver(userName, (JoinObserverCommand) command, session);
-                case MAKE_MOVE -> {
-                }
+                case MAKE_MOVE -> makeMove(userName, (MakeMoveCommand) command, session);
                 case RESIGN -> resign(userName, (ResignCommand) command);
             }
         } else {
@@ -150,12 +152,46 @@ public class WebsocketHandler {
         GameDao gameDao = new GameDao();
 
         GameData gameData = gameDao.getGameData(gameId);
-        gameData.setStatus("over");
+        ChessGame game = gameData.getGame();
+        game.setStatus("over");
+        gameDao.updateGame(gameId, game);
 
         for (Session sessionInGame : gameSessions.getSessionsForGame(gameId)) {
             String message = userName + " has resigned from the game. Game is over";
             sendResponse(sessionInGame, new NotificationMessage(ServerMessage.ServerMessageType.NOTIFICATION, message));
         }
 
+    }
+
+    private void makeMove(String userName, MakeMoveCommand command, Session session) throws DataAccessException, IOException, InvalidMoveException {
+        int gameId = command.getGameID();
+        ChessMove move = command.getMove();
+        ChessPosition startPosition = move.getStartPosition();
+        ChessPosition endPosition = move.getEndPosition();
+
+        GameDao gameDao = new GameDao();
+
+        GameData gameData = gameDao.getGameData(gameId);
+        ChessGame game = gameData.getGame();
+
+        if (!game.isMoveValid(move)) {
+            sendResponse(session, new ErrorMessage(ServerMessage.ServerMessageType.ERROR, "Move is not valid"));
+            return;
+        } else {
+            game.makeMove(move);
+            gameDao.updateGame(gameId, game);
+        }
+
+        ChessBoard board = gameDao.getGameData(gameId).getGame().getBoard();
+        for (Session sessionInGame : gameSessions.getSessionsForGame(gameId)) {
+            sendResponse(sessionInGame, new LoadGameMessage(ServerMessage.ServerMessageType.LOAD_GAME, board));
+        }
+
+        for (Session otherSession : gameSessions.getSessionsForGame(gameId)) {
+            if (otherSession != session) {
+                String message = userName + " moved " + startPosition.positionToString() + " to " + endPosition.positionToString();
+                sendResponse(otherSession, new NotificationMessage(ServerMessage.ServerMessageType.NOTIFICATION, message));
+            }
+        }
     }
 }

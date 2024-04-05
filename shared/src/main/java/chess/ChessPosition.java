@@ -17,6 +17,10 @@ public class ChessPosition {
         this.col = col;
     }
 
+    public ChessPosition(String chessCoordinates) {
+        this(chessCoordinates.charAt(1) - '1' + 1, chessCoordinates.charAt(0) - 'a' + 1);
+    }
+
     /**
      * @return which row this position is in
      * 1 codes for the bottom row
@@ -38,6 +42,12 @@ public class ChessPosition {
      */
     public boolean isOnBoard() {
         return this.row > 0 && this.row <= 8 && this.col > 0 && this.col <= 8;
+    }
+
+    public String positionToString() {
+        char chessColumn = (char) ('a' + col - 1);
+        char chessRow = (char) ('1' + row - 1);
+        return String.valueOf(chessColumn) + String.valueOf(chessRow);
     }
 
     @Override

@@ -11,9 +11,9 @@ import java.util.Objects;
  * signature of the existing methods.
  */
 public class ChessGame {
-    private TeamColor teamTurn;
+    private TeamColor teamTurn = TeamColor.WHITE;
     private ChessBoard board;
-
+    private String status = "progress";
 
     public ChessGame() {
         this.board = new ChessBoard();
@@ -103,7 +103,7 @@ public class ChessGame {
 
     }
 
-    private boolean isMoveValid(ChessMove move) {
+    public boolean isMoveValid(ChessMove move) {
         ChessPosition startPosition = move.getStartPosition();
         ChessPosition endPosition = move.getEndPosition();
         ChessPiece movingPiece = board.getPiece(startPosition);
@@ -127,6 +127,9 @@ public class ChessGame {
             return false;
 
 //            throw new InvalidMoveException("Move puts own king in check");
+        }
+        if (Objects.equals(status, "over")) {
+            return false;
         }
         return movingPiece.pieceMoves(board, startPosition).contains(move);
     }
@@ -282,6 +285,14 @@ public class ChessGame {
      */
     public ChessBoard getBoard() {
         return board;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String newStatus) {
+        status = newStatus;
     }
 
     @Override
