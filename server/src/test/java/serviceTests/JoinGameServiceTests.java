@@ -9,7 +9,7 @@ import server.response.CreateGameResponse;
 import server.response.ErrorResponse;
 import server.response.ParentResponse;
 import server.response.RegisterAndLoginResponse;
-import httpService.*;
+import Service.*;
 
 public class JoinGameServiceTests {
     private final JoinGameService joinGameService = new JoinGameService();

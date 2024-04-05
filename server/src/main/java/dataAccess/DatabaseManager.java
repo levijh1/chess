@@ -168,6 +168,22 @@ public class DatabaseManager {
         }
     }
 
+    public static String executeQueryPlayerName(String statement, String outputType, Object... params) throws DataAccessException {
+        try (var conn = DatabaseManager.getConnection()) {
+            try (var ps = conn.prepareStatement(statement, RETURN_GENERATED_KEYS)) {
+                fillStatementParameters(ps, params);
+                try (var rs = ps.executeQuery()) {
+                    rs.next();
+                    return rs.getString("whiteUsername");
+                } catch (Exception ex) {
+                    return null;
+                }
+            }
+        } catch (SQLException e) {
+            throw new DataAccessException(e.getMessage());
+        }
+    }
+
     private static void fillStatementParameters(PreparedStatement ps, Object[] params) throws SQLException {
         for (var i = 0; i < params.length; i++) {
             var param = params[i];

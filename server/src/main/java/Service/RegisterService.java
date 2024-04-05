@@ -1,4 +1,4 @@
-package httpService;
+package Service;
 
 import dataAccess.*;
 import server.request.RegisterRequest;

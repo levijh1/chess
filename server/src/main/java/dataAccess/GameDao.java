@@ -39,19 +39,19 @@ public class GameDao {
 
     public void updateGamePlayers(int gameId, String username, PlayerColor playerColor) throws DataAccessException {
         String sql = null;
-        List<GameData> resultList = null;
+        String databasePlayer = null;
         if (playerColor == PlayerColor.WHITE) {
             sql = "SELECT whiteUsername FROM Games WHERE gameId = ?";
-            resultList = executeQueryGameData(sql, "whiteUsername", gameId);
+            databasePlayer = executeQueryPlayerName(sql, "whiteUsername", gameId);
             sql = "UPDATE Games SET whiteUsername = ? WHERE gameId = ?";
         }
         if (playerColor == PlayerColor.BLACK) {
             sql = "SELECT blackUsername FROM Games WHERE gameId = ?";
-            resultList = executeQueryGameData(sql, "blackUsername", gameId);
+            databasePlayer = executeQueryPlayerName(sql, "blackUsername", gameId);
             sql = "UPDATE Games SET blackUsername = ? WHERE gameId = ?";
         }
 
-        if (resultList.isEmpty()) {
+        if (databasePlayer == null) {
             executeUpdate(sql, username, gameId);
         } else {
             throw new DataAccessException("Username already occupied in game");

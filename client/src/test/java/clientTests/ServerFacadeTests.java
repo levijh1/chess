@@ -17,11 +17,16 @@ public class ServerFacadeTests {
     @BeforeAll
     public static void init() {
         server = new Server();
-        var port = server.run(0);
+        var port = server.run(8080);
         System.out.println("Started test HTTP server on " + port);
         facade = new Client(port);
         TestServerFacade testServerFacade = new TestServerFacade("localhost", Integer.toString(port));
         testServerFacade.clear();
+    }
+
+    @BeforeEach
+    public void init_before_each() {
+        facade = new Client(8080);
     }
 
     @AfterAll

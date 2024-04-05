@@ -102,8 +102,13 @@ public class Client implements ServerMessageObserver {
             case "observe" -> joinGame(params[0], null);
             case "redraw" -> redraw();
             case "leave" -> leave();
-            case "move" -> movePiece(params[0], params[1], null);
-            //TODO: add way to specify promotionPiece
+            case "move" -> {
+                if (params.length >= 3) {
+                    yield movePiece(params[0], params[1], params[2]);
+                } else {
+                    yield movePiece(params[0], params[1], null);
+                }
+            }
             case "resign" -> resign();
             case "highlight" -> highlightPossibleMoves(params[0]);
             case "quit" -> "quit";
@@ -111,7 +116,6 @@ public class Client implements ServerMessageObserver {
         };
     }
 
-    //    //TODO: Fix this and create methods that can deal with this
     @Override
     public void notify(ServerMessage message) {
         switch (message.getServerMessageType()) {
@@ -186,6 +190,10 @@ public class Client implements ServerMessageObserver {
 
     public String highlightPossibleMoves(String pieceLocation) {
         return serverFacade.highlightPossibleMoves(pieceLocation);
+    }
+
+    public void setGameJoined(boolean gameJoined) {
+        this.gameJoined = gameJoined;
     }
 
 }

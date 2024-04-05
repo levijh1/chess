@@ -5,7 +5,7 @@ import dataAccess.DataAccessException;
 import dataAccess.DatabaseManager;
 import server.request.*;
 import server.response.*;
-import httpService.*;
+import Service.*;
 import spark.*;
 
 import java.lang.reflect.InvocationTargetException;

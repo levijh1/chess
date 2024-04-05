@@ -10,7 +10,6 @@ public class GameData {
     String blackUsername;
     String gameName;
     ChessGame game;
-    private String status = "progress";
 
     public GameData(int gameID, String whiteUsername, String blackUsername, String gameName, ChessGame game) {
         this.gameID = gameID;
@@ -40,12 +39,8 @@ public class GameData {
         return game;
     }
 
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String newStatus) {
-        status = newStatus;
+    public void setGame(ChessGame game) {
+        this.game = game;
     }
 
     public void setWhiteUsername(String whiteUsername) {
