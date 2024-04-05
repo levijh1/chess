@@ -174,7 +174,7 @@ public class DatabaseManager {
                 fillStatementParameters(ps, params);
                 try (var rs = ps.executeQuery()) {
                     rs.next();
-                    return rs.getString("whiteUsername");
+                    return rs.getString(outputType);
                 } catch (Exception ex) {
                     return null;
                 }
