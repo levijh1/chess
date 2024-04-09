@@ -37,10 +37,24 @@ public class GameDao {
         executeUpdate(sql);
     }
 
+    public String getPlayerName(int gameId, PlayerColor playerColor) throws DataAccessException {
+        String sql;
+        if (playerColor == PlayerColor.WHITE) {
+            sql = "SELECT whiteUsername FROM Games WHERE gameId = ?";
+            return executeQueryPlayerName(sql, "whiteUsername", gameId);
+        }
+        if (playerColor == PlayerColor.BLACK) {
+            sql = "SELECT blackUsername FROM Games WHERE gameId = ?";
+            return executeQueryPlayerName(sql, "blackUsername", gameId);
+        }
+        return null;
+    }
+
     public void updateGamePlayers(int gameId, String username, PlayerColor playerColor) throws DataAccessException {
         String sql = null;
         String databasePlayer = null;
         if (playerColor == PlayerColor.WHITE) {
+            //TODO: substitute with getPlayerName to make code less repetitive
             sql = "SELECT whiteUsername FROM Games WHERE gameId = ?";
             databasePlayer = executeQueryPlayerName(sql, "whiteUsername", gameId);
             sql = "UPDATE Games SET whiteUsername = ? WHERE gameId = ?";

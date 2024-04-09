@@ -9,6 +9,6 @@ public class ErrorMessage extends ServerMessage {
 
     public ErrorMessage(ServerMessage.ServerMessageType type, String message) {
         super(type);
-        errorMessage = message;
+        errorMessage = "Error: " + message;
     }
 }

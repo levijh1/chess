@@ -169,12 +169,14 @@ public class DatabaseManager {
     }
 
     public static String executeQueryPlayerName(String statement, String outputType, Object... params) throws DataAccessException {
+        String playerName = null;
         try (var conn = DatabaseManager.getConnection()) {
             try (var ps = conn.prepareStatement(statement, RETURN_GENERATED_KEYS)) {
                 fillStatementParameters(ps, params);
                 try (var rs = ps.executeQuery()) {
-                    rs.next();
-                    return rs.getString(outputType);
+                    while (rs.next()) {
+                        playerName = rs.getString(outputType);
+                    }
                 } catch (Exception ex) {
                     return null;
                 }
@@ -182,6 +184,8 @@ public class DatabaseManager {
         } catch (SQLException e) {
             throw new DataAccessException(e.getMessage());
         }
+
+        return playerName;
     }
 
     private static void fillStatementParameters(PreparedStatement ps, Object[] params) throws SQLException {

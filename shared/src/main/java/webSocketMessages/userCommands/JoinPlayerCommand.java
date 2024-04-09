@@ -6,18 +6,18 @@ public class JoinPlayerCommand extends UserGameCommand {
     private int gameID;
     ChessGame.TeamColor playerColor;
 
-    public JoinPlayerCommand(String authToken, int gameID, ChessGame.TeamColor playerColor) {
+    public JoinPlayerCommand(String authToken, int gameID, ChessGame.TeamColor teamColor) {
         super(authToken);
         this.commandType = CommandType.JOIN_PLAYER;
         this.gameID = gameID;
-        this.playerColor = playerColor;
+        this.playerColor = teamColor;
     }
 
     public int getGameID() {
         return gameID;
     }
 
-    public ChessGame.TeamColor getPlayerColor() {
+    public ChessGame.TeamColor getTeamColor() {
         return playerColor;
     }
 

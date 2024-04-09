@@ -12,6 +12,7 @@ import dataAccess.GameDao;
 import model.GameData;
 import org.eclipse.jetty.websocket.api.annotations.*;
 import org.eclipse.jetty.websocket.api.*;
+import server.request.PlayerColor;
 import webSocketMessages.serverMessages.ErrorMessage;
 import webSocketMessages.serverMessages.LoadGameMessage;
 import webSocketMessages.serverMessages.NotificationMessage;
@@ -20,6 +21,7 @@ import webSocketMessages.userCommands.*;
 
 import java.io.IOException;
 import java.lang.reflect.Type;
+import java.util.Objects;
 
 
 @WebSocket
@@ -40,7 +42,7 @@ public class WebsocketHandler {
                 case RESIGN -> resign(userName, (ResignCommand) command);
             }
         } else {
-            sendResponse(session, new ErrorMessage(ServerMessage.ServerMessageType.ERROR, "Error: unauthorized"));
+            sendResponse(session, new ErrorMessage(ServerMessage.ServerMessageType.ERROR, "unauthorized"));
         }
     }
 
@@ -106,7 +108,8 @@ public class WebsocketHandler {
                 }
             }
         } catch (Exception ex) {
-            message = new ErrorMessage(ServerMessage.ServerMessageType.ERROR, "Error: Bad leave");
+            message = new ErrorMessage(ServerMessage.ServerMessageType.ERROR, "Bad leave");
+            ex.printStackTrace();
             sendResponse(session, message);
         }
     }
@@ -115,7 +118,20 @@ public class WebsocketHandler {
         GameDao gameDao = new GameDao();
 
         int gameId = command.getGameID();
-        ChessGame.TeamColor teamColor = command.getPlayerColor();
+        ChessGame.TeamColor teamColor = command.getTeamColor();
+        PlayerColor playerColor = null;
+        if (teamColor == ChessGame.TeamColor.WHITE) {
+            playerColor = PlayerColor.WHITE;
+        }
+        if (teamColor == ChessGame.TeamColor.BLACK) {
+            playerColor = PlayerColor.BLACK;
+        }
+
+        if (!Objects.equals(gameDao.getPlayerName(gameId, playerColor), userName)) {
+            sendResponse(session, new ErrorMessage(ServerMessage.ServerMessageType.ERROR, "Join over http was not successful"));
+            System.out.print("Error in join player");
+            return;
+        }
 
         gameSessions.addSessionToGame(gameId, session);
 
@@ -176,6 +192,7 @@ public class WebsocketHandler {
 
         if (!game.isMoveValid(move)) {
             sendResponse(session, new ErrorMessage(ServerMessage.ServerMessageType.ERROR, "Move is not valid"));
+            System.out.print("Error in make Move");
             return;
         } else {
             game.makeMove(move);

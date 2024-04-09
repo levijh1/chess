@@ -178,7 +178,6 @@ public class ServerFacade {
         return null;
     }
 
-    //TODO: have it use websocket as well to notify all players
     public String joinGame(String gameNumberString, String playerColor) {
         try {
             PlayerColor playerColorEnum;
