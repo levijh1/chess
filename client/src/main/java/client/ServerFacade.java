@@ -27,7 +27,7 @@ public class ServerFacade {
     private String authToken = null;
     boolean gameJoined = false;
     HashMap<Integer, Integer> mostRecentGameNumbers = new HashMap<>();
-
+    String loggedInUsername;
     private int enteredGameId;
     private PlayerColor currentColor = PlayerColor.WHITE;
     Client observer;
