@@ -22,7 +22,9 @@ public class CreateGameService {
         GameDao gameDao = new GameDao();
 
         try {
-            authTokenDao.getAuth(authToken);
+            if (authTokenDao.getAuth(authToken) == null) {
+                return new ErrorResponse("Error: unauthorized", 401);
+            }
         } catch (DataAccessException ex) {
             return new ErrorResponse("Error: unauthorized", 401);
         }

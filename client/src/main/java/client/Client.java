@@ -1,18 +1,12 @@
 package client;
 
 import chess.*;
-import model.GameData;
 import server.request.*;
-import server.response.CreateGameResponse;
-import server.response.ListGamesResponse;
-import server.response.ParentResponse;
-import server.response.RegisterAndLoginResponse;
 import ui.DrawBoard;
 import webSocketMessages.serverMessages.LoadGameMessage;
 import webSocketMessages.serverMessages.NotificationMessage;
 import webSocketMessages.serverMessages.ErrorMessage;
 import webSocketMessages.serverMessages.ServerMessage;
-import webSocketMessages.userCommands.LeaveCommand;
 
 
 import java.io.PrintStream;
@@ -23,20 +17,13 @@ import static ui.EscapeSequences.*;
 import static ui.EscapeSequences.SET_TEXT_COLOR_GREEN;
 
 public class Client implements ServerMessageObserver {
-    private final String serverUrl;
-    private String authToken = null;
     boolean gameJoined = false;
-    HashMap<Integer, Integer> mostRecentGameNumbers = new HashMap<>();
-
     ServerFacade serverFacade;
-
-    private int enteredGameId;
-    private String loggedInUsername;
     private PlayerColor currentColor = PlayerColor.WHITE;
 
     public Client(int port) {
-        this.serverUrl = "http://localhost:" + port;
-        serverFacade = new ServerFacade(this.serverUrl, this);
+        String serverUrl = "http://localhost:" + port;
+        serverFacade = new ServerFacade(serverUrl, this);
     }
 
     public static void main(String[] args) {
@@ -85,7 +72,7 @@ public class Client implements ServerMessageObserver {
         var tokens = input.toLowerCase().split(" ");
         var cmd = (tokens.length > 0) ? tokens[0] : "help";
         var params = Arrays.copyOfRange(tokens, 1, tokens.length);
-        //TODO: Make three switch statements that are separated by if statements (one for each menu)
+
         return switch (cmd) {
             case "login" -> login(params[0], params[1]);
             case "register" -> register(params[0], params[1], params[2]);

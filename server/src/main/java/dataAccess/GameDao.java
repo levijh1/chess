@@ -54,7 +54,6 @@ public class GameDao {
         String sql = null;
         String databasePlayer = null;
         if (playerColor == PlayerColor.WHITE) {
-            //TODO: substitute with getPlayerName to make code less repetitive
             sql = "SELECT whiteUsername FROM Games WHERE gameId = ?";
             databasePlayer = executeQueryPlayerName(sql, "whiteUsername", gameId);
             sql = "UPDATE Games SET whiteUsername = ? WHERE gameId = ?";
@@ -64,6 +63,7 @@ public class GameDao {
             databasePlayer = executeQueryPlayerName(sql, "blackUsername", gameId);
             sql = "UPDATE Games SET blackUsername = ? WHERE gameId = ?";
         }
+
 
         if (databasePlayer == null) {
             executeUpdate(sql, username, gameId);

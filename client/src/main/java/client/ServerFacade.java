@@ -133,6 +133,10 @@ public class ServerFacade {
     }
 
     public String createGame(String gameName) {
+        if (authToken == null) {
+            System.out.println("Game creation not successful");
+            return null;
+        }
         try {
             CreateGameRequest createGameRequest = new CreateGameRequest(gameName);
             ParentResponse response = httpCommunicator.sendRequest("POST", serverUrl + "/game", createGameRequest, CreateGameResponse.class, authToken);
@@ -150,6 +154,10 @@ public class ServerFacade {
     }
 
     public String listGames() {
+        if (authToken == null) {
+            System.out.println("List games not successful");
+            return null;
+        }
         try {
             GenericRequest genericRequest = new GenericRequest();
             try {

@@ -19,7 +19,9 @@ public class LoginService {
         AuthTokenDao authTokenDao = new AuthTokenDao();
 
         try {
-            userDao.getUser(username); //verify that user doesn't already exist
+            if (userDao.getUser(username) == null) {
+                return new ErrorResponse("Error: unauthorized", 401);
+            }
         } catch (DataAccessException ex) {
             return new ErrorResponse("Error: unauthorized", 401);
         }

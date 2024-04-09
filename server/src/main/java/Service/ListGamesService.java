@@ -18,7 +18,10 @@ public class ListGamesService {
         AuthTokenDao authTokenDao = new AuthTokenDao();
 
         try {
-            authTokenDao.getAuth(authToken);
+//            authTokenDao.getAuth(authToken);
+            if (authTokenDao.getAuth(authToken) == null) {
+                return new ErrorResponse("Error: unauthorized", 401);
+            }
         } catch (DataAccessException ex) {
             return new ErrorResponse("Error: unauthorized", 401);
         }

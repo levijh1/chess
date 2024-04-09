@@ -15,8 +15,6 @@ public class ChessGame {
     private ChessBoard board;
     private String status = "progress";
 
-    //TODO: update status on checkmate
-
     public ChessGame() {
         this.board = new ChessBoard();
         this.board.resetBoard();

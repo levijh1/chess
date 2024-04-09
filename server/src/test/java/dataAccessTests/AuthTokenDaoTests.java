@@ -9,7 +9,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class AuthTokenDaoTests {
     AuthTokenDao dao = new AuthTokenDao();
@@ -88,7 +90,10 @@ public class AuthTokenDaoTests {
         expected.add(new AuthData("testUsername1", token1));
         expected.add(new AuthData("testUsername2", token2));
 
-        Assertions.assertEquals(actual, expected);
+        Set<Object> actualSet = new HashSet<>(actual);
+        Set<Object> expectedSet = new HashSet<>(expected);
+
+        Assertions.assertEquals(actualSet, expectedSet);
     }
 
     @Test

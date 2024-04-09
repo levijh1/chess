@@ -39,7 +39,7 @@ public class WebsocketHandler {
                 case JOIN_PLAYER -> joinPlayer(userName, (JoinPlayerCommand) command, session);
                 case JOIN_OBSERVER -> joinObserver(userName, (JoinObserverCommand) command, session);
                 case MAKE_MOVE -> makeMove(userName, (MakeMoveCommand) command, session);
-                case RESIGN -> resign(userName, (ResignCommand) command);
+                case RESIGN -> resign(userName, (ResignCommand) command, session);
             }
         } else {
             sendResponse(session, new ErrorMessage(ServerMessage.ServerMessageType.ERROR, "unauthorized"));
@@ -91,7 +91,6 @@ public class WebsocketHandler {
     }
 
     public void leave(String userName, LeaveCommand command, Session session) throws DataAccessException, IOException {
-        //TODO: If tests don't work make sure you are only leaving from one team at a time
         ServerMessage message;
         int gameId = command.getGameID();
 
@@ -167,20 +166,28 @@ public class WebsocketHandler {
         }
     }
 
-    private void resign(String userName, ResignCommand command) throws DataAccessException, IOException {
+    private void resign(String userName, ResignCommand command, Session session) throws DataAccessException, IOException {
         int gameId = command.getGameID();
         GameDao gameDao = new GameDao();
 
         GameData gameData = gameDao.getGameData(gameId);
         ChessGame game = gameData.getGame();
-        game.setStatus("over");
-        gameDao.updateGame(gameId, game);
-
-        for (Session sessionInGame : gameSessions.getSessionsForGame(gameId)) {
-            String message = userName + " has resigned from the game. Game is over";
-            sendResponse(sessionInGame, new NotificationMessage(ServerMessage.ServerMessageType.NOTIFICATION, message));
+        if (Objects.equals(game.getStatus(), "over")) {
+            sendResponse(session, new ErrorMessage(ServerMessage.ServerMessageType.ERROR, "You cannot resign after game is already over"));
+            return;
         }
 
+        if (Objects.equals(userName, gameDao.getPlayerName(gameId, PlayerColor.WHITE)) || Objects.equals(userName, gameDao.getPlayerName(gameId, PlayerColor.BLACK))) {
+            game.setStatus("over");
+            gameDao.updateGame(gameId, game);
+
+            for (Session sessionInGame : gameSessions.getSessionsForGame(gameId)) {
+                String message = userName + " has resigned from the game. Game is over";
+                sendResponse(sessionInGame, new NotificationMessage(ServerMessage.ServerMessageType.NOTIFICATION, message));
+            }
+        } else {
+            sendResponse(session, new ErrorMessage(ServerMessage.ServerMessageType.ERROR, "Observer may not resign"));
+        }
     }
 
     private void makeMove(String userName, MakeMoveCommand command, Session session) throws DataAccessException, IOException, InvalidMoveException {
@@ -193,6 +200,13 @@ public class WebsocketHandler {
 
         GameData gameData = gameDao.getGameData(gameId);
         ChessGame game = gameData.getGame();
+
+        //Check if it is actually the turn of the person making the move
+        String playerColor = game.getTeamTurn().toString();
+        if (!Objects.equals(userName, gameDao.getPlayerName(gameId, PlayerColor.valueOf(playerColor.toUpperCase())))) {
+            sendResponse(session, new ErrorMessage(ServerMessage.ServerMessageType.ERROR, "It is not the turn of the player making the move"));
+            return;
+        }
 
         if (!game.isMoveValid(move)) {
             sendResponse(session, new ErrorMessage(ServerMessage.ServerMessageType.ERROR, "Move is not valid"));

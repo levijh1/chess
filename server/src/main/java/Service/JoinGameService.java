@@ -20,6 +20,9 @@ public class JoinGameService {
 
         try {
             username = authTokenDao.getAuth(authToken);
+            if (username == null) {
+                return new ErrorResponse("Error: unauthorized", 401);
+            }
         } catch (DataAccessException ex) {
             return new ErrorResponse("Error: unauthorized", 401);
         }
