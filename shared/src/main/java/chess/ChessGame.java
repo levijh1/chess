@@ -22,6 +22,14 @@ public class ChessGame {
         this.board.resetBoard();
     }
 
+    public boolean currentPlayerInCheck() {
+        return this.isInCheck(teamTurn);
+    }
+
+    public boolean currentPlayerInCheckmate() {
+        return this.isInCheckmate(teamTurn);
+    }
+
     /**
      * @return Which team's turn it is
      */

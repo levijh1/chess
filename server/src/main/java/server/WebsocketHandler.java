@@ -150,17 +150,21 @@ public class WebsocketHandler {
         GameDao gameDao = new GameDao();
         int gameId = command.getGameID();
 
-        gameSessions.addSessionToGame(gameId, session);
+        try {
+            gameSessions.addSessionToGame(gameId, session);
 
-        for (Session otherSession : gameSessions.getSessionsForGame(gameId)) {
-            if (otherSession != session) {
-                String message = userName + " has joined this game as an observer";
-                sendResponse(otherSession, new NotificationMessage(ServerMessage.ServerMessageType.NOTIFICATION, message));
+            for (Session otherSession : gameSessions.getSessionsForGame(gameId)) {
+                if (otherSession != session) {
+                    String message = userName + " has joined this game as an observer";
+                    sendResponse(otherSession, new NotificationMessage(ServerMessage.ServerMessageType.NOTIFICATION, message));
+                }
             }
-        }
 
-        ChessBoard board = gameDao.getGameData(gameId).getGame().getBoard();
-        sendResponse(session, new LoadGameMessage(ServerMessage.ServerMessageType.LOAD_GAME, board));
+            ChessBoard board = gameDao.getGameData(gameId).getGame().getBoard();
+            sendResponse(session, new LoadGameMessage(ServerMessage.ServerMessageType.LOAD_GAME, board));
+        } catch (Exception ex) {
+            sendResponse(session, new ErrorMessage(ServerMessage.ServerMessageType.ERROR, "Error in observing game. Possibly an invalid gameID"));
+        }
     }
 
     private void resign(String userName, ResignCommand command) throws DataAccessException, IOException {
@@ -209,6 +213,21 @@ public class WebsocketHandler {
                 String message = userName + " moved " + startPosition.positionToString() + " to " + endPosition.positionToString();
                 sendResponse(otherSession, new NotificationMessage(ServerMessage.ServerMessageType.NOTIFICATION, message));
             }
+        }
+
+        if (game.currentPlayerInCheck()) {
+            String message = game.getTeamTurn().toString() + " player is in check";
+            for (Session sessionInGame : gameSessions.getSessionsForGame(gameId)) {
+                sendResponse(sessionInGame, new NotificationMessage(ServerMessage.ServerMessageType.NOTIFICATION, message));
+            }
+        }
+
+        if (game.currentPlayerInCheckmate()) {
+            String message = game.getTeamTurn().toString() + " player is in checkmate. " + userName + " wins the game!";
+            for (Session sessionInGame : gameSessions.getSessionsForGame(gameId)) {
+                sendResponse(sessionInGame, new NotificationMessage(ServerMessage.ServerMessageType.NOTIFICATION, message));
+            }
+            game.setStatus("over");
         }
     }
 }

@@ -4,7 +4,7 @@ import chess.ChessGame;
 
 public class JoinPlayerCommand extends UserGameCommand {
     private int gameID;
-    ChessGame.TeamColor playerColor;
+    private ChessGame.TeamColor playerColor;
 
     public JoinPlayerCommand(String authToken, int gameID, ChessGame.TeamColor teamColor) {
         super(authToken);
