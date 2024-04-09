@@ -4,10 +4,10 @@ import dataAccess.AuthTokenDao;
 import dataAccess.DataAccessException;
 import dataAccess.PasswordHasher;
 import dataAccess.UserDao;
-import server.request.LoginRequest;
-import server.response.ErrorResponse;
-import server.response.RegisterAndLoginResponse;
-import server.response.ParentResponse;
+import request.LoginRequest;
+import response.ErrorResponse;
+import response.RegisterAndLoginResponse;
+import response.ParentResponse;
 
 public class LoginService {
     public ParentResponse login(LoginRequest r) throws DataAccessException {

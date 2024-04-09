@@ -6,11 +6,11 @@ import model.GameData;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import server.request.CreateGameRequest;
-import server.request.GenericRequest;
-import server.request.LoginRequest;
-import server.request.RegisterRequest;
-import server.response.*;
+import request.CreateGameRequest;
+import request.GenericRequest;
+import request.LoginRequest;
+import request.RegisterRequest;
+import response.*;
 import Service.*;
 
 import java.util.ArrayList;

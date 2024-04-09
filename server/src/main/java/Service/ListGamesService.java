@@ -4,10 +4,10 @@ import dataAccess.AuthTokenDao;
 import dataAccess.DataAccessException;
 import dataAccess.GameDao;
 import model.GameData;
-import server.request.GenericRequest;
-import server.response.ErrorResponse;
-import server.response.ListGamesResponse;
-import server.response.ParentResponse;
+import request.GenericRequest;
+import response.ErrorResponse;
+import response.ListGamesResponse;
+import response.ParentResponse;
 
 import java.util.List;
 

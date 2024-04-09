@@ -4,12 +4,13 @@ import dataAccess.DataAccessException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import server.request.*;
-import server.response.CreateGameResponse;
-import server.response.ErrorResponse;
-import server.response.ParentResponse;
-import server.response.RegisterAndLoginResponse;
+import request.PlayerColor;
+import response.CreateGameResponse;
+import response.ErrorResponse;
+import response.ParentResponse;
+import response.RegisterAndLoginResponse;
 import Service.*;
+import request.*;
 
 public class JoinGameServiceTests {
     private final JoinGameService joinGameService = new JoinGameService();

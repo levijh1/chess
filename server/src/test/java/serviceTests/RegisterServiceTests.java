@@ -5,10 +5,10 @@ import dataAccess.UserDao;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import server.request.RegisterRequest;
-import server.response.ErrorResponse;
-import server.response.RegisterAndLoginResponse;
-import server.response.ParentResponse;
+import request.RegisterRequest;
+import response.ErrorResponse;
+import response.RegisterAndLoginResponse;
+import response.ParentResponse;
 import Service.RegisterService;
 
 public class RegisterServiceTests {

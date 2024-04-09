@@ -3,15 +3,16 @@ package Service;
 import dataAccess.AuthTokenDao;
 import dataAccess.DataAccessException;
 import dataAccess.GameDao;
-import server.request.JoinGameRequest;
-import server.response.ErrorResponse;
-import server.response.ParentResponse;
+import request.PlayerColor;
+import request.JoinGameRequest;
+import response.ErrorResponse;
+import response.ParentResponse;
 
 import java.util.Objects;
 
 public class JoinGameService {
     public ParentResponse joinGame(JoinGameRequest r, String authToken) {
-        server.request.PlayerColor playerColor = r.playerColor();
+        PlayerColor playerColor = r.playerColor();
         int gameID = r.gameID();
         String username;
 

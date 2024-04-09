@@ -7,7 +7,7 @@ import model.GameData;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import server.request.PlayerColor;
+import request.PlayerColor;
 
 import java.util.ArrayList;
 import java.util.List;

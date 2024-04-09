@@ -1,10 +1,10 @@
 package Service;
 
 import dataAccess.*;
-import server.request.RegisterRequest;
-import server.response.ErrorResponse;
-import server.response.RegisterAndLoginResponse;
-import server.response.ParentResponse;
+import request.RegisterRequest;
+import response.ErrorResponse;
+import response.RegisterAndLoginResponse;
+import response.ParentResponse;
 
 public class RegisterService {
     public ParentResponse register(RegisterRequest r) throws DataAccessException {

@@ -1,7 +1,6 @@
 package client;
 
-import server.response.ErrorResponse;
-import server.response.ParentResponse;
+import response.*;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -35,7 +34,7 @@ public class HttpCommunicator {
         connection.connect();
 
         if (!Objects.equals(requestMethod, "GET")) {
-            try (OutputStream requestBody = connection.getOutputStream();) {
+            try (OutputStream requestBody = connection.getOutputStream()) {
                 String jsonRequest = new Gson().toJson(request);
                 requestBody.write(jsonRequest.getBytes());
             }

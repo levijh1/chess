@@ -5,11 +5,8 @@ import chess.ChessMove;
 import chess.ChessPiece;
 import chess.ChessPosition;
 import model.GameData;
-import server.request.*;
-import server.response.CreateGameResponse;
-import server.response.ListGamesResponse;
-import server.response.ParentResponse;
-import server.response.RegisterAndLoginResponse;
+import request.*;
+import response.*;
 import ui.DrawBoard;
 import webSocketMessages.userCommands.*;
 
@@ -29,7 +26,7 @@ public class ServerFacade {
     HashMap<Integer, Integer> mostRecentGameNumbers = new HashMap<>();
     String loggedInUsername;
     private int enteredGameId;
-    private PlayerColor currentColor = PlayerColor.WHITE;
+    private ChessGame.TeamColor currentColor = ChessGame.TeamColor.WHITE;
     Client observer;
 
     public ServerFacade(String serverUrl, Client observer) {
@@ -187,15 +184,17 @@ public class ServerFacade {
 
     public String joinGame(String gameNumberString, String playerColor) {
         try {
-            PlayerColor playerColorEnum;
+            ChessGame.TeamColor playerColorEnum;
             int gameNumber = Integer.parseInt(gameNumberString);
             int gameId = mostRecentGameNumbers.get(gameNumber);
+            JoinGameRequest joinGameRequest;
             try {
-                playerColorEnum = PlayerColor.valueOf(playerColor.toUpperCase());
+                playerColorEnum = ChessGame.TeamColor.valueOf(playerColor.toUpperCase());
+                joinGameRequest = new JoinGameRequest(PlayerColor.valueOf(playerColor.toUpperCase()), gameId);
             } catch (Exception ex) {
                 playerColorEnum = null;
+                joinGameRequest = new JoinGameRequest(null, gameId);
             }
-            JoinGameRequest joinGameRequest = new JoinGameRequest(playerColorEnum, gameId);
             ParentResponse response = httpCommunicator.sendRequest("PUT", serverUrl + "/game", joinGameRequest, ParentResponse.class, authToken);
 
 
@@ -248,7 +247,7 @@ public class ServerFacade {
 
         enteredGameId = -1;
         gameJoined = false;
-        currentColor = PlayerColor.WHITE;
+        currentColor = ChessGame.TeamColor.WHITE;
 
         System.out.println("You successfully left the game");
         return null;

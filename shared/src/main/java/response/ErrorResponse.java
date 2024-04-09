@@ -1,4 +1,4 @@
-package server.response;
+package response;
 
 import java.util.Objects;
 
@@ -33,9 +33,5 @@ public class ErrorResponse extends ParentResponse {
                 "errorMessage='" + message + '\'' +
                 ", statusCode=" + statusCode +
                 '}';
-    }
-
-    public String getErrorMessage() {
-        return message;
     }
 }

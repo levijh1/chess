@@ -1,4 +1,4 @@
-package server.request;
+package request;
 
 public enum PlayerColor {
     WHITE, BLACK

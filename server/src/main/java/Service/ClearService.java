@@ -4,7 +4,7 @@ import dataAccess.AuthTokenDao;
 import dataAccess.DataAccessException;
 import dataAccess.GameDao;
 import dataAccess.UserDao;
-import server.response.ParentResponse;
+import response.ParentResponse;
 
 public class ClearService {
     public ParentResponse clear() throws DataAccessException {

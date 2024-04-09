@@ -4,10 +4,10 @@ import chess.ChessGame;
 import dataAccess.AuthTokenDao;
 import dataAccess.DataAccessException;
 import dataAccess.GameDao;
-import server.request.CreateGameRequest;
-import server.response.CreateGameResponse;
-import server.response.ErrorResponse;
-import server.response.ParentResponse;
+import request.CreateGameRequest;
+import response.CreateGameResponse;
+import response.ErrorResponse;
+import response.ParentResponse;
 
 public class CreateGameService {
     public ParentResponse createGame(CreateGameRequest r, String authToken) throws DataAccessException {

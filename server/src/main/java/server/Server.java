@@ -3,8 +3,8 @@ package server;
 import com.google.gson.Gson;
 import dataAccess.DataAccessException;
 import dataAccess.DatabaseManager;
-import server.request.*;
-import server.response.*;
+import response.ParentResponse;
+import request.*;
 import Service.*;
 import spark.*;
 

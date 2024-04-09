@@ -3,7 +3,6 @@ package ui;
 import chess.ChessBoard;
 import chess.ChessGame;
 import chess.ChessPosition;
-import server.request.PlayerColor;
 
 import java.io.PrintStream;
 import java.nio.charset.StandardCharsets;
@@ -25,12 +24,12 @@ public class DrawBoard {
     }
 
     public static void drawBothBoards(ChessBoard board) {
-        drawBoard(board, PlayerColor.BLACK, null, null);
+        drawBoard(board, ChessGame.TeamColor.BLACK, null, null);
         drawBlackRow();
-        drawBoard(board, PlayerColor.WHITE, null, null);
+        drawBoard(board, ChessGame.TeamColor.WHITE, null, null);
     }
 
-    public static void drawBoard(ChessBoard board, PlayerColor color, ArrayList<ChessPosition> possibleEndLocations, ChessPosition highlightPieceLocation) {
+    public static void drawBoard(ChessBoard board, ChessGame.TeamColor color, ArrayList<ChessPosition> possibleEndLocations, ChessPosition highlightPieceLocation) {
         var out = new PrintStream(System.out, true, StandardCharsets.UTF_8);
 
         out.print(ERASE_SCREEN);
@@ -43,8 +42,8 @@ public class DrawBoard {
         out.print(SET_TEXT_COLOR_BLUE);
     }
 
-    private static void drawInteriorRows(PrintStream out, ChessBoard board, PlayerColor playerColor, ArrayList<ChessPosition> possibleEndLocations, ChessPosition highlightPieceLocation) {
-        if (playerColor == PlayerColor.BLACK) {
+    private static void drawInteriorRows(PrintStream out, ChessBoard board, ChessGame.TeamColor playerColor, ArrayList<ChessPosition> possibleEndLocations, ChessPosition highlightPieceLocation) {
+        if (playerColor == ChessGame.TeamColor.BLACK) {
             for (int boardRow = 1; boardRow < 9; ++boardRow) {
                 drawNumberRowBox(out, boardRow);
                 for (int boardCol = 8; boardCol > 0; --boardCol) {
@@ -115,9 +114,9 @@ public class DrawBoard {
         }
     }
 
-    private static void drawLetterRow(PrintStream out, PlayerColor color) {
+    private static void drawLetterRow(PrintStream out, ChessGame.TeamColor color) {
         List<String> columnLetters;
-        if (color == PlayerColor.WHITE) {
+        if (color == ChessGame.TeamColor.WHITE) {
             columnLetters = whiteColumnLetters;
         } else {
             columnLetters = blackColumnLetters;

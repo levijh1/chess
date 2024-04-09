@@ -194,7 +194,7 @@ public class ServerFacadeTests {
         }
 
         String result = facade.joinGame(reconstructedMap.get(gameID), null);
-        Assertions.assertEquals(result, "Success");
+        Assertions.assertEquals("Success", result);
     }
 
     @Test

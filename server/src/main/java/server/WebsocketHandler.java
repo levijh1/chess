@@ -12,7 +12,7 @@ import dataAccess.GameDao;
 import model.GameData;
 import org.eclipse.jetty.websocket.api.annotations.*;
 import org.eclipse.jetty.websocket.api.*;
-import server.request.PlayerColor;
+import request.PlayerColor;
 import webSocketMessages.serverMessages.ErrorMessage;
 import webSocketMessages.serverMessages.LoadGameMessage;
 import webSocketMessages.serverMessages.NotificationMessage;

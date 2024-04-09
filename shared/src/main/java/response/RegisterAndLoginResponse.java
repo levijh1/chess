@@ -1,4 +1,4 @@
-package server.response;
+package response;
 
 import java.util.Objects;
 

@@ -1,7 +1,6 @@
 package client;
 
 import chess.*;
-import server.request.*;
 import ui.DrawBoard;
 import webSocketMessages.serverMessages.LoadGameMessage;
 import webSocketMessages.serverMessages.NotificationMessage;
@@ -17,9 +16,8 @@ import static ui.EscapeSequences.*;
 import static ui.EscapeSequences.SET_TEXT_COLOR_GREEN;
 
 public class Client implements ServerMessageObserver {
-    boolean gameJoined = false;
     ServerFacade serverFacade;
-    private PlayerColor currentColor = PlayerColor.WHITE;
+    private ChessGame.TeamColor currentColor = ChessGame.TeamColor.WHITE;
 
     public Client(int port) {
         String serverUrl = "http://localhost:" + port;
@@ -153,7 +151,7 @@ public class Client implements ServerMessageObserver {
 
     public String joinGame(String gameNumberString, String playerColor) {
         if (Objects.equals(playerColor, "black")) {
-            currentColor = PlayerColor.BLACK;
+            currentColor = ChessGame.TeamColor.BLACK;
         }
         return serverFacade.joinGame(gameNumberString, playerColor);
     }
@@ -163,7 +161,7 @@ public class Client implements ServerMessageObserver {
     }
 
     public String leave() {
-        currentColor = PlayerColor.WHITE;
+        currentColor = ChessGame.TeamColor.WHITE;
         return serverFacade.leave();
     }
 

@@ -2,9 +2,9 @@ package Service;
 
 import dataAccess.AuthTokenDao;
 import dataAccess.DataAccessException;
-import server.request.GenericRequest;
-import server.response.ErrorResponse;
-import server.response.ParentResponse;
+import request.GenericRequest;
+import response.ErrorResponse;
+import response.ParentResponse;
 
 public class LogoutService {
     public ParentResponse logout(GenericRequest r, String authToken) {
