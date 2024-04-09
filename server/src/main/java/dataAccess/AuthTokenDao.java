@@ -21,7 +21,7 @@ public class AuthTokenDao {
     public String getAuth(String authToken) throws DataAccessException {
         String sql = "SELECT username FROM AuthTokens WHERE authToken = ?";
         try {
-            return (String) executeQueryPlayerName(sql, "username", authToken);
+            return executeQueryPlayerName(sql, "username", authToken);
         } catch (Exception ex) {
             throw new DataAccessException(ex.getMessage());
         }
@@ -41,4 +41,5 @@ public class AuthTokenDao {
         String sql = "DELETE FROM AuthTokens";
         executeUpdate(sql);
     }
+
 }
