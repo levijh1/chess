@@ -32,7 +32,7 @@ public class WebsocketHandler {
     public void onMessage(Session session, String msg) throws Exception {
         UserGameCommand command = readJson(msg);
 
-        String userName = getConnection(command.getAuthString(), session);
+        String userName = getConnection(command.getAuthString());
         if (userName != null) {
             switch (command.getCommandType()) {
                 case LEAVE -> leave(userName, (LeaveCommand) command, session);
@@ -51,7 +51,7 @@ public class WebsocketHandler {
         session.getRemote().sendString(jsonString);
     }
 
-    private String getConnection(String authToken, Session session) {
+    private String getConnection(String authToken) {
         AuthTokenDao authTokenDao = new AuthTokenDao();
         String username;
 
@@ -68,8 +68,7 @@ public class WebsocketHandler {
         builder.registerTypeAdapter(UserGameCommand.class, new UserGameCommandDeserializer());
         Gson gson = builder.create();
 
-        UserGameCommand gameCommand = gson.fromJson(jsonCommand, UserGameCommand.class);
-        return gameCommand;
+        return gson.fromJson(jsonCommand, UserGameCommand.class);
     }
 
     private static class UserGameCommandDeserializer implements JsonDeserializer<UserGameCommand> {
@@ -90,7 +89,7 @@ public class WebsocketHandler {
         }
     }
 
-    public void leave(String userName, LeaveCommand command, Session session) throws DataAccessException, IOException {
+    public void leave(String userName, LeaveCommand command, Session session) throws IOException {
         ServerMessage message;
         int gameId = command.getGameID();
 
@@ -108,7 +107,6 @@ public class WebsocketHandler {
             }
         } catch (Exception ex) {
             message = new ErrorMessage(ServerMessage.ServerMessageType.ERROR, "Bad leave");
-            ex.printStackTrace();
             sendResponse(session, message);
         }
     }
@@ -145,7 +143,7 @@ public class WebsocketHandler {
         sendResponse(session, new LoadGameMessage(ServerMessage.ServerMessageType.LOAD_GAME, board));
     }
 
-    private void joinObserver(String userName, JoinObserverCommand command, Session session) throws IOException, DataAccessException {
+    private void joinObserver(String userName, JoinObserverCommand command, Session session) throws IOException {
         GameDao gameDao = new GameDao();
         int gameId = command.getGameID();
 

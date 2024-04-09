@@ -12,7 +12,6 @@ public class LogoutService {
 
         //verify that they are valid user
         try {
-//            authTokenDao.getAuth(authToken);
             if (authTokenDao.getAuth(authToken) == null) {
                 return new ErrorResponse("Error: unauthorized", 401);
             }

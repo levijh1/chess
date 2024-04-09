@@ -179,10 +179,6 @@ public class Client implements ServerMessageObserver {
         return serverFacade.highlightPossibleMoves(pieceLocation);
     }
 
-    public void setGameJoined(boolean gameJoined) {
-        this.gameJoined = gameJoined;
-    }
-
 }
 
 

@@ -74,7 +74,6 @@ public class GameDao {
 
     public static void removePlayer(int gameId, String userName) throws DataAccessException {
         String sql;
-        List<GameData> resultList;
 
         sql = "UPDATE Games SET whiteUsername = ? WHERE gameId = ? AND whiteUsername = ?";
         executeUpdate(sql, null, gameId, userName);

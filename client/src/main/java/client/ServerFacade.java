@@ -29,7 +29,6 @@ public class ServerFacade {
     HashMap<Integer, Integer> mostRecentGameNumbers = new HashMap<>();
 
     private int enteredGameId;
-    private String loggedInUsername;
     private PlayerColor currentColor = PlayerColor.WHITE;
     Client observer;
 
@@ -203,16 +202,12 @@ public class ServerFacade {
             try {
                 System.out.println(response.getMessage());
             } catch (Exception ex1) {
-                try {
-                    enteredGameId = gameId;
-                    currentColor = playerColorEnum;
+                enteredGameId = gameId;
+                currentColor = playerColorEnum;
 
-                    System.out.print(SET_TEXT_COLOR_BLUE);
-                    System.out.println("Game joined successfully!");
-                    gameJoined = true;
-                } catch (Exception ex2) {
-                    throw ex2;
-                }
+                System.out.print(SET_TEXT_COLOR_BLUE);
+                System.out.println("Game joined successfully!");
+                gameJoined = true;
 
             }
 
