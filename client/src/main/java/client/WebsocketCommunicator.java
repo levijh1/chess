@@ -19,11 +19,6 @@ public class WebsocketCommunicator extends Endpoint {
     public static void main(String[] args) throws Exception {
         var ws = new WebsocketCommunicator(new Client(8080));
         Scanner scanner = new Scanner(System.in);
-
-//        System.out.println("Enter a message you want to echo");
-//        while (true) {
-//            ws.send(scanner.nextLine());
-//        }
     }
 
     public WebsocketCommunicator(ServerMessageObserver observer) {
@@ -34,6 +29,7 @@ public class WebsocketCommunicator extends Endpoint {
             this.session = container.connectToServer(this, uri);
 
             this.session.addMessageHandler(new MessageHandler.Whole<String>() {
+                @Override
                 public void onMessage(String jsonMessage) {
                     try {
                         GsonBuilder builder = new GsonBuilder();
@@ -73,6 +69,7 @@ public class WebsocketCommunicator extends Endpoint {
         this.session.getBasicRemote().sendText(jsonCommand);
     }
 
+    @Override
     public void onOpen(Session session, EndpointConfig endpointConfig) {
     }
 

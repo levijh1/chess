@@ -158,10 +158,10 @@ public class ServerFacade {
             GenericRequest genericRequest = new GenericRequest();
             try {
                 ParentResponse response = httpCommunicator.sendRequest("GET", serverUrl + "/game", genericRequest, ListGamesResponse.class, authToken);
-                List<GameData> Games = response.getGames();
+                List<GameData> games = response.getGames();
                 int i = 0;
                 mostRecentGameNumbers.clear();
-                for (GameData game : Games) {
+                for (GameData game : games) {
                     i += 1;
                     System.out.print(SET_TEXT_COLOR_BLUE);
                     System.out.println("\nGame ID: " + i);
@@ -265,10 +265,6 @@ public class ServerFacade {
     }
 
     public String highlightPossibleMoves(String pieceLocation) {
-        //Parse string
-//        int column = pieceLocation.charAt(0) - 'a' + 1;
-//        int row = pieceLocation.charAt(1) - '1' + 1;
-//        ChessPosition piecePosition = new ChessPosition(row, column);
         ChessPosition piecePosition = new ChessPosition(pieceLocation);
 
         try {
@@ -295,16 +291,7 @@ public class ServerFacade {
     }
 
     public String movePiece(String startLocation, String endLocation, String promotionPieceString) {
-        //Parse string
-//        int startColumn = startLocation.charAt(0) - 'a' + 1;
-//        int startRow = startLocation.charAt(1) - '1' + 1;
-//        ChessPosition startPosition = new ChessPosition(startRow, startColumn);
         ChessPosition startPosition = new ChessPosition(startLocation);
-
-        //Parse string
-//        int endColumn = endLocation.charAt(0) - 'a' + 1;
-//        int endRow = endLocation.charAt(1) - '1' + 1;
-//        ChessPosition endPosition = new ChessPosition(endRow, endColumn);
         ChessPosition endPosition = new ChessPosition(endLocation);
 
         ChessPiece.PieceType promotionPieceType;
@@ -330,9 +317,9 @@ public class ServerFacade {
             ParentResponse response;
             GenericRequest genericRequest = new GenericRequest();
             response = httpCommunicator.sendRequest("GET", serverUrl + "/game", genericRequest, ListGamesResponse.class, authToken);
-            List<GameData> Games = response.getGames();
+            List<GameData> games = response.getGames();
             mostRecentGameNumbers.clear();
-            for (GameData game : Games) {
+            for (GameData game : games) {
                 if (game.getGameID() == enteredGameId) {
                     return game;
                 }
