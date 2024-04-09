@@ -38,19 +38,7 @@ public class GameData {
     public ChessGame getGame() {
         return game;
     }
-
-    public void setGame(ChessGame game) {
-        this.game = game;
-    }
-
-    public void setWhiteUsername(String whiteUsername) {
-        this.whiteUsername = whiteUsername;
-    }
-
-    public void setBlackUsername(String blackUsername) {
-        this.blackUsername = blackUsername;
-    }
-
+    
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

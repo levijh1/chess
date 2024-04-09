@@ -121,15 +121,6 @@ public class DatabaseManager {
 
                                 resultList.add(new UserData(username, password, email));
                             }
-//                            case "GameData" -> {
-//                                int gameId = rs.getInt("gameId");
-//                                String whiteUsername = rs.getString("whiteUsername");
-//                                String blackUsername = rs.getString("blackUsername");
-//                                String gameName = rs.getString("gameName");
-//                                ChessGame game = new Gson().fromJson(rs.getString("game"), ChessGame.class);
-//
-//                                resultList.add(new GameData(gameId, whiteUsername, blackUsername, gameName, game));
-//                            }
                             case null, default -> resultList.add(rs.getString(outputType));
                         }
 
